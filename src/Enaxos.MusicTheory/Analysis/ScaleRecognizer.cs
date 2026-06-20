@@ -4,8 +4,10 @@ using Enaxos.MusicTheory.Scales;
 
 namespace Enaxos.MusicTheory.Analysis;
 
+/// <summary>Ranks realized scales against observed pitches using a configurable transparent score model.</summary>
 public static class ScaleRecognizer
 {
+    /// <summary>Finds scale candidates for absolute notes without assuming a chord root.</summary>
     public static IReadOnlyList<ScaleRecognitionCandidate> FindCandidates(IEnumerable<Note> notes, ScaleRecognitionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(notes);
@@ -13,12 +15,14 @@ public static class ScaleRecognizer
         return Find(observed, null, options);
     }
 
+    /// <summary>Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.</summary>
     public static IReadOnlyList<ScaleRecognitionCandidate> FindCandidates(Chord chord, ScaleRecognitionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(chord);
         return Find(chord.Pitches.Distinct().ToArray(), chord.Root, options);
     }
 
+    /// <summary>Runs the shared scoring pipeline over every tonic and catalog definition.</summary>
     private static IReadOnlyList<ScaleRecognitionCandidate> Find(SpelledPitch[] observed, SpelledPitch? chordRoot, ScaleRecognitionOptions? options)
     {
         if (observed.Length == 0) throw new ArgumentException("At least one pitch is required.", nameof(observed));
@@ -30,6 +34,8 @@ public static class ScaleRecognizer
         var catalog = (options.Catalog ?? ModeCatalog.Standard.All).ToArray();
         if (catalog.Length == 0) throw new ArgumentException("The scale catalog cannot be empty.", nameof(options));
 
+        // Keep the individual factors with each raw candidate so callers can inspect
+        // exactly how the final score was assembled.
         var raw = new List<(Scale Scale, double Score, SpelledPitch[] Matched, SpelledPitch[] Missing, SpelledPitch[] Outside, Dictionary<string, double> Factors)>();
         for (var tonicValue = 0; tonicValue < 12; tonicValue++)
             foreach (var definition in catalog)
@@ -53,11 +59,14 @@ public static class ScaleRecognizer
                 raw.Add((scale, factors.Values.Sum(), matched, missing, outside, factors));
             }
 
+        // Limit candidates before softmax so reported probabilities sum to one across
+        // exactly the result set visible to the caller.
         var selected = raw.OrderByDescending(item => item.Score)
             .ThenBy(item => item.Scale.Tonic.PitchClass.Value)
             .ThenBy(item => item.Scale.Definition.Id, StringComparer.Ordinal)
             .Take(options.MaximumResults).ToArray();
         if (selected.Length == 0) return [];
+        // Subtracting the maximum score is the standard numerically stable softmax form.
         var max = selected.Max(item => item.Score);
         var exponentials = selected.Select(item => Math.Exp((item.Score - max) / options.ProbabilityTemperature)).ToArray();
         var total = exponentials.Sum();
@@ -65,6 +74,7 @@ public static class ScaleRecognizer
             item.Scale, item.Score, exponentials[index] / total, item.Matched, item.Missing, item.Outside, item.Factors)).ToArray();
     }
 
+    /// <summary>Rejects negative, infinite, and NaN coefficients before scoring.</summary>
     private static void ValidateWeights(ScaleRecognitionWeights weights)
     {
         var values = new[]

@@ -2,9 +2,17 @@ using Enaxos.MusicTheory.Primitives;
 
 namespace Enaxos.MusicTheory.Intervals;
 
+/// <summary>Represents a directed-independent musical interval by diatonic number and chromatic distance.</summary>
+/// <remarks>
+/// The diatonic number is inclusive: a unison is one and an octave is eight. Semitones are
+/// stored exactly and may be negative for valid spellings such as a diminished unison.
+/// </remarks>
 public readonly record struct Interval
 {
+    /// <summary>The greatest diatonic number treated as a simple interval.</summary>
     private const int SimpleIntervalLimit = 8;
+
+    // A zero-based backing value makes default(Interval) expose the valid number one.
     private readonly int _zeroBasedNumber;
 
     private Interval(int number, int semitones)
@@ -13,19 +21,29 @@ public readonly record struct Interval
         Semitones = semitones;
     }
 
+    /// <summary>Gets the inclusive one-based diatonic interval number.</summary>
     public int Number => _zeroBasedNumber + 1;
 
+    /// <summary>Gets the exact chromatic distance in semitones.</summary>
     public int Semitones { get; }
 
+    /// <summary>Gets the quality derived from the number and chromatic distance.</summary>
     public IntervalQuality Quality => DetermineQuality(Number, Semitones);
 
+    /// <summary>Gets whether the interval is larger than an octave by diatonic number.</summary>
     public bool IsCompound => Number > SimpleIntervalLimit;
 
+    /// <summary>Creates an interval from a diatonic number and a compatible quality.</summary>
+    /// <param name="number">The inclusive one-based diatonic number.</param>
+    /// <param name="quality">A quality valid for the number's perfect or major class.</param>
+    /// <returns>The corresponding interval.</returns>
     public static Interval Create(int number, IntervalQuality quality)
     {
         ValidateNumber(number);
         quality.EnsureValid(nameof(quality));
 
+        // Perfect-class and major-class intervals use different diminished baselines:
+        // diminished is one step below perfect, but two steps below major.
         var perfectClass = IsPerfectClass(number);
         long adjustment = (perfectClass, quality.Kind) switch
         {
@@ -52,6 +70,9 @@ public readonly record struct Interval
         return new Interval(number, (int)semitones);
     }
 
+    /// <summary>Creates an interval from exact diatonic and chromatic distances.</summary>
+    /// <param name="diatonicNumber">The inclusive one-based diatonic number.</param>
+    /// <param name="semitones">The exact chromatic distance, including negative values.</param>
     public static Interval FromDistances(int diatonicNumber, int semitones)
     {
         ValidateNumber(diatonicNumber);
@@ -59,6 +80,8 @@ public readonly record struct Interval
         return new Interval(diatonicNumber, semitones);
     }
 
+    /// <summary>Measures the interval between two spelled notes in a requested direction.</summary>
+    /// <remarks>The target must lie in the requested diatonic direction; spelling determines the interval number.</remarks>
     public static Interval Between(
         Note from,
         Note to,
@@ -105,6 +128,9 @@ public readonly record struct Interval
         return FromDistances((int)diatonicSteps + 1, (int)chromaticDistance);
     }
 
+    /// <summary>Inverts a simple interval so the diatonic numbers sum to nine and semitones sum to twelve.</summary>
+    /// <returns>The complementary simple interval.</returns>
+    /// <exception cref="InvalidOperationException">The interval is compound or the result cannot be represented.</exception>
     public Interval InvertSimple()
     {
         if (IsCompound)
@@ -122,6 +148,7 @@ public readonly record struct Interval
         return FromDistances(9 - Number, (int)invertedSemitones);
     }
 
+    /// <summary>Enforces the inclusive positive numbering convention.</summary>
     private static void ValidateNumber(int number)
     {
         if (number < 1)
@@ -132,6 +159,7 @@ public readonly record struct Interval
         }
     }
 
+    /// <summary>Derives a quality by comparing the exact distance with the major/perfect reference.</summary>
     private static IntervalQuality DetermineQuality(int number, int semitones)
     {
         var offset = (long)semitones - ReferenceSemitones(number);
@@ -163,6 +191,7 @@ public readonly record struct Interval
             : IntervalQuality.Diminished(ToQualityDegree(-offset - 1, number));
     }
 
+    /// <summary>Safely narrows a computed augmentation or diminution degree.</summary>
     private static int ToQualityDegree(long degree, int number)
     {
         if (degree is < 1 or > int.MaxValue)
@@ -175,12 +204,14 @@ public readonly record struct Interval
         return (int)degree;
     }
 
+    /// <summary>Tests the repeating unison/fourth/fifth perfect-class pattern.</summary>
     private static bool IsPerfectClass(int number)
     {
         var simpleNumber = ((number - 1) % 7) + 1;
         return simpleNumber is 1 or 4 or 5;
     }
 
+    /// <summary>Gets the major or perfect chromatic reference distance for any compound number.</summary>
     private static long ReferenceSemitones(int number)
     {
         ValidateNumber(number);
@@ -203,6 +234,7 @@ public readonly record struct Interval
         return (12L * octaves) + simpleSemitones;
     }
 
+    /// <summary>Projects a spelled note onto an unbounded seven-letter coordinate.</summary>
     private static long DiatonicPosition(Note note) =>
         (7L * note.Octave) + (int)note.Pitch.Letter;
 }

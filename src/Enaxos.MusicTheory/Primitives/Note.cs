@@ -2,8 +2,17 @@ using System.Globalization;
 
 namespace Enaxos.MusicTheory.Primitives;
 
+/// <summary>Represents a spelled pitch placed in a scientific-pitch-notation octave.</summary>
+/// <remarks>
+/// The octave belongs to the written note. Enharmonic spellings can therefore have different
+/// octave numbers at a B/C boundary while still sharing the same absolute semitone.
+/// </remarks>
 public readonly record struct Note
 {
+    /// <summary>Creates a note from its written pitch and octave.</summary>
+    /// <param name="pitch">The pitch spelling, including its accidental.</param>
+    /// <param name="octave">The scientific-pitch-notation octave.</param>
+    /// <exception cref="ArgumentOutOfRangeException">The computed absolute semitone cannot be represented.</exception>
     public Note(SpelledPitch pitch, int octave)
     {
         var absoluteSemitone =
@@ -23,14 +32,27 @@ public readonly record struct Note
         AbsoluteSemitone = (int)absoluteSemitone;
     }
 
+    /// <summary>Gets the written pitch component.</summary>
     public SpelledPitch Pitch { get; }
 
+    /// <summary>Gets the scientific-pitch-notation octave attached to the written pitch.</summary>
     public int Octave { get; }
 
+    /// <summary>
+    /// Gets the signed absolute semitone using the project convention where <c>C0</c> is zero.
+    /// </summary>
     public int AbsoluteSemitone { get; }
 
+    /// <summary>Determines whether another note denotes the same absolute sounding pitch.</summary>
+    /// <param name="other">The note to compare without considering spelling.</param>
+    /// <returns><see langword="true"/> when both notes have the same absolute semitone.</returns>
     public bool IsEnharmonicWith(Note other) => AbsoluteSemitone == other.AbsoluteSemitone;
 
+    /// <summary>Parses an invariant note spelling such as <c>C#4</c>, <c>Db-1</c>, or <c>F♯3</c>.</summary>
+    /// <param name="text">The complete note text.</param>
+    /// <returns>The parsed note.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
+    /// <exception cref="FormatException"><paramref name="text"/> is not a valid note.</exception>
     public static Note Parse(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -43,6 +65,10 @@ public readonly record struct Note
         return result;
     }
 
+    /// <summary>Attempts to parse a complete invariant note spelling without throwing for invalid syntax.</summary>
+    /// <param name="text">The text to parse.</param>
+    /// <param name="result">Receives the parsed note on success.</param>
+    /// <returns><see langword="true"/> when parsing succeeds.</returns>
     public static bool TryParse(ReadOnlySpan<char> text, out Note result)
     {
         result = default;
@@ -79,10 +105,12 @@ public readonly record struct Note
         return true;
     }
 
+    /// <summary>Returns the invariant ASCII spelling followed by its octave.</summary>
     public override string ToString() => string.Concat(
         Pitch.ToString(),
         Octave.ToString(CultureInfo.InvariantCulture));
 
+    /// <summary>Maps an ASCII letter to the domain enum while accepting either case.</summary>
     private static bool TryParseLetter(char value, out NoteLetter letter)
     {
         letter = char.ToUpperInvariant(value) switch

@@ -5,6 +5,8 @@
 Bibliothèque .NET 8 indépendante pour représenter et analyser des notions de
 théorie musicale tout en conservant l’orthographe des notes.
 
+Version actuelle : **1.0**.
+
 Le projet est une réécriture *clean-room*. Son comportement est défini par les
 [spécifications du domaine](docs/DOMAIN_SPECIFICATION.md) et la
 [proposition d’API publique](docs/PUBLIC_API_PROPOSAL.md). La démarche et les

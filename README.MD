@@ -5,6 +5,8 @@
 An independent .NET 8 library for representing and analyzing music theory
 concepts while preserving note spelling.
 
+Current version: **1.0**.
+
 This project is a clean-room rewrite. Its behavior is defined by the
 [domain specification](docs/DOMAIN_SPECIFICATION.md) and the
 [public API proposal](docs/PUBLIC_API_PROPOSAL.md). The process and independent

@@ -4,10 +4,14 @@ using Enaxos.MusicTheory.Formulas;
 
 namespace Enaxos.MusicTheory.Scales;
 
+/// <summary>Provides immutable catalogs of rotations for the supported seven-note parent collections.</summary>
 public sealed class ModeCatalog
 {
+    /// <summary>Chromatic offsets of the major reference used to express every rotation as altered degrees.</summary>
     private static readonly int[] MajorOffsets = [0, 2, 4, 5, 7, 9, 11];
+    /// <summary>Chromatic offsets of the harmonic-minor parent collection.</summary>
     private static readonly int[] HarmonicMinorOffsets = [0, 2, 3, 5, 7, 8, 11];
+    /// <summary>Chromatic offsets of the ascending melodic-minor parent collection.</summary>
     private static readonly int[] MelodicMinorOffsets = [0, 2, 3, 5, 7, 9, 11];
 
     private readonly ReadOnlyCollection<ScaleDefinition> _majorModes;
@@ -48,18 +52,25 @@ public sealed class ModeCatalog
         _all = Array.AsReadOnly(major.Concat(harmonicMinor).Concat(melodicMinor).ToArray());
     }
 
+    /// <summary>Gets the shared catalog of standard modes.</summary>
     public static ModeCatalog Standard { get; } = new();
 
+    /// <summary>Gets the seven rotations of the major collection in modal order.</summary>
     public IReadOnlyList<ScaleDefinition> MajorModes => _majorModes;
 
+    /// <summary>Gets the natural-minor rotations starting from Aeolian.</summary>
     public IReadOnlyList<ScaleDefinition> NaturalMinorModes => _naturalMinorModes;
 
+    /// <summary>Gets the seven generated rotations of harmonic minor.</summary>
     public IReadOnlyList<ScaleDefinition> HarmonicMinorModes => _harmonicMinorModes;
 
+    /// <summary>Gets the seven generated rotations of ascending melodic minor.</summary>
     public IReadOnlyList<ScaleDefinition> MelodicMinorModes => _melodicMinorModes;
 
+    /// <summary>Gets each distinct catalog definition used by recognition.</summary>
     public IReadOnlyList<ScaleDefinition> All => _all;
 
+    /// <summary>Rotates a parent pitch-class collection and converts each rotation to altered major degrees.</summary>
     private static ScaleDefinition[] CreateRotations(string idPrefix, IReadOnlyList<int> offsets)
     {
         var definitions = new ScaleDefinition[offsets.Count];

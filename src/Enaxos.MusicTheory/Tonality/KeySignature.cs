@@ -3,13 +3,17 @@ using Enaxos.MusicTheory.Primitives;
 
 namespace Enaxos.MusicTheory.Tonality;
 
+/// <summary>Represents a conventional key signature from seven flats through seven sharps.</summary>
 public sealed class KeySignature : IEquatable<KeySignature>
 {
+    /// <summary>The conventional order in which sharps are added.</summary>
     private static readonly NoteLetter[] SharpOrder =
         [NoteLetter.F, NoteLetter.C, NoteLetter.G, NoteLetter.D, NoteLetter.A, NoteLetter.E, NoteLetter.B];
+    /// <summary>The conventional order in which flats are added.</summary>
     private static readonly NoteLetter[] FlatOrder =
         [NoteLetter.B, NoteLetter.E, NoteLetter.A, NoteLetter.D, NoteLetter.G, NoteLetter.C, NoteLetter.F];
 
+    /// <summary>The immutable prefix of the appropriate accidental order.</summary>
     private readonly ReadOnlyCollection<NoteLetter> _alteredLetters;
 
     private KeySignature(int fifths)
@@ -26,14 +30,19 @@ public sealed class KeySignature : IEquatable<KeySignature>
         _alteredLetters = Array.AsReadOnly(order.Take(AccidentalCount).ToArray());
     }
 
+    /// <summary>Gets the signed circle-of-fifths coordinate: negative for flats and positive for sharps.</summary>
     public int Fifths { get; }
 
+    /// <summary>Gets the number of altered letters in the signature.</summary>
     public int AccidentalCount { get; }
 
+    /// <summary>Gets the common accidental applied by the signature, or natural for an empty signature.</summary>
     public Accidental Accidental { get; }
 
+    /// <summary>Gets altered letters in conventional accumulation order.</summary>
     public IReadOnlyList<NoteLetter> AlteredLetters => _alteredLetters;
 
+    /// <summary>Creates a signature from a signed fifths coordinate in the range -7 through +7.</summary>
     public static KeySignature FromFifths(int fifths)
     {
         if (fifths is < -7 or > 7)
@@ -44,6 +53,8 @@ public sealed class KeySignature : IEquatable<KeySignature>
         return new KeySignature(fifths);
     }
 
+    /// <summary>Gets the conventional signature for a major or minor key spelling.</summary>
+    /// <exception cref="ArgumentException">The spelling has no conventional signature in the supported range.</exception>
     public static KeySignature For(MusicalKey key)
     {
         var fifths = key.Mode == KeyMode.Major
@@ -52,12 +63,16 @@ public sealed class KeySignature : IEquatable<KeySignature>
         return FromFifths(fifths);
     }
 
+    /// <summary>Compares signatures by their signed fifths coordinate.</summary>
     public bool Equals(KeySignature? other) => other is not null && Fifths == other.Fifths;
 
+    /// <inheritdoc />
     public override bool Equals(object? obj) => Equals(obj as KeySignature);
 
+    /// <inheritdoc />
     public override int GetHashCode() => Fifths;
 
+    /// <summary>Maps a conventional major tonic spelling to its signed fifths coordinate.</summary>
     private static int MajorFifths(SpelledPitch tonic) =>
         (tonic.Letter, tonic.Accidental.Semitones) switch
         {
@@ -79,6 +94,7 @@ public sealed class KeySignature : IEquatable<KeySignature>
             _ => throw new ArgumentException("The major key has no conventional -7..+7 signature.", nameof(tonic)),
         };
 
+    /// <summary>Maps a conventional minor tonic spelling to its signed fifths coordinate.</summary>
     private static int MinorFifths(SpelledPitch tonic) =>
         (tonic.Letter, tonic.Accidental.Semitones) switch
         {

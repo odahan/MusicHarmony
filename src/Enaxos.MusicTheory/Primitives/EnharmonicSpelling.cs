@@ -1,7 +1,9 @@
 namespace Enaxos.MusicTheory.Primitives;
 
+/// <summary>Maps normalized pitch classes to deterministic conventional spellings.</summary>
 internal static class EnharmonicSpelling
 {
+    /// <summary>Returns the canonical spelling selected by the requested accidental preference.</summary>
     internal static SpelledPitch For(PitchClass pitchClass, EnharmonicPreference preference)
     {
         if (!Enum.IsDefined(preference))
@@ -9,6 +11,8 @@ internal static class EnharmonicSpelling
             throw new ArgumentOutOfRangeException(nameof(preference));
         }
 
+        // The natural notes are shared by both tables. FewestAccidentals intentionally
+        // falls back to the sharp table for the enharmonic ties on black keys.
         var sharps = new[]
         {
             new SpelledPitch(NoteLetter.C, Accidental.Natural),

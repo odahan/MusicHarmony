@@ -2,10 +2,13 @@ using Enaxos.MusicTheory.Formulas;
 
 namespace Enaxos.MusicTheory.Scales;
 
+/// <summary>Derives traceable five-note subsets from realized source scales.</summary>
 public static class PentatonicScales
 {
+    /// <summary>The exact cardinality required by every supported pentatonic derivation.</summary>
     private const int PentatonicDegreeCount = 5;
 
+    /// <summary>Derives a pentatonic scale or throws when the requested strategy cannot produce one.</summary>
     public static PentatonicDerivation FromScale(
         Scale source,
         PentatonicDerivationStrategy strategy =
@@ -38,6 +41,7 @@ public static class PentatonicScales
             "The source scale does not contain exactly one standard major or minor pentatonic scale.");
     }
 
+    /// <summary>Attempts to derive a pentatonic scale without throwing for an incompatible source or selection.</summary>
     public static bool TryFromScale(
         Scale source,
         out PentatonicDerivation? result,
@@ -50,6 +54,7 @@ public static class PentatonicScales
         return TryCreate(source, strategy, sourceDegrees, out result);
     }
 
+    /// <summary>Dispatches to the strategy-specific derivation without duplicating public validation.</summary>
     private static bool TryCreate(
         Scale source,
         PentatonicDerivationStrategy strategy,
@@ -68,6 +73,7 @@ public static class PentatonicScales
         };
     }
 
+    /// <summary>Accepts only an unambiguous major-or-minor standard pentatonic subset.</summary>
     private static bool TryCreateStandard(
         Scale source,
         IReadOnlyList<int>? sourceDegrees,
@@ -84,6 +90,7 @@ public static class PentatonicScales
         var majorMatches = TryFindSourcePositions(source, major, out var majorPositions);
         var minorMatches = TryFindSourcePositions(source, minor, out var minorPositions);
 
+        // Both true is ambiguous and both false is incompatible; exactly one match is required.
         if (majorMatches == minorMatches)
         {
             return false;
@@ -99,6 +106,7 @@ public static class PentatonicScales
         return true;
     }
 
+    /// <summary>Builds a derived definition from explicitly selected source positions.</summary>
     private static bool TryCreateSelection(
         Scale source,
         IReadOnlyList<int>? sourceDegrees,
@@ -124,6 +132,7 @@ public static class PentatonicScales
         return true;
     }
 
+    /// <summary>Finds distinct source positions for a candidate using enharmonic membership.</summary>
     private static bool TryFindSourcePositions(
         Scale source,
         Scale candidate,
@@ -157,6 +166,7 @@ public static class PentatonicScales
         return true;
     }
 
+    /// <summary>Validates ordered one-based source positions, including mandatory tonic retention.</summary>
     private static bool IsValidSelection(Scale source, IReadOnlyList<int>? sourceDegrees)
     {
         if (sourceDegrees is null ||
@@ -182,6 +192,7 @@ public static class PentatonicScales
         return true;
     }
 
+    /// <summary>Rejects undefined enum values before strategy dispatch.</summary>
     private static void ValidateStrategy(PentatonicDerivationStrategy strategy)
     {
         if (!Enum.IsDefined(strategy))

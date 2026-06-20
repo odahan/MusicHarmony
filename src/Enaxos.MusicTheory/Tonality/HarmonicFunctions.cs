@@ -3,8 +3,10 @@ using Enaxos.MusicTheory.Scales;
 
 namespace Enaxos.MusicTheory.Tonality;
 
+/// <summary>Interprets chord roots and standard qualities in the context of a major or natural-minor key.</summary>
 public static class HarmonicFunctions
 {
+    /// <summary>Analyzes a chord or throws when its root is outside the supplied key.</summary>
     public static HarmonicFunction Analyze(Chord chord, MusicalKey key)
     {
         if (!TryAnalyze(chord, key, out var result))
@@ -12,6 +14,8 @@ public static class HarmonicFunctions
         return result;
     }
 
+    /// <summary>Attempts to assign a diatonic harmonic function to a chord.</summary>
+    /// <remarks>Enharmonic root membership is accepted; the current chord model does not carry an inversion.</remarks>
     public static bool TryAnalyze(Chord chord, MusicalKey key, out HarmonicFunction result)
     {
         ArgumentNullException.ThrowIfNull(chord);
@@ -26,6 +30,7 @@ public static class HarmonicFunctions
         return true;
     }
 
+    /// <summary>Collapses supported chord definitions into the quality categories used by Roman-numeral formatting.</summary>
     private static HarmonicChordQuality Quality(ChordDefinition definition)
     {
         if (definition.Equals(StandardChords.Major) || definition.Equals(StandardChords.MajorSeventh) || definition.Equals(StandardChords.DominantSeventh)) return HarmonicChordQuality.Major;

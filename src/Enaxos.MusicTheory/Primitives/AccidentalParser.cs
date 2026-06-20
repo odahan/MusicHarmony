@@ -1,7 +1,9 @@
 namespace Enaxos.MusicTheory.Primitives;
 
+/// <summary>Centralizes parsing of the ASCII and Unicode accidental forms accepted by the public parsers.</summary>
 internal static class AccidentalParser
 {
+    /// <summary>Parses an accidental only when the entire input is consumed.</summary>
     internal static bool TryParseExact(ReadOnlySpan<char> text, out Accidental accidental)
     {
         if (!TryReadPrefix(text, out accidental, out var consumed) || consumed != text.Length)
@@ -13,6 +15,9 @@ internal static class AccidentalParser
         return true;
     }
 
+    /// <summary>
+    /// Reads an optional accidental prefix and reports its UTF-16 length so a following octave can be parsed.
+    /// </summary>
     internal static bool TryReadPrefix(
         ReadOnlySpan<char> text,
         out Accidental accidental,
@@ -42,6 +47,8 @@ internal static class AccidentalParser
             return true;
         }
 
+        // Musical double-accidental symbols are surrogate pairs, hence the string length
+        // rather than a hard-coded single-character count.
         if (text.StartsWith("𝄪", StringComparison.Ordinal))
         {
             accidental = Accidental.DoubleSharp;
@@ -78,6 +85,7 @@ internal static class AccidentalParser
         }
     }
 
+    /// <summary>Determines whether a suffix begins directly with a signed or unsigned octave.</summary>
     private static bool IsOctaveStart(char value) =>
         value is '+' or '-' || char.IsAsciiDigit(value);
 }

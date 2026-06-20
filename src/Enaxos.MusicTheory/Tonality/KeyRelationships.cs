@@ -2,8 +2,11 @@ using Enaxos.MusicTheory.Scales;
 
 namespace Enaxos.MusicTheory.Tonality;
 
+/// <summary>Computes standard relative and parallel relationships between major and minor keys.</summary>
 public static class KeyRelationships
 {
+    /// <summary>Gets the key sharing the same signature in the opposite mode.</summary>
+    /// <remarks>Major maps to its sixth degree; natural minor maps to its third degree.</remarks>
     public static MusicalKey RelativeOf(MusicalKey key)
     {
         if (key.Mode == KeyMode.Major)
@@ -16,6 +19,7 @@ public static class KeyRelationships
         return MusicalKey.Major(minor.Degree(3));
     }
 
+    /// <summary>Gets the opposite mode on the same written tonic.</summary>
     public static MusicalKey ParallelOf(MusicalKey key) => new(
         key.Tonic,
         key.Mode == KeyMode.Major ? KeyMode.Minor : KeyMode.Major);

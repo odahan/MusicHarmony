@@ -2,8 +2,10 @@ using Enaxos.MusicTheory.Primitives;
 
 namespace Enaxos.MusicTheory.Harmony;
 
+/// <summary>Represents a lead-sheet chord symbol as a spelled root and a stable definition identifier.</summary>
 public readonly record struct ChordSymbol
 {
+    /// <summary>Creates a chord symbol from normalized components.</summary>
     public ChordSymbol(SpelledPitch root, string definitionId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(definitionId);
@@ -11,10 +13,13 @@ public readonly record struct ChordSymbol
         DefinitionId = definitionId;
     }
 
+    /// <summary>Gets the written chord root.</summary>
     public SpelledPitch Root { get; }
 
+    /// <summary>Gets the stable chord-definition identifier encoded by the suffix.</summary>
     public string DefinitionId { get; }
 
+    /// <summary>Parses one of the supported lead-sheet chord symbols.</summary>
     public static ChordSymbol Parse(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -26,9 +31,12 @@ public readonly record struct ChordSymbol
         return result;
     }
 
+    /// <summary>Attempts to parse a complete supported lead-sheet chord symbol.</summary>
     public static bool TryParse(ReadOnlySpan<char> text, out ChordSymbol result)
     {
         result = default;
+        // Try the longest plausible root first so a multi-character accidental is not
+        // incorrectly consumed as part of the chord-quality suffix.
         for (var length = Math.Min(3, text.Length); length >= 1; length--)
         {
             if (!SpelledPitch.TryParse(text[..length], out var root)) continue;
@@ -41,8 +49,10 @@ public readonly record struct ChordSymbol
         return false;
     }
 
+    /// <summary>Returns the root followed by the canonical suffix for its definition.</summary>
     public override string ToString() => string.Concat(Root.ToString(), CanonicalSuffix(DefinitionId));
 
+    /// <summary>Maps every accepted suffix alias to a stable definition identifier.</summary>
     private static string? SuffixId(ReadOnlySpan<char> suffix)
     {
         if (suffix.IsEmpty) return StandardChords.Major.Id;
@@ -57,6 +67,7 @@ public readonly record struct ChordSymbol
         return null;
     }
 
+    /// <summary>Maps a definition identifier to the preferred display suffix.</summary>
     private static string CanonicalSuffix(string id) => id switch
     {
         "chord.major" => "",

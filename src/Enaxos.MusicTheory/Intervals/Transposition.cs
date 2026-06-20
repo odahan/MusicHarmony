@@ -2,8 +2,14 @@ using Enaxos.MusicTheory.Primitives;
 
 namespace Enaxos.MusicTheory.Intervals;
 
+/// <summary>Applies exact intervals while preserving the required diatonic target letter.</summary>
 public static class Transposition
 {
+    /// <summary>Transposes an octave-independent spelling by an interval.</summary>
+    /// <remarks>
+    /// The target letter comes from the diatonic distance; the accidental is then calculated
+    /// so the target also satisfies the exact chromatic distance.
+    /// </remarks>
     public static SpelledPitch Transpose(
         SpelledPitch source,
         Interval interval,
@@ -25,6 +31,8 @@ public static class Transposition
             Accidental.FromSemitones(ToAccidental(accidental)));
     }
 
+    /// <summary>Transposes a spelled note, preserving both diatonic spelling and absolute chromatic distance.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">A resulting coordinate cannot fit in the public integer representation.</exception>
     public static Note Transpose(
         Note source,
         Interval interval,
@@ -61,6 +69,7 @@ public static class Transposition
         return new Note(targetPitch, (int)targetOctave);
     }
 
+    /// <summary>Converts the domain direction into the sign used by coordinate arithmetic.</summary>
     private static int DirectionSign(IntervalDirection direction) => direction switch
     {
         IntervalDirection.Ascending => 1,
@@ -68,6 +77,10 @@ public static class Transposition
         _ => throw new ArgumentOutOfRangeException(nameof(direction)),
     };
 
+    /// <summary>
+    /// Divides an unbounded letter coordinate using floor division so descending values retain
+    /// a non-negative letter index and the correct lower octave.
+    /// </summary>
     private static (long Quotient, int Remainder) DivideDiatonicPosition(long value)
     {
         var quotient = Math.DivRem(value, 7, out var remainder);
@@ -80,6 +93,7 @@ public static class Transposition
         return (quotient, (int)remainder);
     }
 
+    /// <summary>Safely narrows an accidental computed with overflow-resistant arithmetic.</summary>
     private static int ToAccidental(long semitones)
     {
         if (semitones is < int.MinValue or > int.MaxValue)
@@ -92,6 +106,7 @@ public static class Transposition
         return (int)semitones;
     }
 
+    /// <summary>Returns the natural chromatic offset needed to solve for the target accidental.</summary>
     private static int NaturalSemitone(NoteLetter letter) => letter switch
     {
         NoteLetter.C => 0,

@@ -5,8 +5,10 @@ using Enaxos.MusicTheory.Primitives;
 
 namespace Enaxos.MusicTheory.Scales;
 
+/// <summary>Represents an immutable realization of a scale definition on a spelled tonic.</summary>
 public sealed class Scale : IEquatable<Scale>
 {
+    /// <summary>The immutable realized spellings in formula order.</summary>
     private readonly ReadOnlyCollection<SpelledPitch> _pitches;
 
     private Scale(
@@ -19,12 +21,17 @@ public sealed class Scale : IEquatable<Scale>
         _pitches = Array.AsReadOnly(pitches);
     }
 
+    /// <summary>Gets the tonic spelling used to realize the scale.</summary>
     public SpelledPitch Tonic { get; }
 
+    /// <summary>Gets the formula from which the scale was realized.</summary>
     public ScaleDefinition Definition { get; }
 
+    /// <summary>Gets the immutable realized pitch spellings in formula order.</summary>
     public IReadOnlyList<SpelledPitch> Pitches => _pitches;
 
+    /// <summary>Gets a realized pitch by its formula degree number.</summary>
+    /// <remarks>The argument is a musical degree number, not a zero-based collection index.</remarks>
     public SpelledPitch Degree(int number)
     {
         if (number < 1)
@@ -45,6 +52,7 @@ public sealed class Scale : IEquatable<Scale>
             "The requested degree is not present in this scale definition.");
     }
 
+    /// <summary>Realizes every degree of a definition above a tonic while preserving diatonic spelling.</summary>
     public static Scale Create(SpelledPitch tonic, ScaleDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
@@ -59,6 +67,7 @@ public sealed class Scale : IEquatable<Scale>
         return new Scale(tonic, definition, pitches);
     }
 
+    /// <summary>Compares tonic, definition, and realized spellings using value semantics.</summary>
     public bool Equals(Scale? other)
     {
         if (ReferenceEquals(this, other))
@@ -72,8 +81,10 @@ public sealed class Scale : IEquatable<Scale>
             _pitches.SequenceEqual(other._pitches);
     }
 
+    /// <inheritdoc />
     public override bool Equals(object? obj) => Equals(obj as Scale);
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         var hash = new HashCode();
@@ -87,10 +98,13 @@ public sealed class Scale : IEquatable<Scale>
         return hash.ToHashCode();
     }
 
+    /// <summary>Determines whether two scales have equal value content.</summary>
     public static bool operator ==(Scale? left, Scale? right) => Equals(left, right);
 
+    /// <summary>Determines whether two scales differ.</summary>
     public static bool operator !=(Scale? left, Scale? right) => !Equals(left, right);
 
+    /// <summary>Converts a tonic-relative degree into the exact interval needed for transposition.</summary>
     private static Interval ToInterval(FormulaDegree degree)
     {
         var simpleNumber = ((degree.Number - 1) % 7) + 1;
