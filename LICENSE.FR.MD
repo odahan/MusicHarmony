@@ -1,6 +1,6 @@
 # Licence propriétaire
 
-[English version](LICENSE.EN.MD)
+[English version](LICENSE.MD)
 
 Copyright © 2026 O. Dahan. Tous droits réservés.
 

@@ -1,6 +1,6 @@
 # Enaxos MusicTheory
 
-[English version](README.EN.MD)
+[English version](README.MD)
 
 Bibliothèque .NET 8 indépendante pour représenter et analyser des notions de
 théorie musicale tout en conservant l’orthographe des notes.

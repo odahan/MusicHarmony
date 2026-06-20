@@ -67,4 +67,4 @@ This repository is public, but its code is not open source. Private use is
 permitted without restriction. Commercial use and any modification require the
 author's prior written permission. Redistribution also requires permission.
 
-See [LICENSE.EN.MD](LICENSE.EN.MD) for the complete terms.
+See [LICENSE.MD](LICENSE.MD) for the complete terms.
