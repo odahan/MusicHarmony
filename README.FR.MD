@@ -1,5 +1,7 @@
 # Enaxos MusicTheory
 
+[English version](README.EN.MD)
+
 Bibliothèque .NET 8 indépendante pour représenter et analyser des notions de
 théorie musicale tout en conservant l’orthographe des notes.
 
@@ -66,4 +68,4 @@ est autorisée sans restriction. Toute utilisation commerciale et toute
 modification nécessitent l’autorisation préalable et écrite de l’auteur. La
 redistribution est également soumise à autorisation.
 
-Consultez les conditions complètes dans [LICENSE.md](LICENSE.md).
+Consultez les conditions complètes dans [LICENSE.FR.MD](LICENSE.FR.MD).

@@ -1,5 +1,7 @@
 # Licence propriétaire
 
+[English version](LICENSE.EN.MD)
+
 Copyright © 2026 O. Dahan. Tous droits réservés.
 
 Le présent logiciel, son code source, sa documentation et les fichiers qui
