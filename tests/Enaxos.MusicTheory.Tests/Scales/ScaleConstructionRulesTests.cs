@@ -1,0 +1,97 @@
+using Enaxos.MusicTheory.Primitives;
+using Enaxos.MusicTheory.Scales;
+
+namespace Enaxos.MusicTheory.Tests.Scales;
+
+public sealed class ScaleConstructionRulesTests
+{
+    [Theory]
+    [InlineData("F#", "F# G# A# B C# D# E#")]
+    [InlineData("Db", "Db Eb F Gb Ab Bb C")]
+    [InlineData("C#", "C# D# E# F# G# A# B#")]
+    [InlineData("Cb", "Cb Db Eb Fb Gb Ab Bb")]
+    public void Major_scale_preserves_the_expected_written_letters(
+        string tonic,
+        string expected)
+    {
+        var scale = Scale.Create(SpelledPitch.Parse(tonic), StandardScales.Major);
+
+        Assert.Equal(expected.Split(' '), scale.Pitches.Select(pitch => pitch.ToString()));
+    }
+
+    [Fact]
+    public void Every_heptatonic_standard_scale_uses_each_letter_once()
+    {
+        var definitions = new[]
+        {
+            StandardScales.Major,
+            StandardScales.NaturalMinor,
+            StandardScales.HarmonicMinor,
+            StandardScales.MelodicMinorAscending,
+        };
+
+        foreach (var definition in definitions)
+        {
+            foreach (var letter in Enum.GetValues<NoteLetter>())
+            {
+                for (var accidental = -2; accidental <= 2; accidental++)
+                {
+                    var tonic = new SpelledPitch(
+                        letter,
+                        Accidental.FromSemitones(accidental));
+                    var scale = Scale.Create(tonic, definition);
+
+                    Assert.Equal(7, scale.Pitches.Count);
+                    Assert.Equal(7, scale.Pitches.Select(pitch => pitch.Letter).Distinct().Count());
+                    Assert.Equal(tonic, scale.Pitches[0]);
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public void Scale_identity_does_not_include_a_repeated_final_tonic()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), StandardScales.Major);
+
+        Assert.Equal(7, scale.Pitches.Count);
+        Assert.Equal("B", scale.Pitches[^1].ToString());
+    }
+
+    [Fact]
+    public void Degree_uses_formula_numbers_including_sparse_formulas()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), StandardScales.MajorPentatonic);
+
+        Assert.Equal("C", scale.Degree(1).ToString());
+        Assert.Equal("E", scale.Degree(3).ToString());
+        Assert.Equal("A", scale.Degree(6).ToString());
+        Assert.Throws<ArgumentOutOfRangeException>(() => scale.Degree(4));
+        Assert.Throws<ArgumentOutOfRangeException>(() => scale.Degree(0));
+    }
+
+    [Fact]
+    public void Scale_aggregate_has_structural_equality_and_stable_hash_code()
+    {
+        var equivalentDefinition = new ScaleDefinition(
+            StandardScales.Major.Id,
+            StandardScales.Major.Degrees);
+        var first = Scale.Create(SpelledPitch.Parse("Eb"), StandardScales.Major);
+        var second = Scale.Create(SpelledPitch.Parse("Eb"), equivalentDefinition);
+        var other = Scale.Create(SpelledPitch.Parse("E"), equivalentDefinition);
+
+        Assert.Equal(first, second);
+        Assert.True(first == second);
+        Assert.Equal(first.GetHashCode(), second.GetHashCode());
+        Assert.NotEqual(first, other);
+    }
+
+    [Fact]
+    public void Pitches_are_exposed_as_a_read_only_collection()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), StandardScales.Major);
+        var mutableView = Assert.IsAssignableFrom<ICollection<SpelledPitch>>(scale.Pitches);
+
+        Assert.Throws<NotSupportedException>(() => mutableView.Add(SpelledPitch.Parse("C")));
+    }
+}
