@@ -1,0 +1,2487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Complete public API reference for Enaxos.MusicTheory 1.0.0.">
+  <title>Enaxos.MusicTheory 1.0 — Full Public API</title>
+  <style>
+    :root { --bg:#0b1016; --panel:#111923; --panel-2:#172231; --text:#dce7f3; --muted:#91a4b8; --accent:#69b7ff; --accent-2:#86e1c1; --border:#29384a; --code:#0a0f15; --sidebar:22rem; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:1.5rem; }
+    body { margin:0; color:var(--text); background:var(--bg); font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover, a:focus-visible { text-decoration:underline; }
+    .skip-link { position:fixed; left:1rem; top:-5rem; z-index:100; padding:.65rem 1rem; background:var(--accent); color:#06111c; border-radius:.4rem; }
+    .skip-link:focus { top:1rem; }
+    .sidebar { position:fixed; inset:0 auto 0 0; width:var(--sidebar); overflow:auto; padding:1.25rem 1rem 2rem; background:var(--panel); border-right:1px solid var(--border); }
+    .brand { display:block; margin:0 0 .75rem; padding:0 .45rem; color:var(--text); font-size:1.05rem; font-weight:700; }
+    .nav-title { margin:.8rem .45rem .35rem; color:var(--muted); font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    #toc { margin:0; padding:0; list-style:none; }
+    #toc a { display:block; padding:.28rem .45rem; border-left:2px solid transparent; border-radius:0 .25rem .25rem 0; color:var(--muted); font-size:.86rem; line-height:1.35; }
+    #toc .level-3 a { padding-left:1.25rem; font-size:.79rem; }
+    #toc a:hover, #toc a:focus-visible, #toc a.active { color:var(--text); background:var(--panel-2); border-left-color:var(--accent); text-decoration:none; }
+    main { max-width:78rem; margin-left:var(--sidebar); padding:2rem clamp(1.25rem,4vw,4rem) 6rem; }
+    article { max-width:72rem; }
+    h1,h2,h3,h4 { line-height:1.25; color:#f2f7fc; }
+    h1 { margin:.25rem 0 1rem; font-size:clamp(2rem,4vw,3rem); }
+    h2 { margin:3.5rem 0 1rem; padding-bottom:.45rem; border-bottom:1px solid var(--border); font-size:1.75rem; }
+    h3 { margin:2.4rem 0 .8rem; font-size:1.35rem; }
+    h4 { margin:1.6rem 0 .6rem; color:var(--accent-2); font-size:1rem; text-transform:uppercase; letter-spacing:.04em; }
+    .heading-link { margin-left:.5rem; color:var(--muted); font-weight:400; opacity:0; }
+    h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus { opacity:1; }
+    p,li { max-width:80ch; }
+    code { padding:.12rem .35rem; color:#b8ddff; background:var(--panel-2); border:1px solid var(--border); border-radius:.3rem; font:90%/1.45 ui-monospace,"Cascadia Code",Consolas,monospace; }
+    pre { overflow:auto; padding:1rem 1.15rem; background:var(--code); border:1px solid var(--border); border-radius:.55rem; }
+    pre code { padding:0; color:#d5e7f8; background:none; border:0; }
+    table { display:block; width:max-content; max-width:100%; overflow:auto; border-collapse:collapse; }
+    th,td { padding:.55rem .75rem; border:1px solid var(--border); text-align:left; vertical-align:top; }
+    th { background:var(--panel-2); }
+    hr { margin:3rem 0; border:0; border-top:1px solid var(--border); }
+    strong { color:#f3f7fb; }
+    .menu-button { display:none; position:fixed; right:1rem; top:1rem; z-index:60; padding:.55rem .75rem; color:var(--text); background:var(--panel-2); border:1px solid var(--border); border-radius:.45rem; font:inherit; }
+    .back-top { position:fixed; right:1.2rem; bottom:1.2rem; width:2.7rem; height:2.7rem; display:grid; place-items:center; color:var(--text); background:var(--panel-2); border:1px solid var(--border); border-radius:50%; box-shadow:0 .25rem 1rem #0008; }
+    .back-top:hover { text-decoration:none; border-color:var(--accent); }
+    footer { margin-top:4rem; padding-top:1rem; color:var(--muted); border-top:1px solid var(--border); }
+    @media (max-width:900px) {
+      .menu-button { display:block; }
+      .sidebar { z-index:50; width:min(88vw,var(--sidebar)); transform:translateX(-105%); transition:transform .2s ease; box-shadow:.5rem 0 2rem #0009; }
+      body.nav-open .sidebar { transform:translateX(0); }
+      main { margin-left:0; padding-top:4.5rem; }
+    }
+    @media print { .sidebar,.menu-button,.back-top,.heading-link { display:none!important; } main { margin:0; padding:0; } body { color:#111; background:#fff; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <button class="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+  <aside class="sidebar" id="sidebar" aria-label="Documentation navigation">
+    <a class="brand" href="#enaxos-musictheory-1-0-full-public-api">Enaxos.MusicTheory 1.0</a>
+    <div class="nav-title">Contents</div>
+    <nav aria-label="Table of contents"><ul id="toc"><li class="level-2"><a href="#conventions">Conventions</a></li>
+<li class="level-2"><a href="#namespaces">Namespaces</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-analysis">Enaxos.MusicTheory.Analysis</a></li>
+<li class="level-3"><a href="#chordrecognitioncandidate">ChordRecognitionCandidate</a></li>
+<li class="level-3"><a href="#chordrecognitionoptions">ChordRecognitionOptions</a></li>
+<li class="level-3"><a href="#chordrecognizer">ChordRecognizer</a></li>
+<li class="level-3"><a href="#scalerecognitioncandidate">ScaleRecognitionCandidate</a></li>
+<li class="level-3"><a href="#scalerecognitionoptions">ScaleRecognitionOptions</a></li>
+<li class="level-3"><a href="#scalerecognitionweights">ScaleRecognitionWeights</a></li>
+<li class="level-3"><a href="#scalerecognizer">ScaleRecognizer</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-circle">Enaxos.MusicTheory.Circle</a></li>
+<li class="level-3"><a href="#circledirection">CircleDirection</a></li>
+<li class="level-3"><a href="#circledistance">CircleDistance</a></li>
+<li class="level-3"><a href="#circlekeypair">CircleKeyPair</a></li>
+<li class="level-3"><a href="#circleneighbors">CircleNeighbors</a></li>
+<li class="level-3"><a href="#circleoffifths">CircleOfFifths</a></li>
+<li class="level-3"><a href="#circlesegment">CircleSegment</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-formulas">Enaxos.MusicTheory.Formulas</a></li>
+<li class="level-3"><a href="#formuladegree">FormulaDegree</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-geometry">Enaxos.MusicTheory.Geometry</a></li>
+<li class="level-3"><a href="#circlegeometry">CircleGeometry</a></li>
+<li class="level-3"><a href="#circlegeometryoptions">CircleGeometryOptions</a></li>
+<li class="level-3"><a href="#circlegeometrysegment">CircleGeometrySegment</a></li>
+<li class="level-3"><a href="#rotationdirection">RotationDirection</a></li>
+<li class="level-3"><a href="#unitpoint">UnitPoint</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-harmony">Enaxos.MusicTheory.Harmony</a></li>
+<li class="level-3"><a href="#chord">Chord</a></li>
+<li class="level-3"><a href="#chorddefinition">ChordDefinition</a></li>
+<li class="level-3"><a href="#chordrealization">ChordRealization</a></li>
+<li class="level-3"><a href="#chordsymbol">ChordSymbol</a></li>
+<li class="level-3"><a href="#derivedchord">DerivedChord</a></li>
+<li class="level-3"><a href="#standardchords">StandardChords</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-intervals">Enaxos.MusicTheory.Intervals</a></li>
+<li class="level-3"><a href="#commonintervals">CommonIntervals</a></li>
+<li class="level-3"><a href="#interval">Interval</a></li>
+<li class="level-3"><a href="#intervaldirection">IntervalDirection</a></li>
+<li class="level-3"><a href="#intervalquality">IntervalQuality</a></li>
+<li class="level-3"><a href="#intervalqualitykind">IntervalQualityKind</a></li>
+<li class="level-3"><a href="#transposition">Transposition</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-midi">Enaxos.MusicTheory.Midi</a></li>
+<li class="level-3"><a href="#midinote">MidiNote</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-presentation">Enaxos.MusicTheory.Presentation</a></li>
+<li class="level-3"><a href="#accidentalglyphstyle">AccidentalGlyphStyle</a></li>
+<li class="level-3"><a href="#chordnamestyle">ChordNameStyle</a></li>
+<li class="level-3"><a href="#degreedisplaystyle">DegreeDisplayStyle</a></li>
+<li class="level-3"><a href="#musicdisplaydefaults">MusicDisplayDefaults</a></li>
+<li class="level-3"><a href="#musicformatoptions">MusicFormatOptions</a></li>
+<li class="level-3"><a href="#musicformatter">MusicFormatter</a></li>
+<li class="level-3"><a href="#musicterminology">MusicTerminology</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-primitives">Enaxos.MusicTheory.Primitives</a></li>
+<li class="level-3"><a href="#accidental">Accidental</a></li>
+<li class="level-3"><a href="#enharmonicpreference">EnharmonicPreference</a></li>
+<li class="level-3"><a href="#note">Note</a></li>
+<li class="level-3"><a href="#noteletter">NoteLetter</a></li>
+<li class="level-3"><a href="#pitchclass">PitchClass</a></li>
+<li class="level-3"><a href="#spelledpitch">SpelledPitch</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-scales">Enaxos.MusicTheory.Scales</a></li>
+<li class="level-3"><a href="#modecatalog">ModeCatalog</a></li>
+<li class="level-3"><a href="#pentatonicderivation">PentatonicDerivation</a></li>
+<li class="level-3"><a href="#pentatonicderivationstrategy">PentatonicDerivationStrategy</a></li>
+<li class="level-3"><a href="#pentatonicscales">PentatonicScales</a></li>
+<li class="level-3"><a href="#scale">Scale</a></li>
+<li class="level-3"><a href="#scaledefinition">ScaleDefinition</a></li>
+<li class="level-3"><a href="#scalefamily">ScaleFamily</a></li>
+<li class="level-3"><a href="#standardscales">StandardScales</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-tonality">Enaxos.MusicTheory.Tonality</a></li>
+<li class="level-3"><a href="#harmonicchordquality">HarmonicChordQuality</a></li>
+<li class="level-3"><a href="#harmonicfunction">HarmonicFunction</a></li>
+<li class="level-3"><a href="#harmonicfunctions">HarmonicFunctions</a></li>
+<li class="level-3"><a href="#keymode">KeyMode</a></li>
+<li class="level-3"><a href="#keyrelationships">KeyRelationships</a></li>
+<li class="level-3"><a href="#keysignature">KeySignature</a></li>
+<li class="level-3"><a href="#musicalkey">MusicalKey</a></li>
+<li class="level-3"><a href="#scaledegreenumber">ScaleDegreeNumber</a></li>
+<li class="level-2"><a href="#enaxos-musictheory-tuning">Enaxos.MusicTheory.Tuning</a></li>
+<li class="level-3"><a href="#equaltemperament12">EqualTemperament12</a></li>
+<li class="level-3"><a href="#ituningsystem">ITuningSystem</a></li></ul></nav>
+  </aside>
+  <main id="content"><article><h1 id="enaxos-musictheory-1-0-full-public-api">Enaxos.MusicTheory 1.0 — Full Public API</h1>
+<p>This document describes the complete public API exposed by <code>Enaxos.MusicTheory</code> version <strong>1.0.0</strong> (<code>net8.0</code>).</p>
+<h2 id="conventions">Conventions<a class="heading-link" href="#conventions" aria-label="Link to Conventions">#</a></h2>
+<ul>
+<li>Musical spelling is significant unless a member explicitly states that comparison is enharmonic.</li>
+<li>Collection properties are immutable views unless stated otherwise.</li>
+<li>Degree and interval numbers are one-based; collection indexes and inversion numbers are zero-based.</li>
+<li>All invariant parsers use English letter names. Localized output is handled by the presentation API.</li>
+<li>Optional parameter defaults are shown in signatures.</li>
+</ul>
+<h2 id="namespaces">Namespaces<a class="heading-link" href="#namespaces" aria-label="Link to Namespaces">#</a></h2>
+<ul>
+<li><a href="#enaxos-musictheory-analysis"><code>Enaxos.MusicTheory.Analysis</code></a></li>
+<li><a href="#enaxos-musictheory-circle"><code>Enaxos.MusicTheory.Circle</code></a></li>
+<li><a href="#enaxos-musictheory-formulas"><code>Enaxos.MusicTheory.Formulas</code></a></li>
+<li><a href="#enaxos-musictheory-geometry"><code>Enaxos.MusicTheory.Geometry</code></a></li>
+<li><a href="#enaxos-musictheory-harmony"><code>Enaxos.MusicTheory.Harmony</code></a></li>
+<li><a href="#enaxos-musictheory-intervals"><code>Enaxos.MusicTheory.Intervals</code></a></li>
+<li><a href="#enaxos-musictheory-midi"><code>Enaxos.MusicTheory.Midi</code></a></li>
+<li><a href="#enaxos-musictheory-presentation"><code>Enaxos.MusicTheory.Presentation</code></a></li>
+<li><a href="#enaxos-musictheory-primitives"><code>Enaxos.MusicTheory.Primitives</code></a></li>
+<li><a href="#enaxos-musictheory-scales"><code>Enaxos.MusicTheory.Scales</code></a></li>
+<li><a href="#enaxos-musictheory-tonality"><code>Enaxos.MusicTheory.Tonality</code></a></li>
+<li><a href="#enaxos-musictheory-tuning"><code>Enaxos.MusicTheory.Tuning</code></a></li>
+</ul>
+<h2 id="enaxos-musictheory-analysis"><code>Enaxos.MusicTheory.Analysis</code><a class="heading-link" href="#enaxos-musictheory-analysis" aria-label="Link to Enaxos.MusicTheory.Analysis">#</a></h2>
+<h3 id="chordrecognitioncandidate"><code>ChordRecognitionCandidate</code><a class="heading-link" href="#chordrecognitioncandidate" aria-label="Link to ChordRecognitionCandidate">#</a></h3>
+<p>Describes one recognized chord candidate and the evidence used to rank it.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ChordRecognitionCandidate
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; AddedPitches { get; }</code>
+Gets input pitches not explained by the candidate chord.</p>
+</li>
+<li><p><code>public Chord Chord { get; }</code>
+Gets the candidate chord.</p>
+</li>
+<li><p><code>public double Confidence { get; }</code>
+Gets the score normalized to the inclusive range 0 through 1.</p>
+</li>
+<li><p><code>public int? InversionNumber { get; }</code>
+Gets the zero-based bass chord-tone index, or null when the bass is not a chord tone.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; MissingPitches { get; }</code>
+Gets candidate chord tones absent from the input.</p>
+</li>
+<li><p><code>public double Score { get; }</code>
+Gets the deterministic heuristic ranking score; larger values are better.</p>
+</li>
+</ul>
+<h3 id="chordrecognitionoptions"><code>ChordRecognitionOptions</code><a class="heading-link" href="#chordrecognitionoptions" aria-label="Link to ChordRecognitionOptions">#</a></h3>
+<p>Configures chord matching, tolerated discrepancies, and result truncation.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ChordRecognitionOptions
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ChordRecognitionOptions()</code>
+Creates a new ChordRecognitionOptions instance.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public bool AllowAddedTones { get; init; }</code>
+Gets whether observed pitches outside a candidate chord are tolerated.</p>
+</li>
+<li><p><code>public bool AllowEnharmonicEquivalence { get; init; }</code>
+Gets whether pitches with different spellings may match by pitch class.</p>
+</li>
+<li><p><code>public bool AllowMissingTones { get; init; }</code>
+Gets whether candidates may omit expected chord tones.</p>
+</li>
+<li><p><code>public int MaximumResults { get; init; }</code>
+Gets the maximum number of ranked candidates returned.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(ChordRecognitionOptions other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(ChordRecognitionOptions left, ChordRecognitionOptions right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(ChordRecognitionOptions left, ChordRecognitionOptions right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="chordrecognizer"><code>ChordRecognizer</code><a class="heading-link" href="#chordrecognizer" aria-label="Link to ChordRecognizer">#</a></h3>
+<p>Ranks standard chord definitions against observed absolute notes.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class ChordRecognizer
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static IReadOnlyList&lt;ChordRecognitionCandidate&gt; Recognize(IEnumerable&lt;Note&gt; notes, ChordRecognitionOptions? options = null)</code>
+Recognizes candidates from a chord&#39;s canonical close root-position realization.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ChordRecognitionCandidate&gt; Recognize(Chord chord, ChordRecognitionOptions? options = null)</code>
+Recognizes candidates from a chord&#39;s canonical close root-position realization.</p>
+</li>
+</ul>
+<h3 id="scalerecognitioncandidate"><code>ScaleRecognitionCandidate</code><a class="heading-link" href="#scalerecognitioncandidate" aria-label="Link to ScaleRecognitionCandidate">#</a></h3>
+<p>Describes one scale candidate, its pitch comparison, and its transparent score breakdown.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ScaleRecognitionCandidate
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; MatchedPitches { get; }</code>
+Gets observed pitches matched enharmonically by the scale.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; MissingPitches { get; }</code>
+Gets scale pitches absent from the observation.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; OutsidePitches { get; }</code>
+Gets observed pitches that do not belong to the scale.</p>
+</li>
+<li><p><code>public double RelativeProbability { get; }</code>
+Gets this candidate&#39;s softmax probability relative to the returned result set.</p>
+</li>
+<li><p><code>public Scale Scale { get; }</code>
+Gets the realized candidate scale.</p>
+</li>
+<li><p><code>public double Score { get; }</code>
+Gets the sum of the named weighted score factors.</p>
+</li>
+<li><p><code>public IReadOnlyDictionary&lt;string, double&gt; ScoreFactors { get; }</code>
+Gets the immutable named contributions whose sum is <code>Score</code>.</p>
+</li>
+</ul>
+<h3 id="scalerecognitionoptions"><code>ScaleRecognitionOptions</code><a class="heading-link" href="#scalerecognitionoptions" aria-label="Link to ScaleRecognitionOptions">#</a></h3>
+<p>Configures the scale catalog, score model, filtering, and probability conversion.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ScaleRecognitionOptions
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ScaleRecognitionOptions()</code>
+Creates a new ScaleRecognitionOptions instance.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt;? Catalog { get; init; }</code>
+Gets a custom catalog, or null to search all standard modes.</p>
+</li>
+<li><p><code>public int MaximumResults { get; init; }</code>
+Gets the maximum number of candidates retained before probabilities are normalized.</p>
+</li>
+<li><p><code>public double ProbabilityTemperature { get; init; }</code>
+Gets the positive softmax temperature; lower values concentrate probability on top scores.</p>
+</li>
+<li><p><code>public bool StrictMembership { get; init; }</code>
+Gets whether candidates containing any outside observed pitch are rejected.</p>
+</li>
+<li><p><code>public ScaleRecognitionWeights Weights { get; init; }</code>
+Gets the non-negative coefficients used to calculate candidate scores.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(ScaleRecognitionOptions other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(ScaleRecognitionOptions left, ScaleRecognitionOptions right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(ScaleRecognitionOptions left, ScaleRecognitionOptions right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="scalerecognitionweights"><code>ScaleRecognitionWeights</code><a class="heading-link" href="#scalerecognitionweights" aria-label="Link to ScaleRecognitionWeights">#</a></h3>
+<p>Defines non-negative coefficients for each independently reported scale-recognition factor.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ScaleRecognitionWeights
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ScaleRecognitionWeights()</code>
+Creates a new ScaleRecognitionWeights instance.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public double ChordRootEvidence { get; init; }</code>
+Gets the bonus awarded when a supplied chord root equals the candidate tonic.</p>
+</li>
+<li><p><code>public double Coverage { get; init; }</code>
+Gets the weight of the fraction of scale pitches present in the observation.</p>
+</li>
+<li><p><code>public double Membership { get; init; }</code>
+Gets the weight of the fraction of observed pitches explained by the scale.</p>
+</li>
+<li><p><code>public double OutsideNotePenalty { get; init; }</code>
+Gets the penalty applied per observed pitch outside the scale.</p>
+</li>
+<li><p><code>public double SpellingConsistency { get; init; }</code>
+Gets the weight of exact spelling matches among observed pitches.</p>
+</li>
+<li><p><code>public double TonicEvidence { get; init; }</code>
+Gets the bonus awarded when the candidate tonic is observed.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(ScaleRecognitionWeights other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(ScaleRecognitionWeights left, ScaleRecognitionWeights right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(ScaleRecognitionWeights left, ScaleRecognitionWeights right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="scalerecognizer"><code>ScaleRecognizer</code><a class="heading-link" href="#scalerecognizer" aria-label="Link to ScaleRecognizer">#</a></h3>
+<p>Ranks realized scales against observed pitches using a configurable transparent score model.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class ScaleRecognizer
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static IReadOnlyList&lt;ScaleRecognitionCandidate&gt; FindCandidates(IEnumerable&lt;Note&gt; notes, ScaleRecognitionOptions? options = null)</code>
+Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ScaleRecognitionCandidate&gt; FindCandidates(Chord chord, ScaleRecognitionOptions? options = null)</code>
+Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-circle"><code>Enaxos.MusicTheory.Circle</code><a class="heading-link" href="#enaxos-musictheory-circle" aria-label="Link to Enaxos.MusicTheory.Circle">#</a></h2>
+<h3 id="circledirection"><code>CircleDirection</code><a class="heading-link" href="#circledirection" aria-label="Link to CircleDirection">#</a></h3>
+<p>Specifies movement around the logical circle of fifths.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum CircleDirection
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Clockwise</code></td>
+<td align="right">0</td>
+<td>Moves toward the dominant, adding one sharp or removing one flat.</td>
+</tr>
+<tr>
+<td><code>CounterClockwise</code></td>
+<td align="right">1</td>
+<td>Moves toward the subdominant, adding one flat or removing one sharp.</td>
+</tr>
+</tbody></table>
+<h3 id="circledistance"><code>CircleDistance</code><a class="heading-link" href="#circledistance" aria-label="Link to CircleDistance">#</a></h3>
+<p>Contains directional step counts between two circle segments.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct CircleDistance
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public CircleDistance(int ClockwiseSteps, int CounterClockwiseSteps)</code>
+Contains directional step counts between two circle segments.<ul>
+<li><code>ClockwiseSteps</code>: The normalized clockwise distance from 0 through 11.</li>
+<li><code>CounterClockwiseSteps</code>: The normalized counterclockwise distance from 0 through 11.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public int ClockwiseSteps { get; init; }</code>
+The normalized clockwise distance from 0 through 11.</p>
+</li>
+<li><p><code>public int CounterClockwiseSteps { get; init; }</code>
+The normalized counterclockwise distance from 0 through 11.</p>
+</li>
+<li><p><code>public bool HasTwoShortestPaths { get; }</code>
+Gets whether clockwise and counterclockwise paths are equally short.</p>
+</li>
+<li><p><code>public int MinimumSteps { get; }</code>
+Gets the length of a shortest path in either direction.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public void Deconstruct(out int ClockwiseSteps, out int CounterClockwiseSteps)</code>
+Deconstructs the value into its positional components.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(CircleDistance other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(CircleDistance left, CircleDistance right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(CircleDistance left, CircleDistance right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="circlekeypair"><code>CircleKeyPair</code><a class="heading-link" href="#circlekeypair" aria-label="Link to CircleKeyPair">#</a></h3>
+<p>Groups a major key, its relative minor, and their shared key signature.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class CircleKeyPair
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public CircleKeyPair(MusicalKey major, MusicalKey relativeMinor, KeySignature signature)</code>
+Creates a validated relative-key pair.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public MusicalKey Major { get; }</code>
+Gets the major key represented by this spelling.</p>
+</li>
+<li><p><code>public MusicalKey RelativeMinor { get; }</code>
+Gets the relative minor sharing the signature.</p>
+</li>
+<li><p><code>public KeySignature Signature { get; }</code>
+Gets the key signature shared by both keys.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(CircleKeyPair other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(CircleKeyPair left, CircleKeyPair right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(CircleKeyPair left, CircleKeyPair right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="circleneighbors"><code>CircleNeighbors</code><a class="heading-link" href="#circleneighbors" aria-label="Link to CircleNeighbors">#</a></h3>
+<p>Groups a circle segment with its immediate subdominant and dominant neighbors.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct CircleNeighbors
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public CircleNeighbors(CircleSegment Subdominant, CircleSegment Current, CircleSegment Dominant)</code>
+Groups a circle segment with its immediate subdominant and dominant neighbors.<ul>
+<li><code>Subdominant</code>: The previous counterclockwise segment.</li>
+<li><code>Current</code>: The requested segment.</li>
+<li><code>Dominant</code>: The next clockwise segment.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public CircleSegment Current { get; init; }</code>
+The requested segment.</p>
+</li>
+<li><p><code>public CircleSegment Dominant { get; init; }</code>
+The next clockwise segment.</p>
+</li>
+<li><p><code>public CircleSegment Subdominant { get; init; }</code>
+The previous counterclockwise segment.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public void Deconstruct(out CircleSegment Subdominant, out CircleSegment Current, out CircleSegment Dominant)</code>
+Deconstructs the value into its positional components.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(CircleNeighbors other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(CircleNeighbors left, CircleNeighbors right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(CircleNeighbors left, CircleNeighbors right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="circleoffifths"><code>CircleOfFifths</code><a class="heading-link" href="#circleoffifths" aria-label="Link to CircleOfFifths">#</a></h3>
+<p>Provides a twelve-segment logical circle of fifths with conventional enharmonic spellings.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class CircleOfFifths
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public CircleSegment this[int index] { get; }</code>
+Gets a segment by a wrapping index; negative and out-of-range values are normalized.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;CircleSegment&gt; Segments { get; }</code>
+Gets the immutable clockwise sequence of twelve segments.</p>
+</li>
+<li><p><code>public static CircleOfFifths Standard { get; }</code>
+Gets the shared circle using the fewest-accidentals primary-spelling policy.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static CircleOfFifths Create(EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)</code>
+Creates a circle and selects primary spellings according to an enharmonic preference.</p>
+</li>
+<li><p><code>public CircleSegment Find(MusicalKey key)</code>
+Finds the segment containing a major or relative-minor key spelling.</p>
+</li>
+<li><p><code>public CircleDistance GetDistance(CircleSegment from, CircleSegment to)</code>
+Measures both normalized directional distances between two segments.</p>
+</li>
+<li><p><code>public CircleNeighbors GetNeighbors(CircleSegment segment)</code>
+Gets the immediate subdominant and dominant neighbors of a segment.</p>
+</li>
+<li><p><code>public CircleSegment Move(CircleSegment from, CircleDirection direction, int steps = 1)</code>
+Moves a non-negative number of wrapping steps from a segment.</p>
+</li>
+<li><p><code>public bool TryFind(MusicalKey key, out CircleSegment? segment)</code>
+Attempts to find the segment containing a major or relative-minor key spelling.</p>
+</li>
+</ul>
+<h3 id="circlesegment"><code>CircleSegment</code><a class="heading-link" href="#circlesegment" aria-label="Link to CircleSegment">#</a></h3>
+<p>Represents one of twelve pitch-class positions on the circle of fifths.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class CircleSegment
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public int Index { get; }</code>
+Gets the zero-based clockwise index, with C major at zero.</p>
+</li>
+<li><p><code>public CircleKeyPair Primary { get; }</code>
+Gets the spelling selected by the circle&#39;s enharmonic preference.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;CircleKeyPair&gt; Spellings { get; }</code>
+Gets every conventional key spelling represented at this pitch-class position.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(CircleSegment? other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-formulas"><code>Enaxos.MusicTheory.Formulas</code><a class="heading-link" href="#enaxos-musictheory-formulas" aria-label="Link to Enaxos.MusicTheory.Formulas">#</a></h2>
+<h3 id="formuladegree"><code>FormulaDegree</code><a class="heading-link" href="#formuladegree" aria-label="Link to FormulaDegree">#</a></h3>
+<p>Describes one tonic-relative degree of a scale or chord formula.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct FormulaDegree
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public FormulaDegree(int number, int alteration = 0)</code>
+Creates a formula degree.<ul>
+<li><code>number</code>: The one-based diatonic degree number; compound degrees are allowed.</li>
+<li><code>alteration</code>: The signed semitone alteration from the major/perfect reference degree.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public int Alteration { get; }</code>
+Gets the signed chromatic alteration from the reference degree.</p>
+</li>
+<li><p><code>public int Number { get; }</code>
+Gets the one-based diatonic degree number.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(FormulaDegree other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(FormulaDegree left, FormulaDegree right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(FormulaDegree left, FormulaDegree right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-geometry"><code>Enaxos.MusicTheory.Geometry</code><a class="heading-link" href="#enaxos-musictheory-geometry" aria-label="Link to Enaxos.MusicTheory.Geometry">#</a></h2>
+<h3 id="circlegeometry"><code>CircleGeometry</code><a class="heading-link" href="#circlegeometry" aria-label="Link to CircleGeometry">#</a></h3>
+<p>Builds immutable, renderer-independent geometry for a twelve-segment circle of fifths.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class CircleGeometry
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><code>public IReadOnlyList&lt;CircleGeometrySegment&gt; Segments { get; }</code>
+Gets the immutable twelve-segment geometry.</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><code>public static CircleGeometry Create(CircleOfFifths circle, CircleGeometryOptions? options = null)</code>
+Creates sector angles and normalized label anchors for a logical circle.</li>
+</ul>
+<h3 id="circlegeometryoptions"><code>CircleGeometryOptions</code><a class="heading-link" href="#circlegeometryoptions" aria-label="Link to CircleGeometryOptions">#</a></h3>
+<p>Configures angular orientation and normalized label radii for circle geometry.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class CircleGeometryOptions
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public CircleGeometryOptions()</code>
+Creates a new CircleGeometryOptions instance.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public RotationDirection Direction { get; init; }</code>
+Gets the direction in which subsequent segment centers progress.</p>
+</li>
+<li><p><code>public double MajorLabelRadius { get; init; }</code>
+Gets the normalized radius of major-key label anchors.</p>
+</li>
+<li><p><code>public double MinorLabelRadius { get; init; }</code>
+Gets the normalized radius of relative-minor label anchors.</p>
+</li>
+<li><p><code>public double StartAngleDegrees { get; init; }</code>
+Gets the center angle of segment zero in degrees; -90 places C at the top.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(CircleGeometryOptions other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(CircleGeometryOptions left, CircleGeometryOptions right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(CircleGeometryOptions left, CircleGeometryOptions right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="circlegeometrysegment"><code>CircleGeometrySegment</code><a class="heading-link" href="#circlegeometrysegment" aria-label="Link to CircleGeometrySegment">#</a></h3>
+<p>Contains renderer-independent angular and label-anchor geometry for one circle segment.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class CircleGeometrySegment
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public double CenterAngleDegrees { get; }</code>
+Gets the sector center angle in degrees.</p>
+</li>
+<li><p><code>public UnitPoint MajorLabelAnchor { get; }</code>
+Gets the normalized major-key label anchor.</p>
+</li>
+<li><p><code>public UnitPoint MinorLabelAnchor { get; }</code>
+Gets the normalized relative-minor label anchor.</p>
+</li>
+<li><p><code>public CircleSegment Segment { get; }</code>
+Gets the logical circle segment described by this geometry.</p>
+</li>
+<li><p><code>public double StartAngleDegrees { get; }</code>
+Gets the leading sector boundary angle in degrees.</p>
+</li>
+<li><p><code>public double SweepAngleDegrees { get; }</code>
+Gets the signed angular sweep; its sign encodes rotation direction.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(CircleGeometrySegment other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(CircleGeometrySegment left, CircleGeometrySegment right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(CircleGeometrySegment left, CircleGeometrySegment right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="rotationdirection"><code>RotationDirection</code><a class="heading-link" href="#rotationdirection" aria-label="Link to RotationDirection">#</a></h3>
+<p>Specifies the visual angular progression of circle sectors.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum RotationDirection
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Clockwise</code></td>
+<td align="right">0</td>
+<td>Angles increase clockwise in the configured screen-oriented coordinate convention.</td>
+</tr>
+<tr>
+<td><code>CounterClockwise</code></td>
+<td align="right">1</td>
+<td>Angles decrease counterclockwise.</td>
+</tr>
+</tbody></table>
+<h3 id="unitpoint"><code>UnitPoint</code><a class="heading-link" href="#unitpoint" aria-label="Link to UnitPoint">#</a></h3>
+<p>Represents a Cartesian point relative to a unit-radius circle centered at the origin.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct UnitPoint
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public UnitPoint(double X, double Y)</code>
+Represents a Cartesian point relative to a unit-radius circle centered at the origin.<ul>
+<li><code>X</code>: The horizontal coordinate, normally in the range -1 through 1.</li>
+<li><code>Y</code>: The vertical coordinate, normally in the range -1 through 1.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public double X { get; init; }</code>
+The horizontal coordinate, normally in the range -1 through 1.</p>
+</li>
+<li><p><code>public double Y { get; init; }</code>
+The vertical coordinate, normally in the range -1 through 1.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public void Deconstruct(out double X, out double Y)</code>
+Deconstructs the value into its positional components.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(UnitPoint other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(UnitPoint left, UnitPoint right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(UnitPoint left, UnitPoint right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-harmony"><code>Enaxos.MusicTheory.Harmony</code><a class="heading-link" href="#enaxos-musictheory-harmony" aria-label="Link to Enaxos.MusicTheory.Harmony">#</a></h2>
+<h3 id="chord"><code>Chord</code><a class="heading-link" href="#chord" aria-label="Link to Chord">#</a></h3>
+<p>Represents an immutable root-position pitch spelling of a chord definition.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class Chord
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public ChordDefinition Definition { get; }</code>
+Gets the formula used to realize the chord.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; Pitches { get; }</code>
+Gets immutable chord-tone spellings in formula order.</p>
+</li>
+<li><p><code>public SpelledPitch Root { get; }</code>
+Gets the spelled chord root.</p>
+</li>
+<li><p><code>public ChordSymbol Symbol { get; }</code>
+Gets the normalized lead-sheet symbol.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static Chord Create(SpelledPitch root, ChordDefinition definition)</code>
+Realizes a chord formula on a spelled root.</p>
+</li>
+<li><p><code>public bool Equals(Chord? other)</code>
+Compares the written root and definition; realized pitches follow deterministically.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Compares the written root and definition; realized pitches follow deterministically.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public DerivedChord Transpose(int semitones, EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)</code>
+Chromatically transposes the chord and records its derivation from this chord.</p>
+<ul>
+<li><code>semitones</code>: The signed chromatic displacement.</li>
+<li><code>preference</code>: The spelling policy for the new root.</li>
+</ul>
+</li>
+</ul>
+<h3 id="chorddefinition"><code>ChordDefinition</code><a class="heading-link" href="#chorddefinition" aria-label="Link to ChordDefinition">#</a></h3>
+<p>Defines an immutable root-relative chord formula and stable identifier.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ChordDefinition
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ChordDefinition(string id, IEnumerable&lt;FormulaDegree&gt; degrees)</code>
+Creates a chord definition.<ul>
+<li><code>id</code>: A stable culture-independent identifier.</li>
+<li><code>degrees</code>: Strictly increasing degrees beginning with an unaltered root.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public IReadOnlyList&lt;FormulaDegree&gt; Degrees { get; }</code>
+Gets the immutable ordered chord formula.</p>
+</li>
+<li><p><code>public string Id { get; }</code>
+Gets the stable definition identifier.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(ChordDefinition? other)</code>
+Compares the identifier and complete degree formula.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Compares the identifier and complete degree formula.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+</ul>
+<h3 id="chordrealization"><code>ChordRealization</code><a class="heading-link" href="#chordrealization" aria-label="Link to ChordRealization">#</a></h3>
+<p>Places a derived chord into ordered absolute notes and records its inversion.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ChordRealization
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public Note Bass { get; }</code>
+Gets the lowest note of the realization.</p>
+</li>
+<li><p><code>public Chord CurrentChord { get; }</code>
+Gets the chord represented by the current notes.</p>
+</li>
+<li><p><code>public DerivedChord Derivation { get; }</code>
+Gets the chord transformation provenance.</p>
+</li>
+<li><p><code>public int InversionNumber { get; }</code>
+Gets the zero-based chord-tone index placed in the bass.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;Note&gt; Notes { get; }</code>
+Gets immutable notes ordered from bass to treble.</p>
+</li>
+<li><p><code>public Chord OriginalChord { get; }</code>
+Gets the chord at the start of the transformation chain.</p>
+</li>
+<li><p><code>public int SemitoneDeltaFromOriginal { get; }</code>
+Gets the cumulative chromatic displacement from the original chord.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static ChordRealization Create(Chord chord, IEnumerable&lt;Note&gt; notes, bool validate = true)</code>
+Creates a realization from explicitly voiced notes ordered bass to treble.</p>
+<ul>
+<li><code>chord</code>: The chord whose tones the realization represents.</li>
+<li><code>notes</code>: The absolute notes in non-decreasing bass-to-treble order.</li>
+<li><code>validate</code>: When true, rejects non-chord tones and a bass outside the chord.</li>
+</ul>
+</li>
+<li><p><code>public static ChordRealization CreateRootPosition(Chord chord, int bassOctave)</code>
+Creates a close root-position realization while retaining derivation provenance.</p>
+</li>
+<li><p><code>public static ChordRealization CreateRootPosition(DerivedChord chord, int bassOctave)</code>
+Creates a close root-position realization while retaining derivation provenance.</p>
+</li>
+<li><p><code>public bool Equals(ChordRealization? other)</code>
+Compares derivation, inversion, and the complete ordered voicing.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Compares derivation, inversion, and the complete ordered voicing.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public ChordRealization Invert(int inversionNumber)</code>
+Moves voices by octaves to produce the requested inversion without changing pitch classes.</p>
+</li>
+<li><p><code>public ChordRealization Transpose(int semitones, EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)</code>
+Transposes every voice by an exact chromatic displacement and respells it from the derived chord.</p>
+</li>
+</ul>
+<h3 id="chordsymbol"><code>ChordSymbol</code><a class="heading-link" href="#chordsymbol" aria-label="Link to ChordSymbol">#</a></h3>
+<p>Represents a lead-sheet chord symbol as a spelled root and a stable definition identifier.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct ChordSymbol
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ChordSymbol(SpelledPitch root, string definitionId)</code>
+Creates a chord symbol from normalized components.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public string DefinitionId { get; }</code>
+Gets the stable chord-definition identifier encoded by the suffix.</p>
+</li>
+<li><p><code>public SpelledPitch Root { get; }</code>
+Gets the written chord root.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(ChordSymbol other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(ChordSymbol left, ChordSymbol right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(ChordSymbol left, ChordSymbol right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public static ChordSymbol Parse(string text)</code>
+Parses one of the supported lead-sheet chord symbols.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the root followed by the canonical suffix for its definition.</p>
+</li>
+<li><p><code>public static bool TryParse(ReadOnlySpan&lt;char&gt; text, out ChordSymbol result)</code>
+Attempts to parse a complete supported lead-sheet chord symbol.</p>
+</li>
+</ul>
+<h3 id="derivedchord"><code>DerivedChord</code><a class="heading-link" href="#derivedchord" aria-label="Link to DerivedChord">#</a></h3>
+<p>Tracks a current chord together with its original chord and cumulative chromatic displacement.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class DerivedChord
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public Chord CurrentChord { get; }</code>
+Gets the chord at the current point in the transformation chain.</p>
+</li>
+<li><p><code>public Chord OriginalChord { get; }</code>
+Gets the immutable origin of the transformation chain.</p>
+</li>
+<li><p><code>public int SemitoneDeltaFromOriginal { get; }</code>
+Gets the cumulative signed semitone displacement from the original chord.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(DerivedChord? other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public static DerivedChord From(Chord chord)</code>
+Starts a derivation chain with zero displacement.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public DerivedChord Transpose(int semitones, EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)</code>
+Returns the next derived chord while preserving the original provenance.</p>
+</li>
+</ul>
+<h3 id="standardchords"><code>StandardChords</code><a class="heading-link" href="#standardchords" aria-label="Link to StandardChords">#</a></h3>
+<p>Provides canonical definitions for the standard triads and seventh chords.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class StandardChords
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public static ChordDefinition Augmented { get; }</code>
+Gets the augmented triad.</p>
+</li>
+<li><p><code>public static ChordDefinition Diminished { get; }</code>
+Gets the diminished triad.</p>
+</li>
+<li><p><code>public static ChordDefinition DiminishedSeventh { get; }</code>
+Gets the fully diminished seventh chord.</p>
+</li>
+<li><p><code>public static ChordDefinition DominantSeventh { get; }</code>
+Gets the dominant seventh chord.</p>
+</li>
+<li><p><code>public static ChordDefinition HalfDiminishedSeventh { get; }</code>
+Gets the half-diminished seventh chord.</p>
+</li>
+<li><p><code>public static ChordDefinition Major { get; }</code>
+Gets the major triad.</p>
+</li>
+<li><p><code>public static ChordDefinition MajorSeventh { get; }</code>
+Gets the major seventh chord.</p>
+</li>
+<li><p><code>public static ChordDefinition Minor { get; }</code>
+Gets the minor triad.</p>
+</li>
+<li><p><code>public static ChordDefinition MinorSeventh { get; }</code>
+Gets the minor seventh chord.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-intervals"><code>Enaxos.MusicTheory.Intervals</code><a class="heading-link" href="#enaxos-musictheory-intervals" aria-label="Link to Enaxos.MusicTheory.Intervals">#</a></h2>
+<h3 id="commonintervals"><code>CommonIntervals</code><a class="heading-link" href="#commonintervals" aria-label="Link to CommonIntervals">#</a></h3>
+<p>Provides reusable canonical instances of the most common simple intervals.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class CommonIntervals
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public static Interval AugmentedFourth { get; }</code>
+Gets an augmented fourth (6 semitones).</p>
+</li>
+<li><p><code>public static Interval DiminishedFifth { get; }</code>
+Gets a diminished fifth (6 semitones).</p>
+</li>
+<li><p><code>public static Interval MajorSecond { get; }</code>
+Gets a major second (2 semitones).</p>
+</li>
+<li><p><code>public static Interval MajorSeventh { get; }</code>
+Gets a major seventh (11 semitones).</p>
+</li>
+<li><p><code>public static Interval MajorSixth { get; }</code>
+Gets a major sixth (9 semitones).</p>
+</li>
+<li><p><code>public static Interval MajorThird { get; }</code>
+Gets a major third (4 semitones).</p>
+</li>
+<li><p><code>public static Interval MinorSecond { get; }</code>
+Gets a minor second (1 semitone).</p>
+</li>
+<li><p><code>public static Interval MinorSeventh { get; }</code>
+Gets a minor seventh (10 semitones).</p>
+</li>
+<li><p><code>public static Interval MinorSixth { get; }</code>
+Gets a minor sixth (8 semitones).</p>
+</li>
+<li><p><code>public static Interval MinorThird { get; }</code>
+Gets a minor third (3 semitones).</p>
+</li>
+<li><p><code>public static Interval PerfectFifth { get; }</code>
+Gets a perfect fifth (7 semitones).</p>
+</li>
+<li><p><code>public static Interval PerfectFourth { get; }</code>
+Gets a perfect fourth (5 semitones).</p>
+</li>
+<li><p><code>public static Interval PerfectOctave { get; }</code>
+Gets a perfect octave (12 semitones).</p>
+</li>
+<li><p><code>public static Interval PerfectUnison { get; }</code>
+Gets a perfect unison (0 semitones).</p>
+</li>
+</ul>
+<h3 id="interval"><code>Interval</code><a class="heading-link" href="#interval" aria-label="Link to Interval">#</a></h3>
+<p>Represents a directed-independent musical interval by diatonic number and chromatic distance.</p>
+<blockquote>
+<p>The diatonic number is inclusive: a unison is one and an octave is eight. Semitones are stored exactly and may be negative for valid spellings such as a diminished unison.</p>
+</blockquote>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct Interval
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public bool IsCompound { get; }</code>
+Gets whether the interval is larger than an octave by diatonic number.</p>
+</li>
+<li><p><code>public int Number { get; }</code>
+Gets the inclusive one-based diatonic interval number.</p>
+</li>
+<li><p><code>public IntervalQuality Quality { get; }</code>
+Gets the quality derived from the number and chromatic distance.</p>
+</li>
+<li><p><code>public int Semitones { get; }</code>
+Gets the exact chromatic distance in semitones.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static Interval Between(Note from, Note to, IntervalDirection direction = IntervalDirection.Ascending)</code>
+Measures the interval between two spelled notes in a requested direction.</p>
+</li>
+<li><p><code>public static Interval Create(int number, IntervalQuality quality)</code>
+Creates an interval from a diatonic number and a compatible quality.</p>
+<ul>
+<li><code>number</code>: The inclusive one-based diatonic number.</li>
+<li><code>quality</code>: A quality valid for the number&#39;s perfect or major class.</li>
+<li>Returns: The corresponding interval.</li>
+</ul>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(Interval other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public static Interval FromDistances(int diatonicNumber, int semitones)</code>
+Creates an interval from exact diatonic and chromatic distances.</p>
+<ul>
+<li><code>diatonicNumber</code>: The inclusive one-based diatonic number.</li>
+<li><code>semitones</code>: The exact chromatic distance, including negative values.</li>
+</ul>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public Interval InvertSimple()</code>
+Inverts a simple interval so the diatonic numbers sum to nine and semitones sum to twelve.</p>
+<ul>
+<li>Returns: The complementary simple interval.</li>
+<li>Throws <code>InvalidOperationException</code>: The interval is compound or the result cannot be represented.</li>
+</ul>
+</li>
+<li><p><code>public static bool operator ==(Interval left, Interval right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(Interval left, Interval right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="intervaldirection"><code>IntervalDirection</code><a class="heading-link" href="#intervaldirection" aria-label="Link to IntervalDirection">#</a></h3>
+<p>Specifies the direction in which an interval is measured or applied.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum IntervalDirection
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ascending</code></td>
+<td align="right">0</td>
+<td>Moves upward in both diatonic and chromatic space.</td>
+</tr>
+<tr>
+<td><code>Descending</code></td>
+<td align="right">1</td>
+<td>Moves downward in both diatonic and chromatic space.</td>
+</tr>
+</tbody></table>
+<h3 id="intervalquality"><code>IntervalQuality</code><a class="heading-link" href="#intervalquality" aria-label="Link to IntervalQuality">#</a></h3>
+<p>Represents an interval quality, including multiply augmented or diminished degrees.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct IntervalQuality
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public IntervalQuality(IntervalQualityKind kind, int degree = 0)</code>
+Creates and validates an interval quality.<ul>
+<li><code>kind</code>: The base quality family.</li>
+<li><code>degree</code>: The augmentation or diminution degree; zero for major, minor, or perfect.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public int Degree { get; }</code>
+Gets the positive degree for augmented or diminished qualities, otherwise zero.</p>
+</li>
+<li><p><code>public IntervalQualityKind Kind { get; }</code>
+Gets the base quality family.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(IntervalQuality other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(IntervalQuality left, IntervalQuality right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(IntervalQuality left, IntervalQuality right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="intervalqualitykind"><code>IntervalQualityKind</code><a class="heading-link" href="#intervalqualitykind" aria-label="Link to IntervalQualityKind">#</a></h3>
+<p>Identifies the base quality family of a musical interval.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum IntervalQualityKind
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Diminished</code></td>
+<td align="right">0</td>
+<td>A quality below the minor or perfect reference.</td>
+</tr>
+<tr>
+<td><code>Minor</code></td>
+<td align="right">1</td>
+<td>The minor quality used by seconds, thirds, sixths, and sevenths.</td>
+</tr>
+<tr>
+<td><code>Perfect</code></td>
+<td align="right">2</td>
+<td>The perfect quality used by unisons, fourths, fifths, and octaves.</td>
+</tr>
+<tr>
+<td><code>Major</code></td>
+<td align="right">3</td>
+<td>The major quality used by seconds, thirds, sixths, and sevenths.</td>
+</tr>
+<tr>
+<td><code>Augmented</code></td>
+<td align="right">4</td>
+<td>A quality above the major or perfect reference.</td>
+</tr>
+</tbody></table>
+<h3 id="transposition"><code>Transposition</code><a class="heading-link" href="#transposition" aria-label="Link to Transposition">#</a></h3>
+<p>Applies exact intervals while preserving the required diatonic target letter.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class Transposition
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static SpelledPitch Transpose(SpelledPitch source, Interval interval, IntervalDirection direction = IntervalDirection.Ascending)</code>
+Transposes an octave-independent spelling by an interval.</p>
+</li>
+<li><p><code>public static Note Transpose(Note source, Interval interval, IntervalDirection direction = IntervalDirection.Ascending)</code>
+Transposes an octave-independent spelling by an interval.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-midi"><code>Enaxos.MusicTheory.Midi</code><a class="heading-link" href="#enaxos-musictheory-midi" aria-label="Link to Enaxos.MusicTheory.Midi">#</a></h2>
+<h3 id="midinote"><code>MidiNote</code><a class="heading-link" href="#midinote" aria-label="Link to MidiNote">#</a></h3>
+<p>Converts between domain notes and MIDI 1.0 note numbers using the explicit C4 = 60 convention.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class MidiNote
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static Note FromNumber(int number, EnharmonicPreference preference = EnharmonicPreference.PreferSharps)</code>
+Converts a MIDI number to a conventionally spelled domain note.</p>
+<ul>
+<li><code>number</code>: A MIDI note number from 0 through 127.</li>
+<li><code>preference</code>: The spelling policy for chromatic pitch classes.</li>
+</ul>
+</li>
+<li><p><code>public static int ToNumber(Note note)</code>
+Converts a representable note to a MIDI number from 0 through 127.</p>
+<ul>
+<li>Throws <code>ArgumentOutOfRangeException</code>: The note lies outside the MIDI range.</li>
+</ul>
+</li>
+<li><p><code>public static bool TryToNumber(Note note, out int number)</code>
+Attempts to convert a note to a MIDI number without throwing for range failure.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-presentation"><code>Enaxos.MusicTheory.Presentation</code><a class="heading-link" href="#enaxos-musictheory-presentation" aria-label="Link to Enaxos.MusicTheory.Presentation">#</a></h2>
+<h3 id="accidentalglyphstyle"><code>AccidentalGlyphStyle</code><a class="heading-link" href="#accidentalglyphstyle" aria-label="Link to AccidentalGlyphStyle">#</a></h3>
+<p>Specifies which glyph family is used to display accidentals.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum AccidentalGlyphStyle
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Unicode</code></td>
+<td align="right">0</td>
+<td>Uses dedicated musical Unicode symbols where available.</td>
+</tr>
+<tr>
+<td><code>Ascii</code></td>
+<td align="right">1</td>
+<td>Uses portable ASCII sequences such as #, b, and ##.</td>
+</tr>
+</tbody></table>
+<h3 id="chordnamestyle"><code>ChordNameStyle</code><a class="heading-link" href="#chordnamestyle" aria-label="Link to ChordNameStyle">#</a></h3>
+<p>Specifies whether a chord is displayed with a lead-sheet suffix or a full quality name.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum ChordNameStyle
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>StandardAbbreviation</code></td>
+<td align="right">0</td>
+<td>Uses canonical abbreviations such as m7 and maj7.</td>
+</tr>
+<tr>
+<td><code>Full</code></td>
+<td align="right">1</td>
+<td>Uses a localized full chord-quality name.</td>
+</tr>
+</tbody></table>
+<h3 id="degreedisplaystyle"><code>DegreeDisplayStyle</code><a class="heading-link" href="#degreedisplaystyle" aria-label="Link to DegreeDisplayStyle">#</a></h3>
+<p>Specifies the numeral system used to display scale degrees.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum DegreeDisplayStyle
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Arabic</code></td>
+<td align="right">0</td>
+<td>Uses Arabic digits from 1 through 7.</td>
+</tr>
+<tr>
+<td><code>Roman</code></td>
+<td align="right">1</td>
+<td>Uses uppercase Roman numerals from I through VII.</td>
+</tr>
+</tbody></table>
+<h3 id="musicdisplaydefaults"><code>MusicDisplayDefaults</code><a class="heading-link" href="#musicdisplaydefaults" aria-label="Link to MusicDisplayDefaults">#</a></h3>
+<p>Stores thread-safe process-wide defaults used when a formatter call has no override.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class MusicDisplayDefaults
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><code>public static MusicTerminology Terminology { get; set; }</code>
+Gets or atomically sets the process-wide default terminology.</li>
+</ul>
+<h3 id="musicformatoptions"><code>MusicFormatOptions</code><a class="heading-link" href="#musicformatoptions" aria-label="Link to MusicFormatOptions">#</a></h3>
+<p>Overrides presentation settings for one formatting operation.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class MusicFormatOptions
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public MusicFormatOptions()</code>
+Creates a new MusicFormatOptions instance.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public AccidentalGlyphStyle Accidentals { get; init; }</code>
+Gets the accidental glyph style used by the call.</p>
+</li>
+<li><p><code>public IFormatProvider? Culture { get; init; }</code>
+Gets the numeric culture, or null for invariant formatting.</p>
+</li>
+<li><p><code>public MusicTerminology? TerminologyOverride { get; init; }</code>
+Gets a per-call terminology override, or null to capture the global default.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(MusicFormatOptions other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(MusicFormatOptions left, MusicFormatOptions right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(MusicFormatOptions left, MusicFormatOptions right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="musicformatter"><code>MusicFormatter</code><a class="heading-link" href="#musicformatter" aria-label="Link to MusicFormatter">#</a></h3>
+<p>Formats domain values without changing their invariant identity or stored spelling.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class MusicFormatter
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static string Format(SpelledPitch pitch, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string Format(Note note, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string Format(MusicalKey key, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string Format(ScaleDefinition definition, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string Format(HarmonicFunction function, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string Format(Chord chord, ChordNameStyle style = ChordNameStyle.StandardAbbreviation, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string Format(ScaleDegreeNumber degree, DegreeDisplayStyle style = DegreeDisplayStyle.Arabic, MusicFormatOptions? options = null)</code>
+Formats a scale degree using Arabic or Roman numerals.</p>
+</li>
+<li><p><code>public static string FormatChordPitches(Chord chord, MusicFormatOptions? options = null)</code>
+Formats chord tones as a space-separated sequence in formula order.</p>
+</li>
+</ul>
+<h3 id="musicterminology"><code>MusicTerminology</code><a class="heading-link" href="#musicterminology" aria-label="Link to MusicTerminology">#</a></h3>
+<p>Specifies the language-specific system used for note and music-theory names.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum MusicTerminology
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>French</code></td>
+<td align="right">0</td>
+<td>Uses fixed-do note names and French quality terminology.</td>
+</tr>
+<tr>
+<td><code>American</code></td>
+<td align="right">1</td>
+<td>Uses letter note names and English-language American terminology.</td>
+</tr>
+</tbody></table>
+<h2 id="enaxos-musictheory-primitives"><code>Enaxos.MusicTheory.Primitives</code><a class="heading-link" href="#enaxos-musictheory-primitives" aria-label="Link to Enaxos.MusicTheory.Primitives">#</a></h2>
+<h3 id="accidental"><code>Accidental</code><a class="heading-link" href="#accidental" aria-label="Link to Accidental">#</a></h3>
+<p>Represents a written pitch alteration as an unrestricted signed semitone offset.</p>
+<blockquote>
+<p>Equality is based on the semitone count. Values outside the conventional double-flat through double-sharp range are supported because the domain model permits mathematical spellings such as (+3).</p>
+</blockquote>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct Accidental
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public static Accidental DoubleFlat { get; }</code>
+Gets the conventional double-flat accidental (-2 semitones).</p>
+</li>
+<li><p><code>public static Accidental DoubleSharp { get; }</code>
+Gets the conventional double-sharp accidental (+2 semitones).</p>
+</li>
+<li><p><code>public static Accidental Flat { get; }</code>
+Gets the conventional flat accidental (-1 semitone).</p>
+</li>
+<li><p><code>public static Accidental Natural { get; }</code>
+Gets the natural accidental (no chromatic alteration).</p>
+</li>
+<li><p><code>public int Semitones { get; }</code>
+Gets the signed chromatic alteration in semitones.</p>
+</li>
+<li><p><code>public static Accidental Sharp { get; }</code>
+Gets the conventional sharp accidental (+1 semitone).</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(Accidental other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public static Accidental FromSemitones(int semitones)</code>
+Creates an accidental from any signed semitone alteration.</p>
+<ul>
+<li><code>semitones</code>: The number of semitones by which the natural letter is altered.</li>
+<li>Returns: An accidental carrying the exact supplied alteration.</li>
+</ul>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(Accidental left, Accidental right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(Accidental left, Accidental right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the invariant ASCII representation of the accidental.</p>
+<ul>
+<li>Returns: An empty string for natural, conventional symbols up to double accidentals, or a parenthesized signed number for larger alterations.</li>
+</ul>
+</li>
+</ul>
+<h3 id="enharmonicpreference"><code>EnharmonicPreference</code><a class="heading-link" href="#enharmonicpreference" aria-label="Link to EnharmonicPreference">#</a></h3>
+<p>Specifies how a pitch class should be converted to a written pitch when no spelling is supplied.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum EnharmonicPreference
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FewestAccidentals</code></td>
+<td align="right">0</td>
+<td>Uses the canonical spelling with the smallest accidental.</td>
+</tr>
+<tr>
+<td><code>PreferSharps</code></td>
+<td align="right">1</td>
+<td>Uses sharps for black-key pitch classes.</td>
+</tr>
+<tr>
+<td><code>PreferFlats</code></td>
+<td align="right">2</td>
+<td>Uses flats for black-key pitch classes.</td>
+</tr>
+</tbody></table>
+<h3 id="note"><code>Note</code><a class="heading-link" href="#note" aria-label="Link to Note">#</a></h3>
+<p>Represents a spelled pitch placed in a scientific-pitch-notation octave.</p>
+<blockquote>
+<p>The octave belongs to the written note. Enharmonic spellings can therefore have different octave numbers at a B/C boundary while still sharing the same absolute semitone.</p>
+</blockquote>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct Note
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public Note(SpelledPitch pitch, int octave)</code>
+Creates a note from its written pitch and octave.<ul>
+<li><code>pitch</code>: The pitch spelling, including its accidental.</li>
+<li><code>octave</code>: The scientific-pitch-notation octave.</li>
+<li>Throws <code>ArgumentOutOfRangeException</code>: The computed absolute semitone cannot be represented.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public int AbsoluteSemitone { get; }</code>
+Gets the signed absolute semitone using the project convention where C0 is zero.</p>
+</li>
+<li><p><code>public int Octave { get; }</code>
+Gets the scientific-pitch-notation octave attached to the written pitch.</p>
+</li>
+<li><p><code>public SpelledPitch Pitch { get; }</code>
+Gets the written pitch component.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(Note other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public bool IsEnharmonicWith(Note other)</code>
+Determines whether another note denotes the same absolute sounding pitch.</p>
+<ul>
+<li><code>other</code>: The note to compare without considering spelling.</li>
+<li>Returns: when both notes have the same absolute semitone.</li>
+</ul>
+</li>
+<li><p><code>public static bool operator ==(Note left, Note right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(Note left, Note right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public static Note Parse(string text)</code>
+Parses an invariant note spelling such as C#4, Db-1, or F♯3.</p>
+<ul>
+<li><code>text</code>: The complete note text.</li>
+<li>Returns: The parsed note.</li>
+<li>Throws <code>ArgumentNullException</code>: <code>text</code> is <code>null</code>.</li>
+<li>Throws <code>FormatException</code>: <code>text</code> is not a valid note.</li>
+</ul>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the invariant ASCII spelling followed by its octave.</p>
+</li>
+<li><p><code>public static bool TryParse(ReadOnlySpan&lt;char&gt; text, out Note result)</code>
+Attempts to parse a complete invariant note spelling without throwing for invalid syntax.</p>
+<ul>
+<li><code>text</code>: The text to parse.</li>
+<li><code>result</code>: Receives the parsed note on success.</li>
+<li>Returns: when parsing succeeds.</li>
+</ul>
+</li>
+</ul>
+<h3 id="noteletter"><code>NoteLetter</code><a class="heading-link" href="#noteletter" aria-label="Link to NoteLetter">#</a></h3>
+<p>Identifies one of the seven diatonic note letters.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum NoteLetter
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>C</code></td>
+<td align="right">0</td>
+<td>The letter C.</td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td align="right">1</td>
+<td>The letter D.</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td align="right">2</td>
+<td>The letter E.</td>
+</tr>
+<tr>
+<td><code>F</code></td>
+<td align="right">3</td>
+<td>The letter F.</td>
+</tr>
+<tr>
+<td><code>G</code></td>
+<td align="right">4</td>
+<td>The letter G.</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td align="right">5</td>
+<td>The letter A.</td>
+</tr>
+<tr>
+<td><code>B</code></td>
+<td align="right">6</td>
+<td>The letter B.</td>
+</tr>
+</tbody></table>
+<h3 id="pitchclass"><code>PitchClass</code><a class="heading-link" href="#pitchclass" aria-label="Link to PitchClass">#</a></h3>
+<p>Represents an octave-independent chromatic position normalized to the range 0 through 11.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct PitchClass
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><code>public int Value { get; }</code>
+Gets the normalized chromatic index, where C is 0 and B is 11.</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public int DistanceUpTo(PitchClass target)</code>
+Gets the ascending modular distance to another pitch class.</p>
+<ul>
+<li><code>target</code>: The destination pitch class.</li>
+<li>Returns: A distance from 0 through 11 semitones.</li>
+</ul>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(PitchClass other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public static PitchClass FromChromaticIndex(int value)</code>
+Normalizes any signed chromatic index to a pitch class.</p>
+<ul>
+<li><code>value</code>: A possibly negative or octave-displaced chromatic index.</li>
+<li>Returns: The corresponding normalized pitch class.</li>
+</ul>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(PitchClass left, PitchClass right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(PitchClass left, PitchClass right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the invariant decimal chromatic index.</p>
+</li>
+</ul>
+<h3 id="spelledpitch"><code>SpelledPitch</code><a class="heading-link" href="#spelledpitch" aria-label="Link to SpelledPitch">#</a></h3>
+<p>Represents a pitch spelling as a diatonic letter plus an accidental, without an octave.</p>
+<blockquote>
+<p>Equality preserves spelling; use to compare sounding pitch classes.</p>
+</blockquote>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct SpelledPitch
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public SpelledPitch(NoteLetter letter, Accidental accidental)</code>
+Creates a spelled pitch.<ul>
+<li><code>letter</code>: The diatonic letter.</li>
+<li><code>accidental</code>: The chromatic alteration applied to that letter.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public Accidental Accidental { get; }</code>
+Gets the written accidental.</p>
+</li>
+<li><p><code>public NoteLetter Letter { get; }</code>
+Gets the written diatonic letter.</p>
+</li>
+<li><p><code>public PitchClass PitchClass { get; }</code>
+Gets the octave-independent sounding pitch class produced by the spelling.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(SpelledPitch other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public bool IsEnharmonicWith(SpelledPitch other)</code>
+Determines whether another spelling denotes the same pitch class.</p>
+</li>
+<li><p><code>public static bool operator ==(SpelledPitch left, SpelledPitch right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(SpelledPitch left, SpelledPitch right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public static SpelledPitch Parse(string text)</code>
+Parses a complete invariant spelling such as C#, Eb, or F𝄪.</p>
+<ul>
+<li>Throws <code>ArgumentNullException</code>: <code>text</code> is <code>null</code>.</li>
+<li>Throws <code>FormatException</code>: <code>text</code> is invalid.</li>
+</ul>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the invariant ASCII spelling.</p>
+</li>
+<li><p><code>public static bool TryParse(ReadOnlySpan&lt;char&gt; text, out SpelledPitch result)</code>
+Attempts to parse a complete invariant pitch spelling.</p>
+<ul>
+<li>Returns: when the entire input is valid.</li>
+</ul>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-scales"><code>Enaxos.MusicTheory.Scales</code><a class="heading-link" href="#enaxos-musictheory-scales" aria-label="Link to Enaxos.MusicTheory.Scales">#</a></h2>
+<h3 id="modecatalog"><code>ModeCatalog</code><a class="heading-link" href="#modecatalog" aria-label="Link to ModeCatalog">#</a></h3>
+<p>Provides immutable catalogs of rotations for the supported seven-note parent collections.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ModeCatalog
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; All { get; }</code>
+Gets each distinct catalog definition used by recognition.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; HarmonicMinorModes { get; }</code>
+Gets the seven generated rotations of harmonic minor.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; MajorModes { get; }</code>
+Gets the seven rotations of the major collection in modal order.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; MelodicMinorModes { get; }</code>
+Gets the seven generated rotations of ascending melodic minor.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; NaturalMinorModes { get; }</code>
+Gets the natural-minor rotations starting from Aeolian.</p>
+</li>
+<li><p><code>public static ModeCatalog Standard { get; }</code>
+Gets the shared catalog of standard modes.</p>
+</li>
+</ul>
+<h3 id="pentatonicderivation"><code>PentatonicDerivation</code><a class="heading-link" href="#pentatonicderivation" aria-label="Link to PentatonicDerivation">#</a></h3>
+<p>Records both the result and the provenance of a pentatonic derivation.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class PentatonicDerivation
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public Scale Result { get; }</code>
+Gets the derived five-note scale.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;int&gt; SelectedDegrees { get; }</code>
+Gets the one-based positions retained from the source scale.</p>
+</li>
+<li><p><code>public Scale Source { get; }</code>
+Gets the original scale from which pitches were selected.</p>
+</li>
+<li><p><code>public PentatonicDerivationStrategy Strategy { get; }</code>
+Gets the strategy that produced the result.</p>
+</li>
+</ul>
+<h3 id="pentatonicderivationstrategy"><code>PentatonicDerivationStrategy</code><a class="heading-link" href="#pentatonicderivationstrategy" aria-label="Link to PentatonicDerivationStrategy">#</a></h3>
+<p>Specifies how a five-note scale is derived from a source scale.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum PentatonicDerivationStrategy
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>StandardMajorOrMinor</code></td>
+<td align="right">0</td>
+<td>Selects the unique standard major or minor pentatonic subset found in the source.</td>
+</tr>
+<tr>
+<td><code>SelectSourceDegrees</code></td>
+<td align="right">1</td>
+<td>Uses five explicitly supplied one-based positions from the source scale.</td>
+</tr>
+</tbody></table>
+<h3 id="pentatonicscales"><code>PentatonicScales</code><a class="heading-link" href="#pentatonicscales" aria-label="Link to PentatonicScales">#</a></h3>
+<p>Derives traceable five-note subsets from realized source scales.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class PentatonicScales
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static PentatonicDerivation FromScale(Scale source, PentatonicDerivationStrategy strategy = PentatonicDerivationStrategy.StandardMajorOrMinor, IReadOnlyList&lt;int&gt;? sourceDegrees = null)</code>
+Derives a pentatonic scale or throws when the requested strategy cannot produce one.</p>
+</li>
+<li><p><code>public static bool TryFromScale(Scale source, out PentatonicDerivation? result, PentatonicDerivationStrategy strategy = PentatonicDerivationStrategy.StandardMajorOrMinor, IReadOnlyList&lt;int&gt;? sourceDegrees = null)</code>
+Attempts to derive a pentatonic scale without throwing for an incompatible source or selection.</p>
+</li>
+</ul>
+<h3 id="scale"><code>Scale</code><a class="heading-link" href="#scale" aria-label="Link to Scale">#</a></h3>
+<p>Represents an immutable realization of a scale definition on a spelled tonic.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class Scale
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public ScaleDefinition Definition { get; }</code>
+Gets the formula from which the scale was realized.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;SpelledPitch&gt; Pitches { get; }</code>
+Gets the immutable realized pitch spellings in formula order.</p>
+</li>
+<li><p><code>public SpelledPitch Tonic { get; }</code>
+Gets the tonic spelling used to realize the scale.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static Scale Create(SpelledPitch tonic, ScaleDefinition definition)</code>
+Realizes every degree of a definition above a tonic while preserving diatonic spelling.</p>
+</li>
+<li><p><code>public SpelledPitch Degree(int number)</code>
+Gets a realized pitch by its formula degree number.</p>
+</li>
+<li><p><code>public bool Equals(Scale? other)</code>
+Compares tonic, definition, and realized spellings using value semantics.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Compares tonic, definition, and realized spellings using value semantics.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(Scale? left, Scale? right)</code>
+Determines whether two scales have equal value content.</p>
+</li>
+<li><p><code>public static bool operator !=(Scale? left, Scale? right)</code>
+Determines whether two scales differ.</p>
+</li>
+</ul>
+<h3 id="scaledefinition"><code>ScaleDefinition</code><a class="heading-link" href="#scaledefinition" aria-label="Link to ScaleDefinition">#</a></h3>
+<p>Defines an immutable tonic-relative scale formula and its stable identifier.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ScaleDefinition
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ScaleDefinition(string id, IEnumerable&lt;FormulaDegree&gt; degrees)</code>
+Creates and validates a scale definition.<ul>
+<li><code>id</code>: A stable ordinal identifier, not a localized display name.</li>
+<li><code>degrees</code>: Strictly increasing degrees beginning with an unaltered tonic.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public IReadOnlyList&lt;FormulaDegree&gt; Degrees { get; }</code>
+Gets the immutable ordered tonic-relative formula.</p>
+</li>
+<li><p><code>public string Id { get; }</code>
+Gets the stable, culture-independent definition identifier.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(ScaleDefinition? other)</code>
+Compares identifiers and every formula degree using value semantics.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Compares identifiers and every formula degree using value semantics.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(ScaleDefinition? left, ScaleDefinition? right)</code>
+Determines whether two definitions have identical value content.</p>
+</li>
+<li><p><code>public static bool operator !=(ScaleDefinition? left, ScaleDefinition? right)</code>
+Determines whether two definitions differ in identifier or formula.</p>
+</li>
+</ul>
+<h3 id="scalefamily"><code>ScaleFamily</code><a class="heading-link" href="#scalefamily" aria-label="Link to ScaleFamily">#</a></h3>
+<p>Classifies a scale definition by its originating collection.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum ScaleFamily
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Major</code></td>
+<td align="right">0</td>
+<td>The major diatonic collection and its modes.</td>
+</tr>
+<tr>
+<td><code>HarmonicMinor</code></td>
+<td align="right">1</td>
+<td>The harmonic-minor collection and its modes.</td>
+</tr>
+<tr>
+<td><code>MelodicMinor</code></td>
+<td align="right">2</td>
+<td>The ascending melodic-minor collection and its modes.</td>
+</tr>
+<tr>
+<td><code>Pentatonic</code></td>
+<td align="right">3</td>
+<td>A five-note pentatonic collection.</td>
+</tr>
+<tr>
+<td><code>Custom</code></td>
+<td align="right">4</td>
+<td>A caller-defined collection outside the standard catalogs.</td>
+</tr>
+</tbody></table>
+<h3 id="standardscales"><code>StandardScales</code><a class="heading-link" href="#standardscales" aria-label="Link to StandardScales">#</a></h3>
+<p>Provides canonical immutable definitions for the standard scales and major modes.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class StandardScales
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public static ScaleDefinition Aeolian { get; }</code>
+Gets Aeolian, the sixth mode of the major collection and the natural minor mode.</p>
+</li>
+<li><p><code>public static ScaleDefinition Dorian { get; }</code>
+Gets Dorian, the second mode of the major collection.</p>
+</li>
+<li><p><code>public static ScaleDefinition HarmonicMinor { get; }</code>
+Gets the harmonic minor scale.</p>
+</li>
+<li><p><code>public static ScaleDefinition Ionian { get; }</code>
+Gets Ionian, the first mode of the major collection.</p>
+</li>
+<li><p><code>public static ScaleDefinition Locrian { get; }</code>
+Gets Locrian, the seventh mode of the major collection.</p>
+</li>
+<li><p><code>public static ScaleDefinition Lydian { get; }</code>
+Gets Lydian, the fourth mode of the major collection.</p>
+</li>
+<li><p><code>public static ScaleDefinition Major { get; }</code>
+Gets the seven-degree major scale.</p>
+</li>
+<li><p><code>public static ScaleDefinition MajorPentatonic { get; }</code>
+Gets the standard major pentatonic scale (degrees 1, 2, 3, 5, and 6).</p>
+</li>
+<li><p><code>public static ScaleDefinition MelodicMinorAscending { get; }</code>
+Gets the ascending melodic minor scale.</p>
+</li>
+<li><p><code>public static ScaleDefinition MinorPentatonic { get; }</code>
+Gets the standard minor pentatonic scale (degrees 1, flat 3, 4, 5, and flat 7).</p>
+</li>
+<li><p><code>public static ScaleDefinition Mixolydian { get; }</code>
+Gets Mixolydian, the fifth mode of the major collection.</p>
+</li>
+<li><p><code>public static ScaleDefinition NaturalMinor { get; }</code>
+Gets the natural minor scale.</p>
+</li>
+<li><p><code>public static ScaleDefinition Phrygian { get; }</code>
+Gets Phrygian, the third mode of the major collection.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-tonality"><code>Enaxos.MusicTheory.Tonality</code><a class="heading-link" href="#enaxos-musictheory-tonality" aria-label="Link to Enaxos.MusicTheory.Tonality">#</a></h2>
+<h3 id="harmonicchordquality"><code>HarmonicChordQuality</code><a class="heading-link" href="#harmonicchordquality" aria-label="Link to HarmonicChordQuality">#</a></h3>
+<p>Classifies the chord quality attached to a harmonic scale-degree interpretation.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum HarmonicChordQuality
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Major</code></td>
+<td align="right">0</td>
+<td>A major triadic quality, including supported major and dominant sevenths.</td>
+</tr>
+<tr>
+<td><code>Minor</code></td>
+<td align="right">1</td>
+<td>A minor triadic quality, including the supported minor seventh.</td>
+</tr>
+<tr>
+<td><code>Diminished</code></td>
+<td align="right">2</td>
+<td>A diminished triadic quality, including the fully diminished seventh.</td>
+</tr>
+<tr>
+<td><code>HalfDiminished</code></td>
+<td align="right">3</td>
+<td>A half-diminished seventh quality.</td>
+</tr>
+<tr>
+<td><code>Augmented</code></td>
+<td align="right">4</td>
+<td>An augmented triadic quality.</td>
+</tr>
+<tr>
+<td><code>Other</code></td>
+<td align="right">5</td>
+<td>A chord definition not mapped to a standard harmonic quality.</td>
+</tr>
+</tbody></table>
+<h3 id="harmonicfunction"><code>HarmonicFunction</code><a class="heading-link" href="#harmonicfunction" aria-label="Link to HarmonicFunction">#</a></h3>
+<p>Describes a chord&#39;s scale-degree, quality, and inversion interpretation within a key.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct HarmonicFunction
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public HarmonicFunction(ScaleDegreeNumber degree, HarmonicChordQuality quality, int inversionNumber)</code>
+Creates a harmonic-function value.</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public ScaleDegreeNumber Degree { get; }</code>
+Gets the diatonic scale degree of the chord root.</p>
+</li>
+<li><p><code>public int InversionNumber { get; }</code>
+Gets the zero-based inversion number, where zero is root position.</p>
+</li>
+<li><p><code>public HarmonicChordQuality Quality { get; }</code>
+Gets the normalized harmonic chord quality.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(HarmonicFunction other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(HarmonicFunction left, HarmonicFunction right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(HarmonicFunction left, HarmonicFunction right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h3 id="harmonicfunctions"><code>HarmonicFunctions</code><a class="heading-link" href="#harmonicfunctions" aria-label="Link to HarmonicFunctions">#</a></h3>
+<p>Interprets chord roots and standard qualities in the context of a major or natural-minor key.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class HarmonicFunctions
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static HarmonicFunction Analyze(Chord chord, MusicalKey key)</code>
+Analyzes a chord or throws when its root is outside the supplied key.</p>
+</li>
+<li><p><code>public static bool TryAnalyze(Chord chord, MusicalKey key, out HarmonicFunction result)</code>
+Attempts to assign a diatonic harmonic function to a chord.</p>
+</li>
+</ul>
+<h3 id="keymode"><code>KeyMode</code><a class="heading-link" href="#keymode" aria-label="Link to KeyMode">#</a></h3>
+<p>Identifies the major or minor mode of a tonal key.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum KeyMode
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Major</code></td>
+<td align="right">0</td>
+<td>A major key.</td>
+</tr>
+<tr>
+<td><code>Minor</code></td>
+<td align="right">1</td>
+<td>A minor key.</td>
+</tr>
+</tbody></table>
+<h3 id="keyrelationships"><code>KeyRelationships</code><a class="heading-link" href="#keyrelationships" aria-label="Link to KeyRelationships">#</a></h3>
+<p>Computes standard relative and parallel relationships between major and minor keys.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class KeyRelationships
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static MusicalKey ParallelOf(MusicalKey key)</code>
+Gets the opposite mode on the same written tonic.</p>
+</li>
+<li><p><code>public static MusicalKey RelativeOf(MusicalKey key)</code>
+Gets the key sharing the same signature in the opposite mode.</p>
+</li>
+</ul>
+<h3 id="keysignature"><code>KeySignature</code><a class="heading-link" href="#keysignature" aria-label="Link to KeySignature">#</a></h3>
+<p>Represents a conventional key signature from seven flats through seven sharps.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class KeySignature
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public Accidental Accidental { get; }</code>
+Gets the common accidental applied by the signature, or natural for an empty signature.</p>
+</li>
+<li><p><code>public int AccidentalCount { get; }</code>
+Gets the number of altered letters in the signature.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;NoteLetter&gt; AlteredLetters { get; }</code>
+Gets altered letters in conventional accumulation order.</p>
+</li>
+<li><p><code>public int Fifths { get; }</code>
+Gets the signed circle-of-fifths coordinate: negative for flats and positive for sharps.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(KeySignature? other)</code>
+Compares signatures by their signed fifths coordinate.</p>
+</li>
+<li><p><code>public bool Equals(object obj)</code>
+Compares signatures by their signed fifths coordinate.</p>
+</li>
+<li><p><code>public static KeySignature For(MusicalKey key)</code>
+Gets the conventional signature for a major or minor key spelling.</p>
+<ul>
+<li>Throws <code>ArgumentException</code>: The spelling has no conventional signature in the supported range.</li>
+</ul>
+</li>
+<li><p><code>public static KeySignature FromFifths(int fifths)</code>
+Creates a signature from a signed fifths coordinate in the range -7 through +7.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+</ul>
+<h3 id="musicalkey"><code>MusicalKey</code><a class="heading-link" href="#musicalkey" aria-label="Link to MusicalKey">#</a></h3>
+<p>Identifies a tonal key by its tonic spelling and major/minor mode.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct MusicalKey
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public MusicalKey(SpelledPitch tonic, KeyMode mode)</code>
+Creates a musical key.<ul>
+<li><code>tonic</code>: The written tonic spelling.</li>
+<li><code>mode</code>: The major or minor key mode.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public KeyMode Mode { get; }</code>
+Gets the major or minor mode.</p>
+</li>
+<li><p><code>public SpelledPitch Tonic { get; }</code>
+Gets the tonic spelling.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(MusicalKey other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static MusicalKey Major(SpelledPitch tonic)</code>
+Creates a major key on the supplied tonic.</p>
+</li>
+<li><p><code>public static MusicalKey Minor(SpelledPitch tonic)</code>
+Creates a minor key on the supplied tonic.</p>
+</li>
+<li><p><code>public static bool operator ==(MusicalKey left, MusicalKey right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(MusicalKey left, MusicalKey right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public static MusicalKey Parse(string text)</code>
+Parses a key using a major/minor suffix, a compact m suffix, or no suffix for major.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the invariant tonic followed by major or minor.</p>
+</li>
+</ul>
+<h3 id="scaledegreenumber"><code>ScaleDegreeNumber</code><a class="heading-link" href="#scaledegreenumber" aria-label="Link to ScaleDegreeNumber">#</a></h3>
+<p>Represents a validated one-based scale degree in the diatonic range 1 through 7.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public struct ScaleDegreeNumber
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public ScaleDegreeNumber(int value)</code>
+Creates a diatonic scale-degree number.<ul>
+<li><code>value</code>: A value from 1 through 7.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><code>public int Value { get; }</code>
+Gets the one-based degree value.</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public bool Equals(object obj)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public bool Equals(ScaleDegreeNumber other)</code>
+Determines whether this value equals another value.</p>
+</li>
+<li><p><code>public int GetHashCode()</code>
+Returns a hash code for this value.</p>
+</li>
+<li><p><code>public static bool operator ==(ScaleDegreeNumber left, ScaleDegreeNumber right)</code>
+Determines whether two values are equal.</p>
+</li>
+<li><p><code>public static bool operator !=(ScaleDegreeNumber left, ScaleDegreeNumber right)</code>
+Determines whether two values are different.</p>
+</li>
+<li><p><code>public string ToString()</code>
+Returns the string representation of this value.</p>
+</li>
+</ul>
+<h2 id="enaxos-musictheory-tuning"><code>Enaxos.MusicTheory.Tuning</code><a class="heading-link" href="#enaxos-musictheory-tuning" aria-label="Link to Enaxos.MusicTheory.Tuning">#</a></h2>
+<h3 id="equaltemperament12"><code>EqualTemperament12</code><a class="heading-link" href="#equaltemperament12" aria-label="Link to EqualTemperament12">#</a></h3>
+<p>Implements twelve-tone equal temperament relative to a configurable reference pitch.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class EqualTemperament12
+</code></pre>
+<h4>Constructors</h4>
+<ul>
+<li><code>public EqualTemperament12(Note? referenceNote = null, double referenceFrequency = 440)</code>
+Creates a twelve-tone equal-temperament tuning.<ul>
+<li><code>referenceNote</code>: The reference note, or null for A4.</li>
+<li><code>referenceFrequency</code>: The positive reference frequency in hertz, defaulting to 440.</li>
+</ul>
+</li>
+</ul>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public double ReferenceFrequency { get; }</code>
+Gets the frequency assigned to <code>ReferenceNote</code>.</p>
+</li>
+<li><p><code>public Note ReferenceNote { get; }</code>
+Gets the note from which all frequency ratios are measured.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><code>public double GetFrequency(Note note)</code>
+Gets a note&#39;s frequency using a ratio of 2^(semitone distance / 12).</li>
+</ul>
+<h3 id="ituningsystem"><code>ITuningSystem</code><a class="heading-link" href="#ituningsystem" aria-label="Link to ITuningSystem">#</a></h3>
+<p>Defines a strategy that maps absolute musical notes to frequencies in hertz.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public interface ITuningSystem
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><code>public double GetFrequency(Note note)</code>
+Gets the frequency assigned to a note.<ul>
+<li><code>note</code>: The absolute spelled note to evaluate.</li>
+<li>Returns: A positive frequency in hertz.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Generated from the version 1.0.0 assembly and its compiler-validated XML documentation.</p>
+</article>
+    <footer>Enaxos.MusicTheory 1.0.0 — Full Public API reference</footer>
+  </main>
+  <a class="back-top" href="#enaxos-musictheory-1-0-full-public-api" aria-label="Back to top">↑</a>
+  <script>
+    const button=document.querySelector('.menu-button');
+    const closeMenu=()=>{document.body.classList.remove('nav-open');button.setAttribute('aria-expanded','false');};
+    button.addEventListener('click',()=>{const open=document.body.classList.toggle('nav-open');button.setAttribute('aria-expanded',String(open));});
+    document.querySelectorAll('#toc a').forEach(a=>a.addEventListener('click',closeMenu));
+    const links=new Map([...document.querySelectorAll('#toc a')].map(a=>[a.getAttribute('href').slice(1),a]));
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){document.querySelectorAll('#toc a.active').forEach(a=>a.classList.remove('active'));const link=links.get(entry.target.id);if(link){link.classList.add('active');link.scrollIntoView({block:'nearest'});}}}),{rootMargin:'-10% 0px -80% 0px'});
+    document.querySelectorAll('h2[id],h3[id]').forEach(h=>observer.observe(h));
+  </script>
+</body>
+</html>
