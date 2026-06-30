@@ -1,6 +1,6 @@
-# Enaxos.MusicTheory 1.0 — Full Public API
+# Enaxos.MusicTheory 1.1.0 — Full Public API
 
-This document describes the complete public API exposed by `Enaxos.MusicTheory` version **1.0.0** (`net8.0`).
+This document describes the complete public API exposed by `Enaxos.MusicTheory` version **1.1.0** (`net8.0`).
 
 ## Conventions
 
@@ -1809,6 +1809,23 @@ public static class PentatonicScales
 - `public static bool TryFromScale(Scale source, out PentatonicDerivation? result, PentatonicDerivationStrategy strategy = PentatonicDerivationStrategy.StandardMajorOrMinor, IReadOnlyList<int>? sourceDegrees = null)`
   Attempts to derive a pentatonic scale without throwing for an incompatible source or selection.
 
+### `PitchMatchMode`
+
+Controls whether pitch collection comparisons preserve spelling or use enharmonic equivalence.
+
+**Declaration**
+
+```csharp
+public enum PitchMatchMode
+```
+
+#### Values
+
+| Name | Value | Description |
+|---|---:|---|
+| `PitchClass` | 0 | Compares normalized pitch classes, so enharmonic spellings such as C# and Db match. |
+| `ExactSpelling` | 1 | Compares the exact written pitch spelling, including letter and accidental. |
+
 ### `Scale`
 
 Represents an immutable realization of a scale definition on a spelled tonic.
@@ -1894,6 +1911,83 @@ public sealed class ScaleDefinition
 
 - `public static bool operator !=(ScaleDefinition? left, ScaleDefinition? right)`
   Determines whether two definitions differ in identifier or formula.
+
+### `ScaleRelations`
+
+Provides set-style relationships between realized scales or pitch collections.
+
+**Declaration**
+
+```csharp
+public static class ScaleRelations
+```
+
+#### Methods
+
+- `public static IReadOnlyList<SpelledPitch> GetCommonNotes(Scale first, Scale second, params Scale[] others)`
+  Returns pitches from the first scale that are present in every supplied scale by pitch class.
+
+- `public static IReadOnlyList<SpelledPitch> GetCommonNotes(PitchMatchMode matchMode, Scale first, Scale second, params Scale[] others)`
+  Returns pitches from the first scale that are present in every supplied scale using the requested match mode.
+
+- `public static IReadOnlyList<SpelledPitch> GetCommonNotes(IEnumerable<SpelledPitch> first, IEnumerable<SpelledPitch> second, params IEnumerable<SpelledPitch>[] others)`
+  Returns pitches from the first collection that are present in every supplied collection by pitch class.
+
+- `public static IReadOnlyList<SpelledPitch> GetCommonNotes(PitchMatchMode matchMode, IEnumerable<SpelledPitch> first, IEnumerable<SpelledPitch> second, params IEnumerable<SpelledPitch>[] others)`
+  Returns pitches from the first collection that are present in every supplied collection using the requested match mode.
+
+### `ScaleStructure`
+
+Represents the cyclic semitone pattern of a scale across one octave.
+
+**Declaration**
+
+```csharp
+public sealed class ScaleStructure
+```
+
+#### Properties
+
+- `public string CompactPattern { get; }`
+  Gets the concatenated step-symbol pattern, such as WWHWWWH for a major scale.
+
+- `public IReadOnlyList<int> SemitoneSteps { get; }`
+  Gets the ascending semitone distance from each scale tone to the next, including octave closure.
+
+- `public IReadOnlyList<string> StepSymbols { get; }`
+  Gets compact symbols for each step, using W for two semitones and H for one semitone.
+
+#### Methods
+
+- `public string ToString()`
+  Returns the compact pattern for diagnostic display.
+
+### `ScaleStructures`
+
+Calculates octave-normalized step structures for standard definitions and realized scales.
+
+**Declaration**
+
+```csharp
+public static class ScaleStructures
+```
+
+#### Methods
+
+- `public static ScaleStructure GetScaleStruct(string standardScaleId)`
+  Returns the step structure for a standard scale or mode identified by its stable id.
+
+- `public static ScaleStructure GetScaleStruct(ScaleDefinition definition)`
+  Returns the step structure encoded by a scale definition.
+
+- `public static ScaleStructure GetScaleStruct(Scale scale)`
+  Returns the step structure of a realized scale in formula order.
+
+- `public static ScaleStructure GetScaleStruct(IEnumerable<SpelledPitch> pitches)`
+  Returns the step structure of an ordered pitch collection across one octave.
+
+- `public static ScaleStructure GetScaleStruct(IEnumerable<Note> notes)`
+  Returns the step structure of an ordered note collection, ignoring octaves after preserving pitch order.
 
 ### `ScaleFamily`
 
@@ -2052,6 +2146,48 @@ public static class HarmonicFunctions
 
 - `public static bool TryAnalyze(Chord chord, MusicalKey key, out HarmonicFunction result)`
   Attempts to assign a diatonic harmonic function to a chord.
+
+### `ScaleChord`
+
+Describes one basic chord obtained by stacking alternate degrees of a supported scale.
+
+**Declaration**
+
+```csharp
+public sealed class ScaleChord
+```
+
+#### Properties
+
+- `public Chord Chord { get; }`
+  Gets the realized chord with its root and chord-tone spellings.
+
+- `public ScaleDegreeNumber Degree { get; }`
+  Gets the one-based scale degree used as the chord root.
+
+- `public HarmonicFunction Function { get; }`
+  Gets the harmonic-function value that can be formatted as a Roman numeral.
+
+- `public HarmonicChordQuality Quality { get; }`
+  Gets the normalized quality used for Roman-numeral formatting.
+
+- `public Scale SourceScale { get; }`
+  Gets the realized scale from which the chord was derived.
+
+### `ScaleHarmony`
+
+Builds basic scale-degree chords from pentatonic and heptatonic realized scales.
+
+**Declaration**
+
+```csharp
+public static class ScaleHarmony
+```
+
+#### Methods
+
+- `public static IReadOnlyList<ScaleChord> GetDiatonicTriads(Scale scale)`
+  Returns one three-note chord per degree by stacking alternate tones of a pentatonic or heptatonic scale.
 
 ### `KeyMode`
 
@@ -2276,4 +2412,4 @@ public interface ITuningSystem
 
 ---
 
-Generated from the version 1.0.0 assembly and its compiler-validated XML documentation.
+Generated from the version 1.1.0 assembly and its compiler-validated XML documentation.

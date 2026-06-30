@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Complete public API reference for Enaxos.MusicTheory 1.0.0.">
-  <title>Enaxos.MusicTheory 1.0 — Full Public API</title>
+  <meta name="description" content="Complete public API reference for Enaxos.MusicTheory 1.1.0.">
+  <title>Enaxos.MusicTheory 1.1.0 — Full Public API</title>
   <style>
     :root { --bg:#0b1016; --panel:#111923; --panel-2:#172231; --text:#dce7f3; --muted:#91a4b8; --accent:#69b7ff; --accent-2:#86e1c1; --border:#29384a; --code:#0a0f15; --sidebar:22rem; }
     * { box-sizing:border-box; }
@@ -57,7 +57,7 @@
   <a class="skip-link" href="#content">Skip to content</a>
   <button class="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
   <aside class="sidebar" id="sidebar" aria-label="Documentation navigation">
-    <a class="brand" href="#enaxos-musictheory-1-0-full-public-api">Enaxos.MusicTheory 1.0</a>
+    <a class="brand" href="#enaxos-musictheory-1-1-0-full-public-api">Enaxos.MusicTheory 1.1.0</a>
     <div class="nav-title">Contents</div>
     <nav aria-label="Table of contents"><ul id="toc"><li class="level-2"><a href="#conventions">Conventions</a></li>
 <li class="level-2"><a href="#namespaces">Namespaces</a></li>
@@ -120,14 +120,20 @@
 <li class="level-3"><a href="#pentatonicderivation">PentatonicDerivation</a></li>
 <li class="level-3"><a href="#pentatonicderivationstrategy">PentatonicDerivationStrategy</a></li>
 <li class="level-3"><a href="#pentatonicscales">PentatonicScales</a></li>
+<li class="level-3"><a href="#pitchmatchmode">PitchMatchMode</a></li>
 <li class="level-3"><a href="#scale">Scale</a></li>
 <li class="level-3"><a href="#scaledefinition">ScaleDefinition</a></li>
 <li class="level-3"><a href="#scalefamily">ScaleFamily</a></li>
+<li class="level-3"><a href="#scalerelations">ScaleRelations</a></li>
+<li class="level-3"><a href="#scalestructure">ScaleStructure</a></li>
+<li class="level-3"><a href="#scalestructures">ScaleStructures</a></li>
 <li class="level-3"><a href="#standardscales">StandardScales</a></li>
 <li class="level-2"><a href="#enaxos-musictheory-tonality">Enaxos.MusicTheory.Tonality</a></li>
 <li class="level-3"><a href="#harmonicchordquality">HarmonicChordQuality</a></li>
 <li class="level-3"><a href="#harmonicfunction">HarmonicFunction</a></li>
 <li class="level-3"><a href="#harmonicfunctions">HarmonicFunctions</a></li>
+<li class="level-3"><a href="#scalechord">ScaleChord</a></li>
+<li class="level-3"><a href="#scaleharmony">ScaleHarmony</a></li>
 <li class="level-3"><a href="#keymode">KeyMode</a></li>
 <li class="level-3"><a href="#keyrelationships">KeyRelationships</a></li>
 <li class="level-3"><a href="#keysignature">KeySignature</a></li>
@@ -137,8 +143,8 @@
 <li class="level-3"><a href="#equaltemperament12">EqualTemperament12</a></li>
 <li class="level-3"><a href="#ituningsystem">ITuningSystem</a></li></ul></nav>
   </aside>
-  <main id="content"><article><h1 id="enaxos-musictheory-1-0-full-public-api">Enaxos.MusicTheory 1.0 — Full Public API</h1>
-<p>This document describes the complete public API exposed by <code>Enaxos.MusicTheory</code> version <strong>1.0.0</strong> (<code>net8.0</code>).</p>
+  <main id="content"><article><h1 id="enaxos-musictheory-1-1-0-full-public-api">Enaxos.MusicTheory 1.1.0 — Full Public API</h1>
+<p>This document describes the complete public API exposed by <code>Enaxos.MusicTheory</code> version <strong>1.1.0</strong> (<code>net8.0</code>).</p>
 <h2 id="conventions">Conventions<a class="heading-link" href="#conventions" aria-label="Link to Conventions">#</a></h2>
 <ul>
 <li>Musical spelling is significant unless a member explicitly states that comparison is enharmonic.</li>
@@ -1981,6 +1987,31 @@ Derives a pentatonic scale or throws when the requested strategy cannot produce 
 Attempts to derive a pentatonic scale without throwing for an incompatible source or selection.</p>
 </li>
 </ul>
+<h3 id="pitchmatchmode"><code>PitchMatchMode</code><a class="heading-link" href="#pitchmatchmode" aria-label="Link to PitchMatchMode">#</a></h3>
+<p>Controls whether pitch collection comparisons preserve spelling or use enharmonic equivalence.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public enum PitchMatchMode
+</code></pre>
+<h4>Values</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th align="right">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PitchClass</code></td>
+<td align="right">0</td>
+<td>Compares normalized pitch classes, so enharmonic spellings such as C# and Db match.</td>
+</tr>
+<tr>
+<td><code>ExactSpelling</code></td>
+<td align="right">1</td>
+<td>Compares the exact written pitch spelling, including letter and accidental.</td>
+</tr>
+</tbody></table>
 <h3 id="scale"><code>Scale</code><a class="heading-link" href="#scale" aria-label="Link to Scale">#</a></h3>
 <p>Represents an immutable realization of a scale definition on a spelled tonic.</p>
 <p><strong>Declaration</strong></p>
@@ -2061,6 +2092,72 @@ Determines whether two definitions have identical value content.</p>
 </li>
 <li><p><code>public static bool operator !=(ScaleDefinition? left, ScaleDefinition? right)</code>
 Determines whether two definitions differ in identifier or formula.</p>
+</li>
+</ul>
+<h3 id="scalerelations"><code>ScaleRelations</code><a class="heading-link" href="#scalerelations" aria-label="Link to ScaleRelations">#</a></h3>
+<p>Provides set-style relationships between realized scales or pitch collections.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class ScaleRelations
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static IReadOnlyList&lt;SpelledPitch&gt; GetCommonNotes(Scale first, Scale second, params Scale[] others)</code>
+Returns pitches from the first scale that are present in every supplied scale by pitch class.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;SpelledPitch&gt; GetCommonNotes(PitchMatchMode matchMode, Scale first, Scale second, params Scale[] others)</code>
+Returns pitches from the first scale that are present in every supplied scale using the requested match mode.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;SpelledPitch&gt; GetCommonNotes(IEnumerable&lt;SpelledPitch&gt; first, IEnumerable&lt;SpelledPitch&gt; second, params IEnumerable&lt;SpelledPitch&gt;[] others)</code>
+Returns pitches from the first collection that are present in every supplied collection by pitch class.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;SpelledPitch&gt; GetCommonNotes(PitchMatchMode matchMode, IEnumerable&lt;SpelledPitch&gt; first, IEnumerable&lt;SpelledPitch&gt; second, params IEnumerable&lt;SpelledPitch&gt;[] others)</code>
+Returns pitches from the first collection that are present in every supplied collection using the requested match mode.</p>
+</li>
+</ul>
+<h3 id="scalestructure"><code>ScaleStructure</code><a class="heading-link" href="#scalestructure" aria-label="Link to ScaleStructure">#</a></h3>
+<p>Represents the cyclic semitone pattern of a scale across one octave.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ScaleStructure
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public string CompactPattern { get; }</code>
+Gets the concatenated step-symbol pattern, such as WWHWWWH for a major scale.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;int&gt; SemitoneSteps { get; }</code>
+Gets the ascending semitone distance from each scale tone to the next, including octave closure.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;string&gt; StepSymbols { get; }</code>
+Gets compact symbols for each step, using W for two semitones and H for one semitone.</p>
+</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public string ToString()</code>
+Returns the compact pattern for diagnostic display.</p>
+</li>
+</ul>
+<h3 id="scalestructures"><code>ScaleStructures</code><a class="heading-link" href="#scalestructures" aria-label="Link to ScaleStructures">#</a></h3>
+<p>Calculates octave-normalized step structures for standard definitions and realized scales.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class ScaleStructures
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static ScaleStructure GetScaleStruct(string standardScaleId)</code>
+Returns the step structure for a standard scale or mode identified by its stable id.</p>
+</li>
+<li><p><code>public static ScaleStructure GetScaleStruct(ScaleDefinition definition)</code>
+Returns the step structure encoded by a scale definition.</p>
+</li>
+<li><p><code>public static ScaleStructure GetScaleStruct(Scale scale)</code>
+Returns the step structure of a realized scale in formula order.</p>
+</li>
+<li><p><code>public static ScaleStructure GetScaleStruct(IEnumerable&lt;SpelledPitch&gt; pitches)</code>
+Returns the step structure of an ordered pitch collection across one octave.</p>
+</li>
+<li><p><code>public static ScaleStructure GetScaleStruct(IEnumerable&lt;Note&gt; notes)</code>
+Returns the step structure of an ordered note collection, ignoring octaves after preserving pitch order.</p>
 </li>
 </ul>
 <h3 id="scalefamily"><code>ScaleFamily</code><a class="heading-link" href="#scalefamily" aria-label="Link to ScaleFamily">#</a></h3>
@@ -2251,6 +2348,40 @@ Analyzes a chord or throws when its root is outside the supplied key.</p>
 </li>
 <li><p><code>public static bool TryAnalyze(Chord chord, MusicalKey key, out HarmonicFunction result)</code>
 Attempts to assign a diatonic harmonic function to a chord.</p>
+</li>
+</ul>
+<h3 id="scalechord"><code>ScaleChord</code><a class="heading-link" href="#scalechord" aria-label="Link to ScaleChord">#</a></h3>
+<p>Describes one basic chord obtained by stacking alternate degrees of a supported scale.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed class ScaleChord
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public Chord Chord { get; }</code>
+Gets the realized chord with its root and chord-tone spellings.</p>
+</li>
+<li><p><code>public ScaleDegreeNumber Degree { get; }</code>
+Gets the one-based scale degree used as the chord root.</p>
+</li>
+<li><p><code>public HarmonicFunction Function { get; }</code>
+Gets the harmonic-function value that can be formatted as a Roman numeral.</p>
+</li>
+<li><p><code>public HarmonicChordQuality Quality { get; }</code>
+Gets the normalized quality used for Roman-numeral formatting.</p>
+</li>
+<li><p><code>public Scale SourceScale { get; }</code>
+Gets the realized scale from which the chord was derived.</p>
+</li>
+</ul>
+<h3 id="scaleharmony"><code>ScaleHarmony</code><a class="heading-link" href="#scaleharmony" aria-label="Link to ScaleHarmony">#</a></h3>
+<p>Builds basic scale-degree chords from pentatonic and heptatonic realized scales.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class ScaleHarmony
+</code></pre>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static IReadOnlyList&lt;ScaleChord&gt; GetDiatonicTriads(Scale scale)</code>
+Returns one three-note chord per degree by stacking alternate tones of a pentatonic or heptatonic scale.</p>
 </li>
 </ul>
 <h3 id="keymode"><code>KeyMode</code><a class="heading-link" href="#keymode" aria-label="Link to KeyMode">#</a></h3>
@@ -2469,11 +2600,11 @@ Gets the frequency assigned to a note.<ul>
 </li>
 </ul>
 <hr>
-<p>Generated from the version 1.0.0 assembly and its compiler-validated XML documentation.</p>
+<p>Generated from the version 1.1.0 assembly and its compiler-validated XML documentation.</p>
 </article>
-    <footer>Enaxos.MusicTheory 1.0.0 — Full Public API reference</footer>
+    <footer>Enaxos.MusicTheory 1.1.0 — Full Public API reference</footer>
   </main>
-  <a class="back-top" href="#enaxos-musictheory-1-0-full-public-api" aria-label="Back to top">↑</a>
+  <a class="back-top" href="#enaxos-musictheory-1-1-0-full-public-api" aria-label="Back to top">↑</a>
   <script>
     const button=document.querySelector('.menu-button');
     const closeMenu=()=>{document.body.classList.remove('nav-open');button.setAttribute('aria-expanded','false');};
