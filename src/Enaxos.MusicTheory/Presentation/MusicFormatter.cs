@@ -117,6 +117,24 @@ public static class MusicFormatter
             string[] en = ["Ionian", "Dorian", "Phrygian", "Lydian", "Mixolydian", "Aeolian", "Locrian"];
             if (number is >= 1 and <= 7) return terminology == MusicTerminology.French ? fr[number - 1] : en[number - 1];
         }
+        if (id.StartsWith("mode.harmonic-minor.", StringComparison.Ordinal) && int.TryParse(id.AsSpan(20), out var harmonicMinorMode))
+        {
+            if (harmonicMinorMode is >= 1 and <= 7)
+            {
+                return terminology == MusicTerminology.French
+                    ? string.Concat("mode mineur harmonique ", harmonicMinorMode.ToString(CultureInfo.InvariantCulture))
+                    : string.Concat("Harmonic minor mode ", harmonicMinorMode.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+        if (id.StartsWith("mode.melodic-minor.", StringComparison.Ordinal) && int.TryParse(id.AsSpan(19), out var melodicMinorMode))
+        {
+            if (melodicMinorMode is >= 1 and <= 7)
+            {
+                return terminology == MusicTerminology.French
+                    ? string.Concat("mode mineur mélodique ", melodicMinorMode.ToString(CultureInfo.InvariantCulture))
+                    : string.Concat("Melodic minor mode ", melodicMinorMode.ToString(CultureInfo.InvariantCulture));
+            }
+        }
         return id switch
         {
             "scale.major" => terminology == MusicTerminology.French ? "majeure" : "major",

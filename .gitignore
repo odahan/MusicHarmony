@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Private application projects kept outside this public library repository
+src/OD.HarmoTools/

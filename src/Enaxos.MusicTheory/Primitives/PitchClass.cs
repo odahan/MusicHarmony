@@ -4,7 +4,7 @@ namespace Enaxos.MusicTheory.Primitives;
 public readonly record struct PitchClass
 {
     /// <summary>The number of pitch classes in twelve-tone chromatic arithmetic.</summary>
-    private const int PitchClassCount = 12;
+    public const int Count = 12;
 
     private PitchClass(int value)
     {
@@ -33,8 +33,8 @@ public readonly record struct PitchClass
     /// <summary>Implements mathematical modulo so negative inputs still produce a non-negative pitch class.</summary>
     private static int Normalize(long value)
     {
-        var remainder = value % PitchClassCount;
-        return (int)(remainder < 0 ? remainder + PitchClassCount : remainder);
+        var remainder = value % Count;
+        return (int)(remainder < 0 ? remainder + Count : remainder);
     }
 
     /// <summary>Returns the invariant decimal chromatic index.</summary>
