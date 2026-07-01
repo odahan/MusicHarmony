@@ -114,6 +114,7 @@
 <li class="level-3"><a href="#note">Note</a></li>
 <li class="level-3"><a href="#noteletter">NoteLetter</a></li>
 <li class="level-3"><a href="#pitchclass">PitchClass</a></li>
+<li class="level-3"><a href="#pitchclassspellings">PitchClassSpellings</a></li>
 <li class="level-3"><a href="#spelledpitch">SpelledPitch</a></li>
 <li class="level-2"><a href="#enaxos-musictheory-scales">Enaxos.MusicTheory.Scales</a></li>
 <li class="level-3"><a href="#modecatalog">ModeCatalog</a></li>
@@ -1525,28 +1526,34 @@ Returns the string representation of this value.</p>
 <h4>Methods</h4>
 <ul>
 <li><p><code>public static string Format(SpelledPitch pitch, MusicFormatOptions? options = null)</code>
-Formats a scale degree using Arabic or Roman numerals.</p>
+Formats a spelled pitch using localized note names and configured accidentals.</p>
 </li>
 <li><p><code>public static string Format(Note note, MusicFormatOptions? options = null)</code>
-Formats a scale degree using Arabic or Roman numerals.</p>
+Formats a note as a localized pitch followed by its scientific octave.</p>
 </li>
 <li><p><code>public static string Format(MusicalKey key, MusicFormatOptions? options = null)</code>
-Formats a scale degree using Arabic or Roman numerals.</p>
+Formats a key tonic and localized major/minor mode name.</p>
 </li>
 <li><p><code>public static string Format(ScaleDefinition definition, MusicFormatOptions? options = null)</code>
-Formats a scale degree using Arabic or Roman numerals.</p>
+Formats a known scale definition as a localized display name.</p>
 </li>
 <li><p><code>public static string Format(HarmonicFunction function, MusicFormatOptions? options = null)</code>
-Formats a scale degree using Arabic or Roman numerals.</p>
+Formats a harmonic function as a quality-sensitive Roman numeral.</p>
 </li>
 <li><p><code>public static string Format(Chord chord, ChordNameStyle style = ChordNameStyle.StandardAbbreviation, MusicFormatOptions? options = null)</code>
-Formats a scale degree using Arabic or Roman numerals.</p>
+Formats a chord using either a canonical suffix or a localized full quality name.</p>
 </li>
 <li><p><code>public static string Format(ScaleDegreeNumber degree, DegreeDisplayStyle style = DegreeDisplayStyle.Arabic, MusicFormatOptions? options = null)</code>
 Formats a scale degree using Arabic or Roman numerals.</p>
 </li>
 <li><p><code>public static string FormatChordPitches(Chord chord, MusicFormatOptions? options = null)</code>
 Formats chord tones as a space-separated sequence in formula order.</p>
+</li>
+<li><p><code>public static bool TryFormatChordName(Chord chord, out string name, ChordNameStyle style = ChordNameStyle.StandardAbbreviation, MusicFormatOptions? options = null, ChordRecognitionOptions? recognitionOptions = null)</code>
+Attempts to format a useful chord name, using recognition when the chord definition is not directly named.</p>
+</li>
+<li><p><code>public static bool TryFormatRomanNumeral(ScaleChord chord, out string romanNumeral, MusicFormatOptions? options = null)</code>
+Attempts to format a scale chord Roman numeral when its source scale supports that analysis.</p>
 </li>
 </ul>
 <h3 id="musicterminology"><code>MusicTerminology</code><a class="heading-link" href="#musicterminology" aria-label="Link to MusicTerminology">#</a></h3>
@@ -1795,6 +1802,11 @@ Attempts to parse a complete invariant note spelling without throwing for invali
 <p><strong>Declaration</strong></p>
 <pre><code class="language-csharp">public struct PitchClass
 </code></pre>
+<h4>Fields</h4>
+<ul>
+<li><code>public const int Count = 12</code>
+The number of pitch classes in twelve-tone chromatic arithmetic.</li>
+</ul>
 <h4>Properties</h4>
 <ul>
 <li><code>public int Value { get; }</code>
@@ -1833,6 +1845,34 @@ Determines whether two values are different.</p>
 </li>
 <li><p><code>public string ToString()</code>
 Returns the invariant decimal chromatic index.</p>
+</li>
+</ul>
+<h3 id="pitchclassspellings"><code>PitchClassSpellings</code><a class="heading-link" href="#pitchclassspellings" aria-label="Link to PitchClassSpellings">#</a></h3>
+<p>Exposes conventional spellings for normalized pitch classes.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class PitchClassSpellings
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><code>public static IReadOnlyList&lt;SpelledPitch&gt; NaturalPitches { get; }</code>
+Gets natural spellings in diatonic order from C through B.</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><p><code>public static IReadOnlyList&lt;SpelledPitch&gt; Chromatic(EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)</code>
+Returns one spelling for every chromatic pitch class from C through B.</p>
+<ul>
+<li><code>preference</code>: The enharmonic spelling policy used for non-natural pitch classes.</li>
+<li>Returns: A read-only chromatic spelling table.</li>
+</ul>
+</li>
+<li><p><code>public static SpelledPitch For(PitchClass pitchClass, EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)</code>
+Returns the conventional spelling selected by the requested accidental preference.</p>
+<ul>
+<li><code>pitchClass</code>: The normalized pitch class to spell.</li>
+<li><code>preference</code>: The enharmonic spelling policy.</li>
+<li>Returns: The selected conventional spelling.</li>
+</ul>
 </li>
 </ul>
 <h3 id="spelledpitch"><code>SpelledPitch</code><a class="heading-link" href="#spelledpitch" aria-label="Link to SpelledPitch">#</a></h3>

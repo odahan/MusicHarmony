@@ -1,4 +1,5 @@
 using System.Globalization;
+using Enaxos.MusicTheory.Analysis;
 using Enaxos.MusicTheory.Harmony;
 using Enaxos.MusicTheory.Primitives;
 using Enaxos.MusicTheory.Scales;
@@ -40,6 +41,37 @@ public static class MusicFormatter
         return string.Concat(root, " ", FullChordName(chord.Definition.Id, settings.Terminology));
     }
 
+    /// <summary>Attempts to format a useful chord name, using recognition when the chord definition is not directly named.</summary>
+    public static bool TryFormatChordName(
+        Chord chord,
+        out string name,
+        ChordNameStyle style = ChordNameStyle.StandardAbbreviation,
+        MusicFormatOptions? options = null,
+        ChordRecognitionOptions? recognitionOptions = null)
+    {
+        ArgumentNullException.ThrowIfNull(chord); if (!Enum.IsDefined(style)) throw new ArgumentOutOfRangeException(nameof(style));
+        var settings = Capture(options);
+        if (TryFormatKnownChord(chord, style, settings, out name))
+        {
+            return true;
+        }
+
+        var candidates = ChordRecognizer.Recognize(
+            chord,
+            recognitionOptions ?? new ChordRecognitionOptions { MaximumResults = 1 });
+        var candidate = candidates.FirstOrDefault();
+        if (candidate is null || !TryFormatKnownChord(candidate.Chord, style, settings, out var candidateName))
+        {
+            name = string.Empty;
+            return false;
+        }
+
+        name = candidate.InversionNumber is > 0 && candidate.InversionNumber < candidate.Chord.Pitches.Count
+            ? string.Concat(candidateName, "/", Pitch(candidate.Chord.Pitches[candidate.InversionNumber.Value], settings))
+            : candidateName;
+        return true;
+    }
+
     /// <summary>Formats chord tones as a space-separated sequence in formula order.</summary>
     public static string FormatChordPitches(Chord chord, MusicFormatOptions? options = null)
     { ArgumentNullException.ThrowIfNull(chord); var settings = Capture(options); return string.Join(" ", chord.Pitches.Select(pitch => Pitch(pitch, settings))); }
@@ -58,6 +90,20 @@ public static class MusicFormatter
         _ = Capture(options); var upper = function.Quality is HarmonicChordQuality.Major or HarmonicChordQuality.Augmented or HarmonicChordQuality.Other;
         var suffix = function.Quality switch { HarmonicChordQuality.Diminished => "°", HarmonicChordQuality.HalfDiminished => "ø", HarmonicChordQuality.Augmented => "+", _ => "" };
         return string.Concat(Roman(function.Degree.Value, upper), suffix);
+    }
+
+    /// <summary>Attempts to format a scale chord Roman numeral when its source scale supports that analysis.</summary>
+    public static bool TryFormatRomanNumeral(ScaleChord chord, out string romanNumeral, MusicFormatOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(chord);
+        if (chord.SourceScale.Pitches.Count != 7)
+        {
+            romanNumeral = string.Empty;
+            return false;
+        }
+
+        romanNumeral = Format(chord.Function, options);
+        return true;
     }
 
     /// <summary>
@@ -100,11 +146,52 @@ public static class MusicFormatter
     private static string Abbreviation(string id) => id switch
     { "chord.major" => "", "chord.minor" => "m", "chord.diminished" => "°", "chord.augmented" => "+", "chord.dominant7" => "7", "chord.major7" => "maj7", "chord.minor7" => "m7", "chord.half-diminished7" => "ø7", "chord.diminished7" => "°7", _ => string.Concat("[", id, "]") };
 
+    /// <summary>Formats only chord definitions that have a conventional display name.</summary>
+    private static bool TryFormatKnownChord(Chord chord, ChordNameStyle style, Settings settings, out string name)
+    {
+        var root = Pitch(chord.Root, settings);
+        if (style == ChordNameStyle.StandardAbbreviation)
+        {
+            var suffix = KnownAbbreviation(chord.Definition.Id);
+            if (suffix is null)
+            {
+                name = string.Empty;
+                return false;
+            }
+
+            name = settings.Terminology == MusicTerminology.French && suffix.Length > 0
+                ? string.Concat(root, " ", suffix) : string.Concat(root, suffix);
+            return true;
+        }
+
+        var fullName = KnownFullChordName(chord.Definition.Id, settings.Terminology);
+        if (fullName is null)
+        {
+            name = string.Empty;
+            return false;
+        }
+
+        name = string.Concat(root, " ", fullName);
+        return true;
+    }
+
+    /// <summary>Maps supported chord identifiers to canonical lead-sheet suffixes, or null when unnamed.</summary>
+    private static string? KnownAbbreviation(string id) => id switch
+    { "chord.major" => "", "chord.minor" => "m", "chord.diminished" => "°", "chord.augmented" => "+", "chord.dominant7" => "7", "chord.major7" => "maj7", "chord.minor7" => "m7", "chord.half-diminished7" => "ø7", "chord.diminished7" => "°7", _ => null };
+
     /// <summary>Maps supported chord identifiers to localized full quality names.</summary>
     private static string FullChordName(string id, MusicTerminology terminology)
     {
         var french = id switch { "chord.major" => "majeur", "chord.minor" => "mineur", "chord.diminished" => "diminué", "chord.augmented" => "augmenté", "chord.dominant7" => "septième de dominante", "chord.major7" => "majeur septième", "chord.minor7" => "mineur septième", "chord.half-diminished7" => "semi-diminué septième", "chord.diminished7" => "diminué septième", _ => id };
         var american = id switch { "chord.major" => "major", "chord.minor" => "minor", "chord.diminished" => "diminished", "chord.augmented" => "augmented", "chord.dominant7" => "dominant seventh", "chord.major7" => "major seventh", "chord.minor7" => "minor seventh", "chord.half-diminished7" => "half-diminished seventh", "chord.diminished7" => "diminished seventh", _ => id };
+        return terminology == MusicTerminology.French ? french : american;
+    }
+
+    /// <summary>Maps supported chord identifiers to localized full quality names, or null when unnamed.</summary>
+    private static string? KnownFullChordName(string id, MusicTerminology terminology)
+    {
+        var french = id switch { "chord.major" => "majeur", "chord.minor" => "mineur", "chord.diminished" => "diminué", "chord.augmented" => "augmenté", "chord.dominant7" => "septième de dominante", "chord.major7" => "majeur septième", "chord.minor7" => "mineur septième", "chord.half-diminished7" => "semi-diminué septième", "chord.diminished7" => "diminué septième", _ => null };
+        var american = id switch { "chord.major" => "major", "chord.minor" => "minor", "chord.diminished" => "diminished", "chord.augmented" => "augmented", "chord.dominant7" => "dominant seventh", "chord.major7" => "major seventh", "chord.minor7" => "minor seventh", "chord.half-diminished7" => "half-diminished seventh", "chord.diminished7" => "diminished seventh", _ => null };
         return terminology == MusicTerminology.French ? french : american;
     }
 

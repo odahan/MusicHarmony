@@ -46,4 +46,31 @@ public sealed class PresentationRulesTests
         Assert.Equal("mode de sol", MusicFormatter.Format(StandardScales.Mixolydian, new MusicFormatOptions { TerminologyOverride = MusicTerminology.French }));
         Assert.Equal("Mixolydian", MusicFormatter.Format(StandardScales.Mixolydian, new MusicFormatOptions { TerminologyOverride = MusicTerminology.American }));
     }
+
+    [Fact]
+    public void Derived_chord_names_use_recognition_or_return_no_name()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), StandardScales.MajorPentatonic);
+        var chords = ScaleHarmony.GetDiatonicTriads(scale);
+        var american = new MusicFormatOptions { TerminologyOverride = MusicTerminology.American, Accidentals = AccidentalGlyphStyle.Ascii };
+
+        Assert.True(MusicFormatter.TryFormatChordName(chords[0].Chord, out var firstName, options: american));
+        Assert.Equal("Am/C", firstName);
+
+        Assert.False(MusicFormatter.TryFormatChordName(chords[1].Chord, out var secondName, options: american));
+        Assert.Equal(string.Empty, secondName);
+    }
+
+    [Fact]
+    public void Roman_numerals_are_only_formatted_for_heptatonic_scale_chords()
+    {
+        var heptatonic = ScaleHarmony.GetDiatonicTriads(Scale.Create(SpelledPitch.Parse("C"), StandardScales.Major))[0];
+        var pentatonic = ScaleHarmony.GetDiatonicTriads(Scale.Create(SpelledPitch.Parse("C"), StandardScales.MajorPentatonic))[0];
+
+        Assert.True(MusicFormatter.TryFormatRomanNumeral(heptatonic, out var romanNumeral));
+        Assert.Equal("I", romanNumeral);
+
+        Assert.False(MusicFormatter.TryFormatRomanNumeral(pentatonic, out var pentatonicRomanNumeral));
+        Assert.Equal(string.Empty, pentatonicRomanNumeral);
+    }
 }

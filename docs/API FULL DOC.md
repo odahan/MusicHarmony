@@ -1402,28 +1402,34 @@ public static class MusicFormatter
 #### Methods
 
 - `public static string Format(SpelledPitch pitch, MusicFormatOptions? options = null)`
-  Formats a scale degree using Arabic or Roman numerals.
+  Formats a spelled pitch using localized note names and configured accidentals.
 
 - `public static string Format(Note note, MusicFormatOptions? options = null)`
-  Formats a scale degree using Arabic or Roman numerals.
+  Formats a note as a localized pitch followed by its scientific octave.
 
 - `public static string Format(MusicalKey key, MusicFormatOptions? options = null)`
-  Formats a scale degree using Arabic or Roman numerals.
+  Formats a key tonic and localized major/minor mode name.
 
 - `public static string Format(ScaleDefinition definition, MusicFormatOptions? options = null)`
-  Formats a scale degree using Arabic or Roman numerals.
+  Formats a known scale definition as a localized display name.
 
 - `public static string Format(HarmonicFunction function, MusicFormatOptions? options = null)`
-  Formats a scale degree using Arabic or Roman numerals.
+  Formats a harmonic function as a quality-sensitive Roman numeral.
 
 - `public static string Format(Chord chord, ChordNameStyle style = ChordNameStyle.StandardAbbreviation, MusicFormatOptions? options = null)`
-  Formats a scale degree using Arabic or Roman numerals.
+  Formats a chord using either a canonical suffix or a localized full quality name.
 
 - `public static string Format(ScaleDegreeNumber degree, DegreeDisplayStyle style = DegreeDisplayStyle.Arabic, MusicFormatOptions? options = null)`
   Formats a scale degree using Arabic or Roman numerals.
 
 - `public static string FormatChordPitches(Chord chord, MusicFormatOptions? options = null)`
   Formats chord tones as a space-separated sequence in formula order.
+
+- `public static bool TryFormatChordName(Chord chord, out string name, ChordNameStyle style = ChordNameStyle.StandardAbbreviation, MusicFormatOptions? options = null, ChordRecognitionOptions? recognitionOptions = null)`
+  Attempts to format a useful chord name, using recognition when the chord definition is not directly named.
+
+- `public static bool TryFormatRomanNumeral(ScaleChord chord, out string romanNumeral, MusicFormatOptions? options = null)`
+  Attempts to format a scale chord Roman numeral when its source scale supports that analysis.
 
 ### `MusicTerminology`
 
@@ -1621,6 +1627,11 @@ Represents an octave-independent chromatic position normalized to the range 0 th
 public struct PitchClass
 ```
 
+#### Fields
+
+- `public const int Count = 12`
+  The number of pitch classes in twelve-tone chromatic arithmetic.
+
 #### Properties
 
 - `public int Value { get; }`
@@ -1655,6 +1666,34 @@ public struct PitchClass
 
 - `public string ToString()`
   Returns the invariant decimal chromatic index.
+
+### `PitchClassSpellings`
+
+Exposes conventional spellings for normalized pitch classes.
+
+**Declaration**
+
+```csharp
+public static class PitchClassSpellings
+```
+
+#### Properties
+
+- `public static IReadOnlyList<SpelledPitch> NaturalPitches { get; }`
+  Gets natural spellings in diatonic order from C through B.
+
+#### Methods
+
+- `public static IReadOnlyList<SpelledPitch> Chromatic(EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)`
+  Returns one spelling for every chromatic pitch class from C through B.
+  - `preference`: The enharmonic spelling policy used for non-natural pitch classes.
+  - Returns: A read-only chromatic spelling table.
+
+- `public static SpelledPitch For(PitchClass pitchClass, EnharmonicPreference preference = EnharmonicPreference.FewestAccidentals)`
+  Returns the conventional spelling selected by the requested accidental preference.
+  - `pitchClass`: The normalized pitch class to spell.
+  - `preference`: The enharmonic spelling policy.
+  - Returns: The selected conventional spelling.
 
 ### `SpelledPitch`
 
