@@ -119,7 +119,10 @@ public static class ChordRecognizer
 #### Methods
 
 - `public static IReadOnlyList<ChordRecognitionCandidate> Recognize(IEnumerable<Note> notes, ChordRecognitionOptions? options = null)`
-  Recognizes candidates from a chord's canonical close root-position realization.
+  Recognizes chord candidates from notes, using the lowest note as inversion evidence.
+
+- `public static bool TryRecognizeBest(IEnumerable<Note> notes, out ChordRecognitionCandidate? candidate, ChordRecognitionOptions? options = null)`
+  Attempts to return the highest-ranked chord candidate recognized from notes.
 
 - `public static IReadOnlyList<ChordRecognitionCandidate> Recognize(Chord chord, ChordRecognitionOptions? options = null)`
   Recognizes candidates from a chord's canonical close root-position realization.

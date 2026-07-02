@@ -591,11 +591,18 @@ public static class ChordRecognizer
         IEnumerable<Note> notes,
         ChordRecognitionOptions? options = null);
 
+    public static bool TryRecognizeBest(
+        IEnumerable<Note> notes,
+        out ChordRecognitionCandidate? candidate,
+        ChordRecognitionOptions? options = null);
+
     public static IReadOnlyList<ChordRecognitionCandidate> Recognize(
         Chord chord,
         ChordRecognitionOptions? options = null);
 }
 ```
+
+`TryRecognizeBest` est un raccourci explicite vers le premier candidat classé par `Recognize`. Il ne transforme pas une liste de notes en `Chord` directement, afin de conserver l'ambiguïté musicale dans le type `ChordRecognitionCandidate`.
 
 Le formateur transforme ensuite chaque candidat en nom abrégé ou complet, français ou américain. La reconnaissance ne mélange donc pas analyse et localisation.
 

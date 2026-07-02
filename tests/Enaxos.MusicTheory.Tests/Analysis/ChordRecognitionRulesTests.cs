@@ -79,6 +79,30 @@ public sealed class ChordRecognitionRulesTests
     }
 
     [Fact]
+    public void Try_recognize_best_returns_the_first_ranked_candidate_from_recognize()
+    {
+        var notes = Notes("G5", "C5", "E4", "C6", "E5");
+
+        var recognized = ChordRecognizer.Recognize(notes);
+        var success = ChordRecognizer.TryRecognizeBest(notes, out var candidate);
+
+        Assert.True(success);
+        Assert.NotNull(candidate);
+        Assert.Equal(recognized[0].Chord, candidate.Chord);
+        Assert.Equal(recognized[0].InversionNumber, candidate.InversionNumber);
+        Assert.Equal(recognized[0].Score, candidate.Score);
+    }
+
+    [Fact]
+    public void Try_recognize_best_returns_false_when_no_candidate_matches()
+    {
+        var success = ChordRecognizer.TryRecognizeBest(Notes("C4"), out var candidate);
+
+        Assert.False(success);
+        Assert.Null(candidate);
+    }
+
+    [Fact]
     public void Recognition_validates_input_and_result_limit()
     {
         Assert.Throws<ArgumentNullException>(() =>

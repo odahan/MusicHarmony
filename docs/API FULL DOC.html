@@ -250,7 +250,10 @@ Returns the string representation of this value.</p>
 <h4>Methods</h4>
 <ul>
 <li><p><code>public static IReadOnlyList&lt;ChordRecognitionCandidate&gt; Recognize(IEnumerable&lt;Note&gt; notes, ChordRecognitionOptions? options = null)</code>
-Recognizes candidates from a chord&#39;s canonical close root-position realization.</p>
+Recognizes chord candidates from notes, using the lowest note as inversion evidence.</p>
+</li>
+<li><p><code>public static bool TryRecognizeBest(IEnumerable&lt;Note&gt; notes, out ChordRecognitionCandidate? candidate, ChordRecognitionOptions? options = null)</code>
+Attempts to return the highest-ranked chord candidate recognized from notes.</p>
 </li>
 <li><p><code>public static IReadOnlyList&lt;ChordRecognitionCandidate&gt; Recognize(Chord chord, ChordRecognitionOptions? options = null)</code>
 Recognizes candidates from a chord&#39;s canonical close root-position realization.</p>

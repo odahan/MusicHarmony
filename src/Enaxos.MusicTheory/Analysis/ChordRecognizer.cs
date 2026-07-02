@@ -1,5 +1,6 @@
 using Enaxos.MusicTheory.Harmony;
 using Enaxos.MusicTheory.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Enaxos.MusicTheory.Analysis;
 
@@ -45,6 +46,17 @@ public static class ChordRecognizer
             .ThenBy(candidate => candidate.Chord.Root.Accidental.Semitones)
             .ThenBy(candidate => candidate.Chord.Definition.Id, StringComparer.Ordinal)
             .Take(options.MaximumResults).ToArray();
+    }
+
+    /// <summary>Attempts to return the highest-ranked chord candidate recognized from notes.</summary>
+    public static bool TryRecognizeBest(
+        IEnumerable<Note> notes,
+        [NotNullWhen(true)] out ChordRecognitionCandidate? candidate,
+        ChordRecognitionOptions? options = null)
+    {
+        var candidates = Recognize(notes, options);
+        candidate = candidates.Count > 0 ? candidates[0] : null;
+        return candidate is not null;
     }
 
     /// <summary>Recognizes candidates from a chord's canonical close root-position realization.</summary>
