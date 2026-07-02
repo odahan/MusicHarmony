@@ -41,6 +41,74 @@ public sealed class ChordRecognitionRulesTests
     }
 
     [Fact]
+    public void Recognized_pitches_keep_observed_spellings_for_enharmonic_matches()
+    {
+        var result = ChordRecognizer.Recognize(
+            Notes("A#4", "D5", "F5"),
+            new ChordRecognitionOptions { MaximumResults = 1 });
+
+        var candidate = Assert.Single(result);
+        Assert.Equal(StandardChords.Major, candidate.Chord.Definition);
+        Assert.Equal("A#", candidate.Chord.Root.ToString());
+        Assert.Equal(["A#", "D", "F"], candidate.RecognizedPitches.Select(pitch => pitch.ToString()));
+        Assert.Equal(["A#", "C##", "E#"], candidate.Chord.Pitches.Select(pitch => pitch.ToString()));
+    }
+
+    [Fact]
+    public void Inversions_are_ranked_from_the_lowest_absolute_note()
+    {
+        var result = ChordRecognizer.Recognize(
+            Notes("E4", "G4", "C5"),
+            new ChordRecognitionOptions { MaximumResults = 1 });
+
+        var candidate = Assert.Single(result);
+        Assert.Equal(StandardChords.Major, candidate.Chord.Definition);
+        Assert.Equal("C", candidate.Chord.Root.ToString());
+        Assert.Equal(1, candidate.InversionNumber);
+    }
+
+    [Fact]
+    public void Sixth_eleventh_and_thirteenth_chords_are_part_of_standard_recognition()
+    {
+        Assert.Equal(StandardChords.MajorSixth, ChordRecognizer.Recognize(Notes("C4", "E4", "G4", "A4"), new ChordRecognitionOptions { MaximumResults = 1 })[0].Chord.Definition);
+        Assert.Equal(StandardChords.MajorNinth, ChordRecognizer.Recognize(Notes("C4", "E4", "G4", "B4", "D5"), new ChordRecognitionOptions { MaximumResults = 1 })[0].Chord.Definition);
+        Assert.Equal(StandardChords.DominantEleventh, ChordRecognizer.Recognize(Notes("C4", "E4", "G4", "Bb4", "D5", "F5"), new ChordRecognitionOptions { MaximumResults = 1 })[0].Chord.Definition);
+        Assert.Equal(StandardChords.MajorEleventh, ChordRecognizer.Recognize(Notes("C4", "E4", "G4", "B4", "D5", "F5"), new ChordRecognitionOptions { MaximumResults = 1 })[0].Chord.Definition);
+        Assert.Equal(StandardChords.DominantThirteenth, ChordRecognizer.Recognize(Notes("C4", "E4", "G4", "Bb4", "D5", "F5", "A5"), new ChordRecognitionOptions { MaximumResults = 1 })[0].Chord.Definition);
+    }
+
+    [Fact]
+    public void Dominant_extensions_allow_common_omitted_inner_tones()
+    {
+        var eleventh = ChordRecognizer.Recognize(
+            Notes("C4", "E4", "Bb4", "F5"),
+            new ChordRecognitionOptions { MaximumResults = 1 })[0];
+        var thirteenth = ChordRecognizer.Recognize(
+            Notes("C4", "E4", "Bb4", "A5"),
+            new ChordRecognitionOptions { MaximumResults = 1 })[0];
+
+        Assert.Equal(StandardChords.DominantEleventh, eleventh.Chord.Definition);
+        Assert.Equal(["G", "D"], eleventh.MissingPitches.Select(pitch => pitch.ToString()));
+        Assert.Equal(["C", "E", "Bb", "F"], eleventh.RecognizedPitches.Select(pitch => pitch.ToString()));
+        Assert.Equal(StandardChords.DominantThirteenth, thirteenth.Chord.Definition);
+        Assert.Equal(["G", "D", "F"], thirteenth.MissingPitches.Select(pitch => pitch.ToString()));
+        Assert.Equal(["C", "E", "Bb", "A"], thirteenth.RecognizedPitches.Select(pitch => pitch.ToString()));
+    }
+
+    [Fact]
+    public void Recognized_bass_is_available_for_sparse_extended_inversions()
+    {
+        var result = ChordRecognizer.Recognize(
+            Notes("A3", "C4", "E4", "Bb4"),
+            new ChordRecognitionOptions { MaximumResults = 1 });
+
+        var candidate = Assert.Single(result);
+        Assert.Equal(StandardChords.DominantThirteenth, candidate.Chord.Definition);
+        Assert.Equal(6, candidate.InversionNumber);
+        Assert.Equal("A", candidate.BassPitch?.ToString());
+    }
+
+    [Fact]
     public void Enharmonic_equivalence_can_be_disabled_for_chord_matching()
     {
         var notes = Notes("C4", "E4", "Ab4");
@@ -132,8 +200,10 @@ public sealed class ChordRecognitionRulesTests
         Assert.Equal(["G"], candidate.MissingPitches.Select(pitch => pitch.ToString()));
         Assert.Equal(["D"], candidate.AddedPitches.Select(pitch => pitch.ToString()));
 
+        var recognized = Assert.IsAssignableFrom<ICollection<SpelledPitch>>(candidate.RecognizedPitches);
         var missing = Assert.IsAssignableFrom<ICollection<SpelledPitch>>(candidate.MissingPitches);
         var added = Assert.IsAssignableFrom<ICollection<SpelledPitch>>(candidate.AddedPitches);
+        Assert.Throws<NotSupportedException>(() => recognized.Add(SpelledPitch.Parse("C")));
         Assert.Throws<NotSupportedException>(() => missing.Add(SpelledPitch.Parse("G")));
         Assert.Throws<NotSupportedException>(() => added.Add(SpelledPitch.Parse("D")));
     }
@@ -144,11 +214,24 @@ public sealed class ChordRecognitionRulesTests
         { StandardChords.Minor, "Cm", ["C4", "Eb4", "G4"] },
         { StandardChords.Diminished, "C°", ["C4", "Eb4", "Gb4"] },
         { StandardChords.Augmented, "C+", ["C4", "E4", "G#4"] },
+        { StandardChords.SuspendedSecond, "Csus2", ["C4", "D4", "G4"] },
+        { StandardChords.SuspendedFourth, "Csus4", ["C4", "F4", "G4"] },
+        { StandardChords.MajorSixth, "C6", ["C4", "E4", "G4", "A4"] },
+        { StandardChords.MinorSixth, "Cm6", ["C4", "Eb4", "G4", "A4"] },
         { StandardChords.DominantSeventh, "C7", ["C4", "E4", "G4", "Bb4"] },
         { StandardChords.MajorSeventh, "Cmaj7", ["C4", "E4", "G4", "B4"] },
         { StandardChords.MinorSeventh, "Cm7", ["C4", "Eb4", "G4", "Bb4"] },
         { StandardChords.HalfDiminishedSeventh, "Cø7", ["C4", "Eb4", "Gb4", "Bb4"] },
         { StandardChords.DiminishedSeventh, "C°7", ["C4", "Eb4", "Gb4", "Bbb4"] },
+        { StandardChords.DominantNinth, "C9", ["C4", "E4", "G4", "Bb4", "D5"] },
+        { StandardChords.MajorNinth, "Cmaj9", ["C4", "E4", "G4", "B4", "D5"] },
+        { StandardChords.MinorNinth, "Cm9", ["C4", "Eb4", "G4", "Bb4", "D5"] },
+        { StandardChords.DominantEleventh, "C11", ["C4", "E4", "G4", "Bb4", "D5", "F5"] },
+        { StandardChords.MajorEleventh, "Cmaj11", ["C4", "E4", "G4", "B4", "D5", "F5"] },
+        { StandardChords.MinorEleventh, "Cm11", ["C4", "Eb4", "G4", "Bb4", "D5", "F5"] },
+        { StandardChords.DominantThirteenth, "C13", ["C4", "E4", "G4", "Bb4", "D5", "F5", "A5"] },
+        { StandardChords.MajorThirteenth, "Cmaj13", ["C4", "E4", "G4", "B4", "D5", "F5", "A5"] },
+        { StandardChords.MinorThirteenth, "Cm13", ["C4", "Eb4", "G4", "Bb4", "D5", "F5", "A5"] },
     };
 
     private static Note[] Notes(params string[] names) =>

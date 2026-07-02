@@ -11,19 +11,25 @@ public static class ScaleRecognizer
     public static IReadOnlyList<ScaleRecognitionCandidate> FindCandidates(IEnumerable<Note> notes, ScaleRecognitionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(notes);
-        var observed = notes.Select(note => note.Pitch).Distinct().ToArray();
-        return Find(observed, null, options);
+        var materialized = notes.ToArray();
+        var observed = materialized.Select(note => note.Pitch).Distinct().ToArray();
+        var bass = materialized.OrderBy(note => note.AbsoluteSemitone).FirstOrDefault().Pitch;
+        return Find(observed, bass, null, options);
     }
 
     /// <summary>Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.</summary>
     public static IReadOnlyList<ScaleRecognitionCandidate> FindCandidates(Chord chord, ScaleRecognitionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(chord);
-        return Find(chord.Pitches.Distinct().ToArray(), chord.Root, options);
+        return Find(chord.Pitches.Distinct().ToArray(), null, chord.Root, options);
     }
 
     /// <summary>Runs the shared scoring pipeline over every tonic and catalog definition.</summary>
-    private static IReadOnlyList<ScaleRecognitionCandidate> Find(SpelledPitch[] observed, SpelledPitch? chordRoot, ScaleRecognitionOptions? options)
+    private static IReadOnlyList<ScaleRecognitionCandidate> Find(
+        SpelledPitch[] observed,
+        SpelledPitch? bassPitch,
+        SpelledPitch? chordRoot,
+        ScaleRecognitionOptions? options)
     {
         if (observed.Length == 0) throw new ArgumentException("At least one pitch is required.", nameof(observed));
         options ??= new ScaleRecognitionOptions();
@@ -54,6 +60,7 @@ public static class ScaleRecognizer
                     ["outside"] = -options.Weights.OutsideNotePenalty * outside.Length,
                     ["spelling"] = options.Weights.SpellingConsistency * exact / observed.Length,
                     ["tonic"] = observed.Any(pitch => pitch.PitchClass == tonic.PitchClass) ? options.Weights.TonicEvidence : 0,
+                    ["bassTonic"] = bassPitch is { } bass && bass.PitchClass == tonic.PitchClass ? options.Weights.BassTonicEvidence : 0,
                     ["chordRoot"] = chordRoot is { } root && root.PitchClass == tonic.PitchClass ? options.Weights.ChordRootEvidence : 0,
                 };
                 raw.Add((scale, factors.Values.Sum(), matched, missing, outside, factors));
@@ -80,7 +87,8 @@ public static class ScaleRecognizer
         var values = new[]
         {
             weights.Membership, weights.Coverage, weights.OutsideNotePenalty,
-            weights.SpellingConsistency, weights.TonicEvidence, weights.ChordRootEvidence,
+            weights.SpellingConsistency, weights.TonicEvidence, weights.BassTonicEvidence,
+            weights.ChordRootEvidence,
         };
         if (values.Any(value => !double.IsFinite(value) || value < 0))
         {

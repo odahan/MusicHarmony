@@ -97,6 +97,19 @@ public sealed class ScaleRecognitionRulesTests
     }
 
     [Fact]
+    public void Note_overload_uses_lowest_note_as_tonic_evidence()
+    {
+        var result = ScaleRecognizer.FindCandidates(
+            Notes("D4", "E4", "F4", "G4", "A4", "B4", "C5"),
+            new ScaleRecognitionOptions { MaximumResults = 1 });
+
+        var candidate = Assert.Single(result);
+        Assert.Equal("D", candidate.Scale.Tonic.ToString());
+        Assert.Equal(StandardScales.Dorian, candidate.Scale.Definition);
+        Assert.True(candidate.ScoreFactors["bassTonic"] > 0);
+    }
+
+    [Fact]
     public void Recognition_validates_notes_chords_catalog_and_required_options()
     {
         Assert.Throws<ArgumentNullException>(() =>
@@ -158,6 +171,10 @@ public sealed class ScaleRecognitionRulesTests
         new ScaleRecognitionOptions
         {
             Weights = new ScaleRecognitionWeights { Coverage = double.PositiveInfinity },
+        },
+        new ScaleRecognitionOptions
+        {
+            Weights = new ScaleRecognitionWeights { BassTonicEvidence = -1d },
         },
     };
 

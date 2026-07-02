@@ -76,6 +76,14 @@ public static class MusicFormatter
     public static string FormatChordPitches(Chord chord, MusicFormatOptions? options = null)
     { ArgumentNullException.ThrowIfNull(chord); var settings = Capture(options); return string.Join(" ", chord.Pitches.Select(pitch => Pitch(pitch, settings))); }
 
+    /// <summary>Formats pitch spellings as a space-separated sequence.</summary>
+    public static string FormatPitches(IEnumerable<SpelledPitch> pitches, MusicFormatOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(pitches);
+        var settings = Capture(options);
+        return string.Join(" ", pitches.Select(pitch => Pitch(pitch, settings)));
+    }
+
     /// <summary>Formats a known scale definition as a localized display name.</summary>
     public static string Format(ScaleDefinition definition, MusicFormatOptions? options = null)
     { ArgumentNullException.ThrowIfNull(definition); var settings = Capture(options); return ScaleName(definition.Id, settings.Terminology); }
@@ -144,7 +152,7 @@ public static class MusicFormatter
 
     /// <summary>Maps supported chord identifiers to canonical lead-sheet suffixes.</summary>
     private static string Abbreviation(string id) => id switch
-    { "chord.major" => "", "chord.minor" => "m", "chord.diminished" => "°", "chord.augmented" => "+", "chord.dominant7" => "7", "chord.major7" => "maj7", "chord.minor7" => "m7", "chord.half-diminished7" => "ø7", "chord.diminished7" => "°7", _ => string.Concat("[", id, "]") };
+    { "chord.major" => "", "chord.minor" => "m", "chord.diminished" => "°", "chord.augmented" => "+", "chord.sus2" => "sus2", "chord.sus4" => "sus4", "chord.major6" => "6", "chord.minor6" => "m6", "chord.dominant7" => "7", "chord.major7" => "maj7", "chord.minor7" => "m7", "chord.half-diminished7" => "ø7", "chord.diminished7" => "°7", "chord.dominant9" => "9", "chord.major9" => "maj9", "chord.minor9" => "m9", "chord.dominant11" => "11", "chord.major11" => "maj11", "chord.minor11" => "m11", "chord.dominant13" => "13", "chord.major13" => "maj13", "chord.minor13" => "m13", _ => string.Concat("[", id, "]") };
 
     /// <summary>Formats only chord definitions that have a conventional display name.</summary>
     private static bool TryFormatKnownChord(Chord chord, ChordNameStyle style, Settings settings, out string name)
@@ -177,21 +185,21 @@ public static class MusicFormatter
 
     /// <summary>Maps supported chord identifiers to canonical lead-sheet suffixes, or null when unnamed.</summary>
     private static string? KnownAbbreviation(string id) => id switch
-    { "chord.major" => "", "chord.minor" => "m", "chord.diminished" => "°", "chord.augmented" => "+", "chord.dominant7" => "7", "chord.major7" => "maj7", "chord.minor7" => "m7", "chord.half-diminished7" => "ø7", "chord.diminished7" => "°7", _ => null };
+    { "chord.major" => "", "chord.minor" => "m", "chord.diminished" => "°", "chord.augmented" => "+", "chord.sus2" => "sus2", "chord.sus4" => "sus4", "chord.major6" => "6", "chord.minor6" => "m6", "chord.dominant7" => "7", "chord.major7" => "maj7", "chord.minor7" => "m7", "chord.half-diminished7" => "ø7", "chord.diminished7" => "°7", "chord.dominant9" => "9", "chord.major9" => "maj9", "chord.minor9" => "m9", "chord.dominant11" => "11", "chord.major11" => "maj11", "chord.minor11" => "m11", "chord.dominant13" => "13", "chord.major13" => "maj13", "chord.minor13" => "m13", _ => null };
 
     /// <summary>Maps supported chord identifiers to localized full quality names.</summary>
     private static string FullChordName(string id, MusicTerminology terminology)
     {
-        var french = id switch { "chord.major" => "majeur", "chord.minor" => "mineur", "chord.diminished" => "diminué", "chord.augmented" => "augmenté", "chord.dominant7" => "septième de dominante", "chord.major7" => "majeur septième", "chord.minor7" => "mineur septième", "chord.half-diminished7" => "semi-diminué septième", "chord.diminished7" => "diminué septième", _ => id };
-        var american = id switch { "chord.major" => "major", "chord.minor" => "minor", "chord.diminished" => "diminished", "chord.augmented" => "augmented", "chord.dominant7" => "dominant seventh", "chord.major7" => "major seventh", "chord.minor7" => "minor seventh", "chord.half-diminished7" => "half-diminished seventh", "chord.diminished7" => "diminished seventh", _ => id };
+        var french = id switch { "chord.major" => "majeur", "chord.minor" => "mineur", "chord.diminished" => "diminué", "chord.augmented" => "augmenté", "chord.sus2" => "suspendu seconde", "chord.sus4" => "suspendu quarte", "chord.major6" => "sixte majeure", "chord.minor6" => "sixte mineure", "chord.dominant7" => "septième de dominante", "chord.major7" => "majeur septième", "chord.minor7" => "mineur septième", "chord.half-diminished7" => "semi-diminué septième", "chord.diminished7" => "diminué septième", "chord.dominant9" => "neuvième de dominante", "chord.major9" => "majeur neuvième", "chord.minor9" => "mineur neuvième", "chord.dominant11" => "onzième de dominante", "chord.major11" => "majeur onzième", "chord.minor11" => "mineur onzième", "chord.dominant13" => "treizième de dominante", "chord.major13" => "majeur treizième", "chord.minor13" => "mineur treizième", _ => id };
+        var american = id switch { "chord.major" => "major", "chord.minor" => "minor", "chord.diminished" => "diminished", "chord.augmented" => "augmented", "chord.sus2" => "suspended second", "chord.sus4" => "suspended fourth", "chord.major6" => "major sixth", "chord.minor6" => "minor sixth", "chord.dominant7" => "dominant seventh", "chord.major7" => "major seventh", "chord.minor7" => "minor seventh", "chord.half-diminished7" => "half-diminished seventh", "chord.diminished7" => "diminished seventh", "chord.dominant9" => "dominant ninth", "chord.major9" => "major ninth", "chord.minor9" => "minor ninth", "chord.dominant11" => "dominant eleventh", "chord.major11" => "major eleventh", "chord.minor11" => "minor eleventh", "chord.dominant13" => "dominant thirteenth", "chord.major13" => "major thirteenth", "chord.minor13" => "minor thirteenth", _ => id };
         return terminology == MusicTerminology.French ? french : american;
     }
 
     /// <summary>Maps supported chord identifiers to localized full quality names, or null when unnamed.</summary>
     private static string? KnownFullChordName(string id, MusicTerminology terminology)
     {
-        var french = id switch { "chord.major" => "majeur", "chord.minor" => "mineur", "chord.diminished" => "diminué", "chord.augmented" => "augmenté", "chord.dominant7" => "septième de dominante", "chord.major7" => "majeur septième", "chord.minor7" => "mineur septième", "chord.half-diminished7" => "semi-diminué septième", "chord.diminished7" => "diminué septième", _ => null };
-        var american = id switch { "chord.major" => "major", "chord.minor" => "minor", "chord.diminished" => "diminished", "chord.augmented" => "augmented", "chord.dominant7" => "dominant seventh", "chord.major7" => "major seventh", "chord.minor7" => "minor seventh", "chord.half-diminished7" => "half-diminished seventh", "chord.diminished7" => "diminished seventh", _ => null };
+        var french = id switch { "chord.major" => "majeur", "chord.minor" => "mineur", "chord.diminished" => "diminué", "chord.augmented" => "augmenté", "chord.sus2" => "suspendu seconde", "chord.sus4" => "suspendu quarte", "chord.major6" => "sixte majeure", "chord.minor6" => "sixte mineure", "chord.dominant7" => "septième de dominante", "chord.major7" => "majeur septième", "chord.minor7" => "mineur septième", "chord.half-diminished7" => "semi-diminué septième", "chord.diminished7" => "diminué septième", "chord.dominant9" => "neuvième de dominante", "chord.major9" => "majeur neuvième", "chord.minor9" => "mineur neuvième", "chord.dominant11" => "onzième de dominante", "chord.major11" => "majeur onzième", "chord.minor11" => "mineur onzième", "chord.dominant13" => "treizième de dominante", "chord.major13" => "majeur treizième", "chord.minor13" => "mineur treizième", _ => null };
+        var american = id switch { "chord.major" => "major", "chord.minor" => "minor", "chord.diminished" => "diminished", "chord.augmented" => "augmented", "chord.sus2" => "suspended second", "chord.sus4" => "suspended fourth", "chord.major6" => "major sixth", "chord.minor6" => "minor sixth", "chord.dominant7" => "dominant seventh", "chord.major7" => "major seventh", "chord.minor7" => "minor seventh", "chord.half-diminished7" => "half-diminished seventh", "chord.diminished7" => "diminished seventh", "chord.dominant9" => "dominant ninth", "chord.major9" => "major ninth", "chord.minor9" => "minor ninth", "chord.dominant11" => "dominant eleventh", "chord.major11" => "major eleventh", "chord.minor11" => "minor eleventh", "chord.dominant13" => "dominant thirteenth", "chord.major13" => "major thirteenth", "chord.minor13" => "minor thirteenth", _ => null };
         return terminology == MusicTerminology.French ? french : american;
     }
 

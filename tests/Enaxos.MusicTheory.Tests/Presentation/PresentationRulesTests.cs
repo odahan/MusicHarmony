@@ -20,6 +20,21 @@ public sealed class PresentationRulesTests
     }
 
     [Fact]
+    public void Extended_chord_names_and_observed_pitches_are_formatted()
+    {
+        var american = new MusicFormatOptions { TerminologyOverride = MusicTerminology.American, Accidentals = AccidentalGlyphStyle.Ascii };
+
+        Assert.Equal("C6", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.MajorSixth), options: american));
+        Assert.Equal("Csus2", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.SuspendedSecond), options: american));
+        Assert.Equal("C suspended fourth", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.SuspendedFourth), ChordNameStyle.Full, american));
+        Assert.Equal("Cmaj9", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.MajorNinth), options: american));
+        Assert.Equal("C dominant eleventh", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.DominantEleventh), ChordNameStyle.Full, american));
+        Assert.Equal("C major eleventh", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.MajorEleventh), ChordNameStyle.Full, american));
+        Assert.Equal("C13", MusicFormatter.Format(Chord.Create(SpelledPitch.Parse("C"), StandardChords.DominantThirteenth), options: american));
+        Assert.Equal("A# D F", MusicFormatter.FormatPitches([SpelledPitch.Parse("A#"), SpelledPitch.Parse("D"), SpelledPitch.Parse("F")], american));
+    }
+
+    [Fact]
     public void Local_override_never_changes_global_default()
     {
         MusicDisplayDefaults.Terminology = MusicTerminology.French;
@@ -57,8 +72,8 @@ public sealed class PresentationRulesTests
         Assert.True(MusicFormatter.TryFormatChordName(chords[0].Chord, out var firstName, options: american));
         Assert.Equal("Am/C", firstName);
 
-        Assert.False(MusicFormatter.TryFormatChordName(chords[1].Chord, out var secondName, options: american));
-        Assert.Equal(string.Empty, secondName);
+        Assert.True(MusicFormatter.TryFormatChordName(chords[1].Chord, out var secondName, options: american));
+        Assert.Equal("Csus2/D", secondName);
     }
 
     [Fact]

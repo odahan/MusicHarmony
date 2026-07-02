@@ -18,6 +18,9 @@ public sealed record ScaleRecognitionWeights
     /// <summary>Gets the bonus awarded when the candidate tonic is observed.</summary>
     public double TonicEvidence { get; init; } = 0.5;
 
+    /// <summary>Gets the bonus awarded when the candidate tonic equals the lowest observed note.</summary>
+    public double BassTonicEvidence { get; init; } = 0.75;
+
     /// <summary>Gets the bonus awarded when a supplied chord root equals the candidate tonic.</summary>
     public double ChordRootEvidence { get; init; } = 0.75;
 }

@@ -59,11 +59,24 @@ public readonly record struct ChordSymbol
         if (suffix.SequenceEqual("m")) return StandardChords.Minor.Id;
         if (suffix.SequenceEqual("dim") || suffix.SequenceEqual("°")) return StandardChords.Diminished.Id;
         if (suffix.SequenceEqual("aug") || suffix.SequenceEqual("+")) return StandardChords.Augmented.Id;
+        if (suffix.SequenceEqual("sus2")) return StandardChords.SuspendedSecond.Id;
+        if (suffix.SequenceEqual("sus4") || suffix.SequenceEqual("sus")) return StandardChords.SuspendedFourth.Id;
+        if (suffix.SequenceEqual("6")) return StandardChords.MajorSixth.Id;
+        if (suffix.SequenceEqual("m6")) return StandardChords.MinorSixth.Id;
         if (suffix.SequenceEqual("7")) return StandardChords.DominantSeventh.Id;
         if (suffix.SequenceEqual("maj7")) return StandardChords.MajorSeventh.Id;
         if (suffix.SequenceEqual("m7")) return StandardChords.MinorSeventh.Id;
         if (suffix.SequenceEqual("ø7") || suffix.SequenceEqual("m7b5")) return StandardChords.HalfDiminishedSeventh.Id;
         if (suffix.SequenceEqual("dim7") || suffix.SequenceEqual("°7")) return StandardChords.DiminishedSeventh.Id;
+        if (suffix.SequenceEqual("9")) return StandardChords.DominantNinth.Id;
+        if (suffix.SequenceEqual("maj9")) return StandardChords.MajorNinth.Id;
+        if (suffix.SequenceEqual("m9")) return StandardChords.MinorNinth.Id;
+        if (suffix.SequenceEqual("11")) return StandardChords.DominantEleventh.Id;
+        if (suffix.SequenceEqual("maj11")) return StandardChords.MajorEleventh.Id;
+        if (suffix.SequenceEqual("m11")) return StandardChords.MinorEleventh.Id;
+        if (suffix.SequenceEqual("13")) return StandardChords.DominantThirteenth.Id;
+        if (suffix.SequenceEqual("maj13")) return StandardChords.MajorThirteenth.Id;
+        if (suffix.SequenceEqual("m13")) return StandardChords.MinorThirteenth.Id;
         return null;
     }
 
@@ -74,11 +87,24 @@ public readonly record struct ChordSymbol
         "chord.minor" => "m",
         "chord.diminished" => "°",
         "chord.augmented" => "+",
+        "chord.sus2" => "sus2",
+        "chord.sus4" => "sus4",
+        "chord.major6" => "6",
+        "chord.minor6" => "m6",
         "chord.dominant7" => "7",
         "chord.major7" => "maj7",
         "chord.minor7" => "m7",
         "chord.half-diminished7" => "ø7",
         "chord.diminished7" => "°7",
+        "chord.dominant9" => "9",
+        "chord.major9" => "maj9",
+        "chord.minor9" => "m9",
+        "chord.dominant11" => "11",
+        "chord.major11" => "maj11",
+        "chord.minor11" => "m11",
+        "chord.dominant13" => "13",
+        "chord.major13" => "maj13",
+        "chord.minor13" => "m13",
         _ => string.Concat("[", id, "]"),
     };
 }
