@@ -5,11 +5,9 @@ using Enaxos.MusicTheory.Scales;
 
 namespace Enaxos.MusicTheory.Tonality;
 
-/// <summary>Builds basic scale-degree chords from pentatonic and heptatonic realized scales.</summary>
+/// <summary>Builds basic scale-degree chords from realized scales.</summary>
 public static class ScaleHarmony
 {
-    /// <summary>The supported scale sizes for basic degree-chord generation.</summary>
-    private static readonly int[] SupportedToneCounts = [5, 7];
     /// <summary>The standard triad formulas that receive conventional chord definitions and Roman quality.</summary>
     private static readonly ChordDefinition[] StandardTriads =
     [
@@ -19,15 +17,15 @@ public static class ScaleHarmony
         StandardChords.Augmented,
     ];
 
-    /// <summary>Returns one three-note chord per degree by stacking alternate tones of a pentatonic or heptatonic scale.</summary>
+    /// <summary>Returns one three-note chord per degree by stacking alternate tones of a scale.</summary>
     public static IReadOnlyList<ScaleChord> GetDiatonicTriads(Scale scale)
     {
         ArgumentNullException.ThrowIfNull(scale);
 
         var count = scale.Pitches.Count;
-        if (!SupportedToneCounts.Contains(count))
+        if (count is < 3 or > 12)
         {
-            throw new ArgumentException("Only pentatonic and heptatonic scales are supported.", nameof(scale));
+            throw new ArgumentException("Only scales with three to twelve tones are supported.", nameof(scale));
         }
 
         var result = new ScaleChord[count];

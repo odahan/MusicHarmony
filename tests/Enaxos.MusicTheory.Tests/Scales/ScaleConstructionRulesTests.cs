@@ -71,6 +71,15 @@ public sealed class ScaleConstructionRulesTests
     }
 
     [Fact]
+    public void Scale_definitions_can_include_chromatic_variants_of_the_same_degree()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), ExoticScales.BluesAndBebop.First(definition => definition.Id == "scale.exotic.blues.major"));
+
+        Assert.Equal(["C", "D", "Eb", "E", "G", "A"], scale.Pitches.Select(pitch => pitch.ToString()));
+        Assert.Equal("Eb", scale.Degree(3).ToString());
+    }
+
+    [Fact]
     public void Scale_aggregate_has_structural_equality_and_stable_hash_code()
     {
         var equivalentDefinition = new ScaleDefinition(

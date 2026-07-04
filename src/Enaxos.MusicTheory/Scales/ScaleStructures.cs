@@ -17,6 +17,7 @@ public static class ScaleStructures
             StandardScales.MajorPentatonic,
             StandardScales.MinorPentatonic,
         }
+        .Concat(ExoticScales.All)
         .Concat(ModeCatalog.Standard.All)
         .GroupBy(definition => definition.Id, StringComparer.Ordinal)
         .Select(group => group.First())

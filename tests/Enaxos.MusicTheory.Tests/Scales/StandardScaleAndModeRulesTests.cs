@@ -27,8 +27,16 @@ public sealed class StandardScaleAndModeRulesTests
         Assert.Equal(7, catalog.NaturalMinorModes.Count);
         Assert.Equal(7, catalog.HarmonicMinorModes.Count);
         Assert.Equal(7, catalog.MelodicMinorModes.Count);
+        Assert.Equal(2, catalog.PentatonicScales.Count);
+        Assert.Equal(25, catalog.ExoticScales.Count);
         Assert.Equal(21, catalog.All.Count);
+        Assert.Equal(23, catalog.AllWithPentatonicScales.Count);
+        Assert.Equal(46, catalog.AllWithExoticScales.Count);
+        Assert.Equal(48, catalog.AllWithPentatonicAndExoticScales.Count);
         Assert.Equal(21, catalog.All.Select(mode => mode.Id).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(23, catalog.AllWithPentatonicScales.Select(mode => mode.Id).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(46, catalog.AllWithExoticScales.Select(mode => mode.Id).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(48, catalog.AllWithPentatonicAndExoticScales.Select(mode => mode.Id).Distinct(StringComparer.Ordinal).Count());
     }
 
     [Fact]
@@ -79,6 +87,17 @@ public sealed class StandardScaleAndModeRulesTests
                 definition.Degrees.Select(degree => degree.Number).Distinct().Count());
             Assert.True(definition.Degrees.Zip(definition.Degrees.Skip(1))
                 .All(pair => pair.First.Number < pair.Second.Number));
+        }
+    }
+
+    [Fact]
+    public void Every_exotic_definition_has_a_valid_chromatic_structure()
+    {
+        foreach (var definition in ExoticScales.All)
+        {
+            var structure = ScaleStructures.GetScaleStruct(definition);
+            Assert.Equal(12, structure.SemitoneSteps.Sum());
+            Assert.Equal(new FormulaDegree(1), definition.Degrees[0]);
         }
     }
 

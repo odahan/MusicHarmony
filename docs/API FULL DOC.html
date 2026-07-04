@@ -117,6 +117,7 @@
 <li class="level-3"><a href="#pitchclassspellings">PitchClassSpellings</a></li>
 <li class="level-3"><a href="#spelledpitch">SpelledPitch</a></li>
 <li class="level-2"><a href="#enaxos-musictheory-scales">Enaxos.MusicTheory.Scales</a></li>
+<li class="level-3"><a href="#exoticscales">ExoticScales</a></li>
 <li class="level-3"><a href="#modecatalog">ModeCatalog</a></li>
 <li class="level-3"><a href="#pentatonicderivation">PentatonicDerivation</a></li>
 <li class="level-3"><a href="#pentatonicderivationstrategy">PentatonicDerivationStrategy</a></li>
@@ -301,7 +302,13 @@ Creates a new ScaleRecognitionOptions instance.</li>
 <h4>Properties</h4>
 <ul>
 <li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt;? Catalog { get; init; }</code>
-Gets a custom catalog, or null to search all standard modes.</p>
+Gets a custom catalog, or null to use the standard catalog plus any enabled optional catalogs.</p>
+</li>
+<li><p><code>public bool IncludeExoticCandidates { get; init; }</code>
+Gets whether the default catalog also searches curated exotic scale definitions.</p>
+</li>
+<li><p><code>public bool IncludePentatonicCandidates { get; init; }</code>
+Gets whether the default catalog also searches the standard major and minor pentatonic scales.</p>
 </li>
 <li><p><code>public int MaximumResults { get; init; }</code>
 Gets the maximum number of candidates retained before probabilities are normalized.</p>
@@ -397,7 +404,7 @@ Returns the string representation of this value.</p>
 <h4>Methods</h4>
 <ul>
 <li><p><code>public static IReadOnlyList&lt;ScaleRecognitionCandidate&gt; FindCandidates(IEnumerable&lt;Note&gt; notes, ScaleRecognitionOptions? options = null)</code>
-Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.</p>
+Finds scale candidates for absolute notes without assuming a chord root.</p>
 </li>
 <li><p><code>public static IReadOnlyList&lt;ScaleRecognitionCandidate&gt; FindCandidates(Chord chord, ScaleRecognitionOptions? options = null)</code>
 Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.</p>
@@ -1460,12 +1467,12 @@ Attempts to convert a note to a MIDI number without throwing for range failure.<
 <tbody><tr>
 <td><code>Arabic</code></td>
 <td align="right">0</td>
-<td>Uses Arabic digits from 1 through 7.</td>
+<td>Uses Arabic digits from 1 through 12.</td>
 </tr>
 <tr>
 <td><code>Roman</code></td>
 <td align="right">1</td>
-<td>Uses uppercase Roman numerals from I through VII.</td>
+<td>Uses uppercase Roman numerals from I through XII.</td>
 </tr>
 </tbody></table>
 <h3 id="musicdisplaydefaults"><code>MusicDisplayDefaults</code><a class="heading-link" href="#musicdisplaydefaults" aria-label="Link to MusicDisplayDefaults">#</a></h3>
@@ -1945,8 +1952,34 @@ Attempts to parse a complete invariant pitch spelling.</p>
 </li>
 </ul>
 <h2 id="enaxos-musictheory-scales"><code>Enaxos.MusicTheory.Scales</code><a class="heading-link" href="#enaxos-musictheory-scales" aria-label="Link to Enaxos.MusicTheory.Scales">#</a></h2>
+<h3 id="exoticscales"><code>ExoticScales</code><a class="heading-link" href="#exoticscales" aria-label="Link to ExoticScales">#</a></h3>
+<p>Provides curated non-core scale definitions that are useful in jazz, blues, and modal color work.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class ExoticScales
+</code></pre>
+<h4>Properties</h4>
+<ul>
+<li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; All { get; }</code>
+Gets every curated exotic scale definition.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; BluesAndBebop { get; }</code>
+Gets common blues and bebop scales.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; Japanese { get; }</code>
+Gets curated Japanese pentatonic color scales.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; RareMajorMinor { get; }</code>
+Gets less common major and minor family scales.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; SymmetricAndJazz { get; }</code>
+Gets symmetric and jazz color scales.</p>
+</li>
+<li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; WesternizedOriental { get; }</code>
+Gets westernized oriental color scales.</p>
+</li>
+</ul>
 <h3 id="modecatalog"><code>ModeCatalog</code><a class="heading-link" href="#modecatalog" aria-label="Link to ModeCatalog">#</a></h3>
-<p>Provides immutable catalogs of rotations for the supported seven-note parent collections.</p>
+<p>Provides immutable catalogs of rotations for the supported scale parent collections.</p>
 <p><strong>Declaration</strong></p>
 <pre><code class="language-csharp">public sealed class ModeCatalog
 </code></pre>
@@ -1954,6 +1987,18 @@ Attempts to parse a complete invariant pitch spelling.</p>
 <ul>
 <li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; All { get; }</code>
 Gets each distinct catalog definition used by recognition.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; AllWithExoticScales { get; }</code>
+Gets each distinct catalog definition used by recognition, including exotic scales.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; AllWithPentatonicAndExoticScales { get; }</code>
+Gets each distinct catalog definition used by recognition, including pentatonic and exotic scales.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; AllWithPentatonicScales { get; }</code>
+Gets each distinct catalog definition used by recognition, including pentatonic scales.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; ExoticScales { get; }</code>
+Gets curated exotic scale definitions.</p>
 </li>
 <li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; HarmonicMinorModes { get; }</code>
 Gets the seven generated rotations of harmonic minor.</p>
@@ -1966,6 +2011,9 @@ Gets the seven generated rotations of ascending melodic minor.</p>
 </li>
 <li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; NaturalMinorModes { get; }</code>
 Gets the natural-minor rotations starting from Aeolian.</p>
+</li>
+<li><p><code>public IReadOnlyList&lt;ScaleDefinition&gt; PentatonicScales { get; }</code>
+Gets the standard major and minor pentatonic scales.</p>
 </li>
 <li><p><code>public static ModeCatalog Standard { get; }</code>
 Gets the shared catalog of standard modes.</p>
@@ -2106,7 +2154,7 @@ Determines whether two scales differ.</p>
 <li><code>public ScaleDefinition(string id, IEnumerable&lt;FormulaDegree&gt; degrees)</code>
 Creates and validates a scale definition.<ul>
 <li><code>id</code>: A stable ordinal identifier, not a localized display name.</li>
-<li><code>degrees</code>: Strictly increasing degrees beginning with an unaltered tonic.</li>
+<li><code>degrees</code>: Tonic-relative degrees in strictly ascending chromatic order.</li>
 </ul>
 </li>
 </ul>
@@ -2417,14 +2465,14 @@ Gets the realized scale from which the chord was derived.</p>
 </li>
 </ul>
 <h3 id="scaleharmony"><code>ScaleHarmony</code><a class="heading-link" href="#scaleharmony" aria-label="Link to ScaleHarmony">#</a></h3>
-<p>Builds basic scale-degree chords from pentatonic and heptatonic realized scales.</p>
+<p>Builds basic scale-degree chords from realized scales.</p>
 <p><strong>Declaration</strong></p>
 <pre><code class="language-csharp">public static class ScaleHarmony
 </code></pre>
 <h4>Methods</h4>
 <ul>
 <li><p><code>public static IReadOnlyList&lt;ScaleChord&gt; GetDiatonicTriads(Scale scale)</code>
-Returns one three-note chord per degree by stacking alternate tones of a pentatonic or heptatonic scale.</p>
+Returns one three-note chord per degree by stacking alternate tones of a scale.</p>
 </li>
 </ul>
 <h3 id="keymode"><code>KeyMode</code><a class="heading-link" href="#keymode" aria-label="Link to KeyMode">#</a></h3>
@@ -2561,15 +2609,15 @@ Returns the invariant tonic followed by major or minor.</p>
 </li>
 </ul>
 <h3 id="scaledegreenumber"><code>ScaleDegreeNumber</code><a class="heading-link" href="#scaledegreenumber" aria-label="Link to ScaleDegreeNumber">#</a></h3>
-<p>Represents a validated one-based scale degree in the diatonic range 1 through 7.</p>
+<p>Represents a validated one-based scale degree number.</p>
 <p><strong>Declaration</strong></p>
 <pre><code class="language-csharp">public struct ScaleDegreeNumber
 </code></pre>
 <h4>Constructors</h4>
 <ul>
 <li><code>public ScaleDegreeNumber(int value)</code>
-Creates a diatonic scale-degree number.<ul>
-<li><code>value</code>: A value from 1 through 7.</li>
+Creates a scale-degree number.<ul>
+<li><code>value</code>: A value from 1 through 12.</li>
 </ul>
 </li>
 </ul>

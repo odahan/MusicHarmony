@@ -57,21 +57,29 @@ public sealed class ScaleHarmonyRulesTests
     }
 
     [Fact]
-    public void Scale_harmony_rejects_non_pentatonic_and_non_heptatonic_sources()
+    public void Scale_harmony_generates_chords_for_hexatonic_sources()
     {
-        var definition = new ScaleDefinition(
-            "scale.hexatonic.test",
-            [
-                new FormulaDegree(1),
-                new FormulaDegree(2),
-                new FormulaDegree(3),
-                new FormulaDegree(4),
-                new FormulaDegree(5),
-                new FormulaDegree(6),
-            ]);
-        var scale = Scale.Create(SpelledPitch.Parse("C"), definition);
+        var scale = Scale.Create(SpelledPitch.Parse("C"), ExoticScales.BluesAndBebop.First(definition => definition.Id == "scale.exotic.blues.major"));
 
-        Assert.Throws<ArgumentException>(() => ScaleHarmony.GetDiatonicTriads(scale));
+        var chords = ScaleHarmony.GetDiatonicTriads(scale);
+
+        Assert.Equal(6, chords.Count);
+        Assert.Equal(
+            ["C Eb G", "D E A", "Eb G C", "E A D", "G C Eb", "A D E"],
+            chords.Select(chord => string.Join(" ", chord.Chord.Pitches)));
+    }
+
+    [Fact]
+    public void Scale_harmony_generates_chords_for_octatonic_sources()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), ExoticScales.SymmetricAndJazz.First(definition => definition.Id == "scale.exotic.diminished.half-whole"));
+
+        var chords = ScaleHarmony.GetDiatonicTriads(scale);
+
+        Assert.Equal(8, chords.Count);
+        Assert.Equal(
+            ["C Eb Gb", "Db E G", "Eb Gb A", "E G Bb", "Gb A C", "G Bb Db", "A C Eb", "Bb Db E"],
+            chords.Select(chord => string.Join(" ", chord.Chord.Pitches)));
     }
 
     [Fact]

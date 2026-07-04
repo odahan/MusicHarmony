@@ -56,7 +56,7 @@ public sealed class FormulaAndDefinitionRulesTests
 
     [Theory]
     [MemberData(nameof(InvalidDegreeSequences))]
-    public void Definition_degrees_must_start_at_natural_one_and_strictly_increase(
+    public void Definition_degrees_must_start_at_natural_one_and_move_up_chromatically(
         FormulaDegree[] degrees)
     {
         Assert.Throws<ArgumentException>(() =>
@@ -110,6 +110,7 @@ public sealed class FormulaAndDefinitionRulesTests
         new[] { new FormulaDegree(2), new FormulaDegree(3) },
         new[] { new FormulaDegree(1, -1), new FormulaDegree(2) },
         new[] { new FormulaDegree(1), new FormulaDegree(3), new FormulaDegree(2) },
-        new[] { new FormulaDegree(1), new FormulaDegree(2), new FormulaDegree(2, 1) },
+        new[] { new FormulaDegree(1), new FormulaDegree(2), new FormulaDegree(3, -2) },
+        new[] { new FormulaDegree(1), new FormulaDegree(2), new FormulaDegree(8) },
     };
 }

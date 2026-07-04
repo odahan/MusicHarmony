@@ -78,6 +78,55 @@ public sealed class ScaleRecognitionRulesTests
     }
 
     [Fact]
+    public void Recognition_can_include_pentatonic_candidates_when_requested()
+    {
+        var notes = Notes("C4", "D4", "E4", "G4", "A4");
+
+        var standard = ScaleRecognizer.FindCandidates(
+            notes,
+            new ScaleRecognitionOptions { MaximumResults = 32 });
+        var withPentatonics = ScaleRecognizer.FindCandidates(
+            notes,
+            new ScaleRecognitionOptions
+            {
+                IncludePentatonicCandidates = true,
+                MaximumResults = 32,
+            });
+
+        Assert.DoesNotContain(standard, candidate => candidate.Scale.Definition == StandardScales.MajorPentatonic);
+        var pentatonic = Assert.Single(withPentatonics, candidate =>
+            candidate.Scale.Tonic.ToString() == "C" &&
+            candidate.Scale.Definition == StandardScales.MajorPentatonic);
+        Assert.Empty(pentatonic.MissingPitches);
+        Assert.Empty(pentatonic.OutsidePitches);
+    }
+
+    [Fact]
+    public void Recognition_can_include_exotic_candidates_when_requested()
+    {
+        var notes = Notes("C4", "D4", "Eb4", "E4", "G4", "A4");
+        var majorBlues = ExoticScales.BluesAndBebop.Single(definition => definition.Id == "scale.exotic.blues.major");
+
+        var standard = ScaleRecognizer.FindCandidates(
+            notes,
+            new ScaleRecognitionOptions { MaximumResults = 32 });
+        var withExotics = ScaleRecognizer.FindCandidates(
+            notes,
+            new ScaleRecognitionOptions
+            {
+                IncludeExoticCandidates = true,
+                MaximumResults = 32,
+            });
+
+        Assert.DoesNotContain(standard, candidate => candidate.Scale.Definition == majorBlues);
+        var candidate = Assert.Single(withExotics, candidate =>
+            candidate.Scale.Tonic.ToString() == "C" &&
+            candidate.Scale.Definition == majorBlues);
+        Assert.Empty(candidate.MissingPitches);
+        Assert.Empty(candidate.OutsidePitches);
+    }
+
+    [Fact]
     public void Chord_overload_uses_chord_root_as_tonic_evidence()
     {
         var chord = Chord.Create(SpelledPitch.Parse("C"), StandardChords.Major);

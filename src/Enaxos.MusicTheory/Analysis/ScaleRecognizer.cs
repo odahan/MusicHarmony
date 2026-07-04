@@ -37,7 +37,7 @@ public static class ScaleRecognizer
             throw new ArgumentOutOfRangeException(nameof(options));
         ArgumentNullException.ThrowIfNull(options.Weights);
         ValidateWeights(options.Weights);
-        var catalog = (options.Catalog ?? ModeCatalog.Standard.All).ToArray();
+        var catalog = ResolveCatalog(options).ToArray();
         if (catalog.Length == 0) throw new ArgumentException("The scale catalog cannot be empty.", nameof(options));
 
         // Keep the individual factors with each raw candidate so callers can inspect
@@ -79,6 +79,23 @@ public static class ScaleRecognizer
         var total = exponentials.Sum();
         return selected.Select((item, index) => new ScaleRecognitionCandidate(
             item.Scale, item.Score, exponentials[index] / total, item.Matched, item.Missing, item.Outside, item.Factors)).ToArray();
+    }
+
+    /// <summary>Returns the explicit catalog or the requested built-in recognition catalog.</summary>
+    private static IReadOnlyList<ScaleDefinition> ResolveCatalog(ScaleRecognitionOptions options)
+    {
+        if (options.Catalog is not null)
+        {
+            return options.Catalog;
+        }
+
+        return (options.IncludePentatonicCandidates, options.IncludeExoticCandidates) switch
+        {
+            (true, true) => ModeCatalog.Standard.AllWithPentatonicAndExoticScales,
+            (true, false) => ModeCatalog.Standard.AllWithPentatonicScales,
+            (false, true) => ModeCatalog.Standard.AllWithExoticScales,
+            _ => ModeCatalog.Standard.All,
+        };
     }
 
     /// <summary>Rejects negative, infinite, and NaN coefficients before scoring.</summary>

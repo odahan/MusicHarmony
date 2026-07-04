@@ -63,6 +63,19 @@ public sealed class PresentationRulesTests
     }
 
     [Fact]
+    public void Exotic_scale_names_are_formatted()
+    {
+        var american = new MusicFormatOptions { TerminologyOverride = MusicTerminology.American };
+
+        Assert.Equal("major blues", MusicFormatter.Format(
+            ExoticScales.BluesAndBebop.Single(definition => definition.Id == "scale.exotic.blues.major"),
+            american));
+        Assert.Equal("Hirajoshi", MusicFormatter.Format(
+            ExoticScales.Japanese.Single(definition => definition.Id == "scale.exotic.japanese.hirajoshi"),
+            american));
+    }
+
+    [Fact]
     public void Derived_chord_names_use_recognition_or_return_no_name()
     {
         var scale = Scale.Create(SpelledPitch.Parse("C"), StandardScales.MajorPentatonic);

@@ -11,7 +11,7 @@ public sealed class ScaleDefinition : IEquatable<ScaleDefinition>
 
     /// <summary>Creates and validates a scale definition.</summary>
     /// <param name="id">A stable ordinal identifier, not a localized display name.</param>
-    /// <param name="degrees">Strictly increasing degrees beginning with an unaltered tonic.</param>
+    /// <param name="degrees">Tonic-relative degrees in strictly ascending chromatic order.</param>
     public ScaleDefinition(string id, IEnumerable<FormulaDegree> degrees)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -82,14 +82,18 @@ public sealed class ScaleDefinition : IEquatable<ScaleDefinition>
                 nameof(degrees));
         }
 
+        var previousOffset = FormulaDegreeSemitones.Offset(degrees[0]);
         for (var index = 1; index < degrees.Count; index++)
         {
-            if (degrees[index].Number <= degrees[index - 1].Number)
+            var offset = FormulaDegreeSemitones.Offset(degrees[index]);
+            if (offset <= previousOffset || offset >= 12)
             {
                 throw new ArgumentException(
-                    "Scale degree numbers must be unique and strictly increasing.",
+                    "Scale degrees must produce unique pitch classes in strictly ascending chromatic order.",
                     nameof(degrees));
             }
+
+            previousOffset = offset;
         }
     }
 }

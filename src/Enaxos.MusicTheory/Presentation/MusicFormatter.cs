@@ -238,13 +238,38 @@ public static class MusicFormatter
             "scale.minor.melodic.ascending" => terminology == MusicTerminology.French ? "mineure mélodique ascendante" : "ascending melodic minor",
             "scale.pentatonic.major" => terminology == MusicTerminology.French ? "pentatonique majeure" : "major pentatonic",
             "scale.pentatonic.minor" => terminology == MusicTerminology.French ? "pentatonique mineure" : "minor pentatonic",
+            "scale.exotic.whole-tone" => terminology == MusicTerminology.French ? "tons entiers" : "whole tone",
+            "scale.exotic.diminished.whole-half" => terminology == MusicTerminology.French ? "diminuee ton-demi-ton" : "diminished whole-half",
+            "scale.exotic.diminished.half-whole" => terminology == MusicTerminology.French ? "diminuee demi-ton-ton" : "diminished half-whole",
+            "scale.exotic.augmented" => terminology == MusicTerminology.French ? "augmentee" : "augmented",
+            "scale.exotic.blues.minor" => terminology == MusicTerminology.French ? "blues mineure" : "minor blues",
+            "scale.exotic.blues.major" => terminology == MusicTerminology.French ? "blues majeure" : "major blues",
+            "scale.exotic.bebop.dominant" => terminology == MusicTerminology.French ? "bebop dominante" : "bebop dominant",
+            "scale.exotic.bebop.major" => terminology == MusicTerminology.French ? "bebop majeure" : "bebop major",
+            "scale.exotic.bebop.dorian" => terminology == MusicTerminology.French ? "bebop dorienne" : "bebop dorian",
+            "scale.exotic.harmonic-major" => terminology == MusicTerminology.French ? "majeure harmonique" : "harmonic major",
+            "scale.exotic.double-harmonic-major" => terminology == MusicTerminology.French ? "double harmonique majeure" : "double harmonic major",
+            "scale.exotic.hungarian-minor" => terminology == MusicTerminology.French ? "mineure hongroise" : "Hungarian minor",
+            "scale.exotic.ukrainian-dorian" => terminology == MusicTerminology.French ? "dorienne ukrainienne" : "Ukrainian Dorian",
+            "scale.exotic.neapolitan-major" => terminology == MusicTerminology.French ? "napolitaine majeure" : "Neapolitan major",
+            "scale.exotic.neapolitan-minor" => terminology == MusicTerminology.French ? "napolitaine mineure" : "Neapolitan minor",
+            "scale.exotic.persian" => terminology == MusicTerminology.French ? "persane" : "Persian",
+            "scale.exotic.arabian" => terminology == MusicTerminology.French ? "arabe" : "Arabian",
+            "scale.exotic.spanish-phrygian" => terminology == MusicTerminology.French ? "phrygienne espagnole" : "Spanish Phrygian",
+            "scale.exotic.oriental" => terminology == MusicTerminology.French ? "orientale" : "Oriental",
+            "scale.exotic.egyptian" => terminology == MusicTerminology.French ? "egyptienne" : "Egyptian",
+            "scale.exotic.japanese.hirajoshi" => "Hirajoshi",
+            "scale.exotic.japanese.insen" => "Insen",
+            "scale.exotic.japanese.iwato" => "Iwato",
+            "scale.exotic.japanese.yo" => "Yo",
+            "scale.exotic.japanese.kumoi" => "Kumoi",
             _ => id,
         };
     }
 
-    /// <summary>Formats a validated diatonic value as an upper- or lowercase Roman numeral.</summary>
+    /// <summary>Formats a validated scale-degree value as an upper- or lowercase Roman numeral.</summary>
     private static string Roman(int value, bool upper)
-    { string[] values = ["I", "II", "III", "IV", "V", "VI", "VII"]; var result = values[value - 1]; return upper ? result : result.ToLowerInvariant(); }
+    { string[] values = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"]; var result = value >= 1 && value <= values.Length ? values[value - 1] : value.ToString(CultureInfo.InvariantCulture); return upper ? result : result.ToLowerInvariant(); }
     /// <summary>Immutable snapshot of all settings used during one formatting operation.</summary>
     private readonly record struct Settings(MusicTerminology Terminology, AccidentalGlyphStyle Glyphs, IFormatProvider Culture);
 }

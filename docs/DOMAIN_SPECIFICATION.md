@@ -155,7 +155,7 @@ Pour un intervalle composé, chaque groupe de sept degrés ajoute douze demi-ton
 
 ### 4.8 Gamme et mode
 
-Une `ScaleDefinition` est une séquence ordonnée de degrés relatifs à une tonique. Elle ne contient aucune note concrète.
+Une `ScaleDefinition` est une séquence de degrés relatifs à une tonique, ordonnée par hauteur chromatique ascendante. Elle ne contient aucune note concrète. Une définition peut contenir plusieurs variantes chromatiques d'un même numéro de degré lorsque la formule musicale le justifie, par exemple `♭3` et `3` dans certaines gammes blues ou bebop.
 
 Exemples :
 
@@ -167,12 +167,14 @@ Mineure harmonique 1 2 ♭3  4  5 ♭6  7
 
 Une `Scale` est le résultat de l'application d'une définition à une tonique écrite. La construction conserve les lettres diatoniques attendues.
 
-Le catalogue standard couvre au minimum :
+Le catalogue standard principal couvre au minimum :
 
 - les sept modes de la gamme majeure : ionien, dorien, phrygien, lydien, mixolydien, éolien et locrien ;
 - les sept rotations de la gamme mineure naturelle, exposées comme vues relatives des mêmes collections diatoniques ;
 - les sept rotations de la gamme mineure harmonique ;
 - les sept rotations de la gamme mineure mélodique ascendante.
+
+Deux catalogues optionnels complètent ce noyau : les pentatoniques standard et un catalogue `exotic` volontairement curé. Le catalogue `exotic` contient des gammes symétriques et jazz, blues et bebop courantes, des familles majeure et mineure rares, des couleurs orientales occidentalisées et des gammes japonaises. Il exclut volontairement les catalogues encyclopédiques, les approximations indonésiennes et les raga hindoustani.
 
 Les noms de certains modes mineurs n'étant pas universels, chaque définition possède un identifiant stable et peut exposer plusieurs alias localisés. Pour les modes de la gamme majeure, la terminologie française par défaut est `mode de do`, `mode de ré`, `mode de mi`, `mode de fa`, `mode de sol`, `mode de la`, `mode de si`; la terminologie américaine utilise respectivement `Ionian`, `Dorian`, `Phrygian`, `Lydian`, `Mixolydian`, `Aeolian`, `Locrian`.
 
@@ -228,7 +230,7 @@ La transposition d'un accord théorique ne requiert pas de choisir une octave. E
 
 ### 4.11 Degrés et fonctions harmoniques
 
-Dans une gamme heptatonique, `ScaleDegreeNumber` est compris entre `1` et `7`. Il peut être affiché en chiffre arabe ou sous forme de fonction harmonique en chiffres romains lorsqu'un accord et une tonalité sont connus.
+`ScaleDegreeNumber` est compris entre `1` et `12`, afin de représenter les gammes de tailles différentes prises en charge par la librairie. Il peut être affiché en chiffre arabe. L'affichage en chiffres romains reste réservé aux fonctions harmoniques connues dans un contexte tonal heptatonique.
 
 Convention par défaut :
 
@@ -259,6 +261,8 @@ Une correspondance exacte est classée avant une correspondance avec omission ou
 
 La recherche accepte une série de `Note` ou un `Chord`. Elle évalue toutes les toniques et toutes les définitions du catalogue sélectionné.
 
+Par défaut, le recognizer cherche dans le catalogue standard principal. Les options `IncludePentatonicCandidates` et `IncludeExoticCandidates` ajoutent respectivement les pentatoniques standard et le catalogue `exotic` au catalogue par défaut. Lorsqu'un `Catalog` explicite est fourni, il devient la source unique des définitions candidates.
+
 Le classement prend en compte de manière explicite et configurable :
 
 - la présence des notes observées dans la gamme candidate ;
@@ -286,6 +290,18 @@ La dérivation automatique d'une pentatonique n'est univoque que pour une gamme 
 - un résultat qui conserve la gamme source et la stratégie de dérivation.
 
 L'API ne remplace jamais silencieusement une quinte diminuée ou une autre note absente pour fabriquer une pentatonique standard.
+
+### 4.15 Gammes exotiques
+
+Le catalogue `ExoticScales` regroupe des définitions non centrales mais utiles dans des contextes jazz, blues et de couleur modale :
+
+- `SymmetricAndJazz` : tons entiers, diminuées, augmentée ;
+- `BluesAndBebop` : blues mineure, blues majeure, bebop dominante, majeure et dorienne ;
+- `RareMajorMinor` : majeure harmonique, double harmonique majeure, hongroise mineure, dorien ukrainien, napolitaines majeure et mineure ;
+- `WesternizedOriental` : persane, arabe, phrygienne espagnole, orientale, égyptienne ;
+- `Japanese` : hirajoshi, insen, iwato, yo, kumoi.
+
+Ces gammes sont disponibles pour la reconnaissance lorsqu'elles sont explicitement activées. Elles sont aussi exposées comme définitions de catalogue afin que les consommateurs puissent les proposer directement dans leurs interfaces et générer leurs accords de gamme lorsque cela est musicalement exploitable.
 
 ## 5. Règles de calcul
 

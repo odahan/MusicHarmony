@@ -4,7 +4,7 @@ using Enaxos.MusicTheory.Formulas;
 
 namespace Enaxos.MusicTheory.Scales;
 
-/// <summary>Provides immutable catalogs of rotations for the supported seven-note parent collections.</summary>
+/// <summary>Provides immutable catalogs of rotations for the supported scale parent collections.</summary>
 public sealed class ModeCatalog
 {
     /// <summary>Chromatic offsets of the major reference used to express every rotation as altered degrees.</summary>
@@ -18,7 +18,12 @@ public sealed class ModeCatalog
     private readonly ReadOnlyCollection<ScaleDefinition> _naturalMinorModes;
     private readonly ReadOnlyCollection<ScaleDefinition> _harmonicMinorModes;
     private readonly ReadOnlyCollection<ScaleDefinition> _melodicMinorModes;
+    private readonly ReadOnlyCollection<ScaleDefinition> _pentatonicScales;
+    private readonly ReadOnlyCollection<ScaleDefinition> _exoticScales;
     private readonly ReadOnlyCollection<ScaleDefinition> _all;
+    private readonly ReadOnlyCollection<ScaleDefinition> _allWithPentatonicScales;
+    private readonly ReadOnlyCollection<ScaleDefinition> _allWithExoticScales;
+    private readonly ReadOnlyCollection<ScaleDefinition> _allWithPentatonicAndExoticScales;
 
     private ModeCatalog()
     {
@@ -49,7 +54,16 @@ public sealed class ModeCatalog
         _naturalMinorModes = Array.AsReadOnly(naturalMinor);
         _harmonicMinorModes = Array.AsReadOnly(harmonicMinor);
         _melodicMinorModes = Array.AsReadOnly(melodicMinor);
+        _pentatonicScales = Array.AsReadOnly(
+        [
+            StandardScales.MajorPentatonic,
+            StandardScales.MinorPentatonic,
+        ]);
+        _exoticScales = Array.AsReadOnly(global::Enaxos.MusicTheory.Scales.ExoticScales.All.ToArray());
         _all = Array.AsReadOnly(major.Concat(harmonicMinor).Concat(melodicMinor).ToArray());
+        _allWithPentatonicScales = Array.AsReadOnly(_all.Concat(_pentatonicScales).ToArray());
+        _allWithExoticScales = Array.AsReadOnly(_all.Concat(_exoticScales).ToArray());
+        _allWithPentatonicAndExoticScales = Array.AsReadOnly(_all.Concat(_pentatonicScales).Concat(_exoticScales).ToArray());
     }
 
     /// <summary>Gets the shared catalog of standard modes.</summary>
@@ -67,8 +81,23 @@ public sealed class ModeCatalog
     /// <summary>Gets the seven generated rotations of ascending melodic minor.</summary>
     public IReadOnlyList<ScaleDefinition> MelodicMinorModes => _melodicMinorModes;
 
+    /// <summary>Gets the standard major and minor pentatonic scales.</summary>
+    public IReadOnlyList<ScaleDefinition> PentatonicScales => _pentatonicScales;
+
+    /// <summary>Gets curated exotic scale definitions.</summary>
+    public IReadOnlyList<ScaleDefinition> ExoticScales => _exoticScales;
+
     /// <summary>Gets each distinct catalog definition used by recognition.</summary>
     public IReadOnlyList<ScaleDefinition> All => _all;
+
+    /// <summary>Gets each distinct catalog definition used by recognition, including pentatonic scales.</summary>
+    public IReadOnlyList<ScaleDefinition> AllWithPentatonicScales => _allWithPentatonicScales;
+
+    /// <summary>Gets each distinct catalog definition used by recognition, including exotic scales.</summary>
+    public IReadOnlyList<ScaleDefinition> AllWithExoticScales => _allWithExoticScales;
+
+    /// <summary>Gets each distinct catalog definition used by recognition, including pentatonic and exotic scales.</summary>
+    public IReadOnlyList<ScaleDefinition> AllWithPentatonicAndExoticScales => _allWithPentatonicAndExoticScales;
 
     /// <summary>Rotates a parent pitch-class collection and converts each rotation to altered major degrees.</summary>
     private static ScaleDefinition[] CreateRotations(string idPrefix, IReadOnlyList<int> offsets)

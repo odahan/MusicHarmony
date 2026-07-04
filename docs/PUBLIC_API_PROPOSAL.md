@@ -275,6 +275,16 @@ public static class StandardScales
     public static ScaleDefinition MinorPentatonic { get; }
 }
 
+public static class ExoticScales
+{
+    public static IReadOnlyList<ScaleDefinition> SymmetricAndJazz { get; }
+    public static IReadOnlyList<ScaleDefinition> BluesAndBebop { get; }
+    public static IReadOnlyList<ScaleDefinition> RareMajorMinor { get; }
+    public static IReadOnlyList<ScaleDefinition> WesternizedOriental { get; }
+    public static IReadOnlyList<ScaleDefinition> Japanese { get; }
+    public static IReadOnlyList<ScaleDefinition> All { get; }
+}
+
 public enum ScaleFamily
 {
     Major,
@@ -292,7 +302,12 @@ public sealed class ModeCatalog
     public IReadOnlyList<ScaleDefinition> NaturalMinorModes { get; }
     public IReadOnlyList<ScaleDefinition> HarmonicMinorModes { get; }
     public IReadOnlyList<ScaleDefinition> MelodicMinorModes { get; }
+    public IReadOnlyList<ScaleDefinition> PentatonicScales { get; }
+    public IReadOnlyList<ScaleDefinition> ExoticScales { get; }
     public IReadOnlyList<ScaleDefinition> All { get; }
+    public IReadOnlyList<ScaleDefinition> AllWithPentatonicScales { get; }
+    public IReadOnlyList<ScaleDefinition> AllWithExoticScales { get; }
+    public IReadOnlyList<ScaleDefinition> AllWithPentatonicAndExoticScales { get; }
 }
 ```
 
@@ -398,7 +413,7 @@ public readonly record struct ScaleDegreeNumber
 {
     public int Value { get; }
 
-    public ScaleDegreeNumber(int value); // 1..7
+    public ScaleDegreeNumber(int value); // 1..12
 }
 
 public enum HarmonicChordQuality
@@ -624,6 +639,8 @@ public sealed record ScaleRecognitionOptions
     public IReadOnlyList<ScaleDefinition>? Catalog { get; init; }
     public ScaleRecognitionWeights Weights { get; init; } = new();
     public bool StrictMembership { get; init; } = true;
+    public bool IncludePentatonicCandidates { get; init; }
+    public bool IncludeExoticCandidates { get; init; }
     public int MaximumResults { get; init; } = 32;
     public double ProbabilityTemperature { get; init; } = 1.0;
 }
@@ -658,6 +675,8 @@ public static class ScaleRecognizer
 Les résultats sont triés par `Score` décroissant, puis par armure, tonique et identifiant de mode afin que l'ordre reste déterministe.
 
 `RelativeProbability` est calculée par normalisation softmax des scores retournés. `ProbabilityTemperature` contrôle l'écart entre les candidats et doit être strictement positif.
+
+Par défaut, le recognizer utilise le catalogue standard principal. `IncludePentatonicCandidates` et `IncludeExoticCandidates` élargissent ce catalogue par défaut. Un `Catalog` explicite remplace ce choix et devient la liste exhaustive des définitions candidates.
 
 ## 8. Accordage et MIDI
 

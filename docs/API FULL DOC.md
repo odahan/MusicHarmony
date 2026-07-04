@@ -178,7 +178,13 @@ public sealed class ScaleRecognitionOptions
 #### Properties
 
 - `public IReadOnlyList<ScaleDefinition>? Catalog { get; init; }`
-  Gets a custom catalog, or null to search all standard modes.
+  Gets a custom catalog, or null to use the standard catalog plus any enabled optional catalogs.
+
+- `public bool IncludeExoticCandidates { get; init; }`
+  Gets whether the default catalog also searches curated exotic scale definitions.
+
+- `public bool IncludePentatonicCandidates { get; init; }`
+  Gets whether the default catalog also searches the standard major and minor pentatonic scales.
 
 - `public int MaximumResults { get; init; }`
   Gets the maximum number of candidates retained before probabilities are normalized.
@@ -280,7 +286,7 @@ public static class ScaleRecognizer
 #### Methods
 
 - `public static IReadOnlyList<ScaleRecognitionCandidate> FindCandidates(IEnumerable<Note> notes, ScaleRecognitionOptions? options = null)`
-  Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.
+  Finds scale candidates for absolute notes without assuming a chord root.
 
 - `public static IReadOnlyList<ScaleRecognitionCandidate> FindCandidates(Chord chord, ScaleRecognitionOptions? options = null)`
   Finds scale candidates for chord tones and uses the chord root as additional tonic evidence.
@@ -1328,8 +1334,8 @@ public enum DegreeDisplayStyle
 
 | Name | Value | Description |
 |---|---:|---|
-| `Arabic` | 0 | Uses Arabic digits from 1 through 7. |
-| `Roman` | 1 | Uses uppercase Roman numerals from I through VII. |
+| `Arabic` | 0 | Uses Arabic digits from 1 through 12. |
+| `Roman` | 1 | Uses uppercase Roman numerals from I through XII. |
 
 ### `MusicDisplayDefaults`
 
@@ -1762,9 +1768,39 @@ public struct SpelledPitch
 
 ## `Enaxos.MusicTheory.Scales`
 
+### `ExoticScales`
+
+Provides curated non-core scale definitions that are useful in jazz, blues, and modal color work.
+
+**Declaration**
+
+```csharp
+public static class ExoticScales
+```
+
+#### Properties
+
+- `public static IReadOnlyList<ScaleDefinition> All { get; }`
+  Gets every curated exotic scale definition.
+
+- `public static IReadOnlyList<ScaleDefinition> BluesAndBebop { get; }`
+  Gets common blues and bebop scales.
+
+- `public static IReadOnlyList<ScaleDefinition> Japanese { get; }`
+  Gets curated Japanese pentatonic color scales.
+
+- `public static IReadOnlyList<ScaleDefinition> RareMajorMinor { get; }`
+  Gets less common major and minor family scales.
+
+- `public static IReadOnlyList<ScaleDefinition> SymmetricAndJazz { get; }`
+  Gets symmetric and jazz color scales.
+
+- `public static IReadOnlyList<ScaleDefinition> WesternizedOriental { get; }`
+  Gets westernized oriental color scales.
+
 ### `ModeCatalog`
 
-Provides immutable catalogs of rotations for the supported seven-note parent collections.
+Provides immutable catalogs of rotations for the supported scale parent collections.
 
 **Declaration**
 
@@ -1777,6 +1813,18 @@ public sealed class ModeCatalog
 - `public IReadOnlyList<ScaleDefinition> All { get; }`
   Gets each distinct catalog definition used by recognition.
 
+- `public IReadOnlyList<ScaleDefinition> AllWithExoticScales { get; }`
+  Gets each distinct catalog definition used by recognition, including exotic scales.
+
+- `public IReadOnlyList<ScaleDefinition> AllWithPentatonicAndExoticScales { get; }`
+  Gets each distinct catalog definition used by recognition, including pentatonic and exotic scales.
+
+- `public IReadOnlyList<ScaleDefinition> AllWithPentatonicScales { get; }`
+  Gets each distinct catalog definition used by recognition, including pentatonic scales.
+
+- `public IReadOnlyList<ScaleDefinition> ExoticScales { get; }`
+  Gets curated exotic scale definitions.
+
 - `public IReadOnlyList<ScaleDefinition> HarmonicMinorModes { get; }`
   Gets the seven generated rotations of harmonic minor.
 
@@ -1788,6 +1836,9 @@ public sealed class ModeCatalog
 
 - `public IReadOnlyList<ScaleDefinition> NaturalMinorModes { get; }`
   Gets the natural-minor rotations starting from Aeolian.
+
+- `public IReadOnlyList<ScaleDefinition> PentatonicScales { get; }`
+  Gets the standard major and minor pentatonic scales.
 
 - `public static ModeCatalog Standard { get; }`
   Gets the shared catalog of standard modes.
@@ -1927,7 +1978,7 @@ public sealed class ScaleDefinition
 - `public ScaleDefinition(string id, IEnumerable<FormulaDegree> degrees)`
   Creates and validates a scale definition.
   - `id`: A stable ordinal identifier, not a localized display name.
-  - `degrees`: Strictly increasing degrees beginning with an unaltered tonic.
+  - `degrees`: Tonic-relative degrees in strictly ascending chromatic order.
 
 #### Properties
 
@@ -2218,7 +2269,7 @@ public sealed class ScaleChord
 
 ### `ScaleHarmony`
 
-Builds basic scale-degree chords from pentatonic and heptatonic realized scales.
+Builds basic scale-degree chords from realized scales.
 
 **Declaration**
 
@@ -2229,7 +2280,7 @@ public static class ScaleHarmony
 #### Methods
 
 - `public static IReadOnlyList<ScaleChord> GetDiatonicTriads(Scale scale)`
-  Returns one three-note chord per degree by stacking alternate tones of a pentatonic or heptatonic scale.
+  Returns one three-note chord per degree by stacking alternate tones of a scale.
 
 ### `KeyMode`
 
@@ -2364,7 +2415,7 @@ public struct MusicalKey
 
 ### `ScaleDegreeNumber`
 
-Represents a validated one-based scale degree in the diatonic range 1 through 7.
+Represents a validated one-based scale degree number.
 
 **Declaration**
 
@@ -2375,8 +2426,8 @@ public struct ScaleDegreeNumber
 #### Constructors
 
 - `public ScaleDegreeNumber(int value)`
-  Creates a diatonic scale-degree number.
-  - `value`: A value from 1 through 7.
+  Creates a scale-degree number.
+  - `value`: A value from 1 through 12.
 
 #### Properties
 

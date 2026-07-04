@@ -51,10 +51,12 @@ public sealed class TonalityRulesTests
     }
 
     [Fact]
-    public void Scale_degree_is_always_one_through_seven()
+    public void Scale_degree_is_validated_in_the_supported_range()
     {
         Assert.Equal(1, default(ScaleDegreeNumber).Value);
         Assert.Throws<ArgumentOutOfRangeException>(() => new ScaleDegreeNumber(0));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ScaleDegreeNumber(8));
+        Assert.Equal(8, new ScaleDegreeNumber(8).Value);
+        Assert.Equal(12, new ScaleDegreeNumber(12).Value);
+        Assert.Throws<ArgumentOutOfRangeException>(() => new ScaleDegreeNumber(13));
     }
 }
