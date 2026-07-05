@@ -59,7 +59,7 @@ jobs:
       - name: Publish package
         shell: pwsh
         run: |
-          $packages = Get-ChildItem artifacts/packages -Filter *.nupkg
+          $packages = Get-ChildItem artifacts/packages -File | Where-Object { $_.Name -like "*.nupkg" -and $_.Name -notlike "*.snupkg" }
           foreach ($package in $packages) {
             dotnet nuget push $package.FullName --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
           }
