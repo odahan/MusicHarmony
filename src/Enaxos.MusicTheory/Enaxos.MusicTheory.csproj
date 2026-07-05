@@ -2,12 +2,34 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <PackageId>Enaxos.MusicTheory</PackageId>
+    <Title>Enaxos MusicTheory</Title>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <Authors>Olivier Dahan</Authors>
+    <Company>Enaxos</Company>
+    <Product>Enaxos MusicTheory</Product>
+    <Copyright>Copyright © 2026 Olivier Dahan. All rights reserved.</Copyright>
+    <Description>An independent .NET 8 library for representing and analyzing music theory concepts while preserving note spelling.</Description>
+    <PackageTags>music-theory;harmony;music;midi;tuning;scales;chords;dotnet</PackageTags>
+    <PackageProjectUrl>https://github.com/odahan/MusicHarmony</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/odahan/MusicHarmony</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.MD</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.MD</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Release 1.2.0.</PackageReleaseNotes>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.MD" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE.MD" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>
