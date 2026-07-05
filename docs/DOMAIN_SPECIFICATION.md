@@ -1,386 +1,399 @@
-# Enaxos Music Theory — Spécification du domaine
+# Enaxos Music Theory — Domain Specification
 
-Statut : proposition initiale  
-Cible : .NET 8.0  
-Nature : nouvelle conception indépendante
+Status: current specification aligned with the implementation
+Target: .NET 8.0
+Nature: maintained independent design
 
-## 1. Intention
+## 1. Intent
 
-Le nouveau moteur représente les concepts de théorie musicale et en déduit les résultats par des règles explicites. Il ne reproduit ni l'architecture, ni les algorithmes, ni les tables d'implémentation de l'ancien port de Mingus.
+The engine represents music-theory concepts and derives results through explicit rules. It does not reproduce the architecture, algorithms, or implementation tables of the former Mingus port.
 
-Les sources normatives de l'implémentation seront :
+The normative sources for the implementation are:
 
-- les définitions usuelles de la théorie musicale occidentale tonale ;
-- les conventions déclarées dans ce document ;
-- une bibliographie indépendante à enregistrer avant l'implémentation de chaque module ;
-- les invariants et exemples d'acceptation ci-dessous.
+- common definitions from Western tonal music theory;
+- the conventions declared in this document;
+- independent bibliography recorded before each module is implemented;
+- the invariants and acceptance examples below.
 
-L'ancien projet peut servir à inventorier des cas d'usage, mais jamais à déterminer un algorithme, une structure interne ou un résultat de référence.
+The former project may be used to inventory use cases, but never to determine an algorithm, an internal structure, or a reference result.
 
-## 2. Périmètre initial
+## 2. Initial Scope
 
-La version 1 couvre :
+Version 1 covers:
 
-- les hauteurs écrites et leurs équivalences enharmoniques ;
-- les notes octaviées selon la notation scientifique ;
-- les intervalles simples et composés, ascendants et descendants ;
-- les transpositions diatoniques et chromatiques ;
-- les gammes et modes décrits par des formules ;
-- les tonalités majeures et mineures et leurs armures ;
-- les accords décrits par des formules de degrés ;
-- les voicings et renversements, séparés de l'identité d'un accord ;
-- la représentation et le nommage français ou américain des notes, accords, modes et fonctions harmoniques ;
-- la reconnaissance classée d'accords depuis une série de notes ;
-- la recherche classée des gammes compatibles avec des notes ou un accord ;
-- les gammes pentatoniques standard et leur dérivation explicite ;
-- le cercle des quintes et ses relations ;
-- le tempérament égal à douze divisions de l'octave (12-TET) comme accordage par défaut ;
-- des adaptateurs MIDI, de formatage et de géométrie UI sans dépendance à un framework graphique.
+- written pitches and their enharmonic equivalences;
+- octave-qualified notes using scientific pitch notation;
+- simple and compound intervals, ascending and descending;
+- diatonic and chromatic transposition;
+- scales and modes described by formulas;
+- cyclic scale structures and common-note relationships;
+- major and minor keys and their key signatures;
+- chords described by degree formulas;
+- voicings and inversions, separate from chord identity;
+- diatonic triads derived from realized scales;
+- French or American naming for notes, chords, modes, and harmonic functions;
+- ranked chord recognition from a note sequence;
+- ranked search for scales compatible with notes or a chord;
+- standard pentatonic scales and their explicit derivation;
+- the circle of fifths and its relationships;
+- twelve-tone equal temperament (12-TET) as the default tuning;
+- MIDI, formatting, and UI-geometry adapters with no graphics-framework dependency.
 
-Hors périmètre initial :
+Out of scope for the initial version:
 
-- contrepoint, conduite de voix et réalisation automatique ;
-- analyse fonctionnelle ambiguë sans contexte tonal explicite ;
-- tempéraments historiques ;
-- notation rythmique complète, mesures et MusicXML ;
-- apprentissage statistique ou probabilités calibrées depuis un corpus musical.
+- counterpoint, voice leading, and automatic realization;
+- ambiguous functional analysis without an explicit tonal context;
+- historical temperaments;
+- full rhythmic notation, measures, and MusicXML;
+- statistical learning or probabilities calibrated from a musical corpus.
 
 ## 3. Conventions
 
-### 3.1 Notes et octaves
+### 3.1 Notes and Octaves
 
-- Les lettres sont `C D E F G A B`.
-- L'octave change au passage de `B` vers `C`.
-- `C4` est le do central selon la notation scientifique et correspond au numéro MIDI 60 dans l'adaptateur MIDI.
-- Le noyau ne définit pas une note par son numéro MIDI. Il utilise un index chromatique relatif où `C0 = 0`; l'adaptateur MIDI ajoute 12.
-- Les altérations sont des déplacements chromatiques entiers : bémol `-1`, naturel `0`, dièse `+1`, double bémol `-2`, double dièse `+2`. Le modèle mathématique n'est pas limité aux doubles altérations, même si les parseurs et interfaces peuvent appliquer une limite de sécurité configurable.
+- Letters are `C D E F G A B`.
+- The octave changes when moving from `B` to `C`.
+- `C4` is middle C in scientific pitch notation and maps to MIDI number 60 in the MIDI adapter.
+- The core model does not define a note by its MIDI number. It uses a relative chromatic index where `C0 = 0`; the MIDI adapter adds 12.
+- Accidentals are integer chromatic displacements: flat `-1`, natural `0`, sharp `+1`, double flat `-2`, double sharp `+2`. The mathematical model is not limited to double accidentals, although parsers and UI layers may enforce a configurable safety limit.
 
-### 3.2 Tempérament
+### 3.2 Temperament
 
-- L'équivalence sonore par défaut est évaluée en 12-TET.
-- L'écriture d'une note reste indépendante de son équivalence sonore.
-- La fréquence est calculée par un service d'accordage, jamais par les objets d'harmonie.
-- La référence par défaut est `A4 = 440 Hz`, mais elle est configurable.
+- Default sounding equivalence is evaluated in 12-TET.
+- A note's spelling remains independent from its sounding equivalence.
+- Frequency is calculated by a tuning service, never by harmony objects.
+- The default reference is `A4 = 440 Hz`, and it is configurable.
 
-### 3.3 Culture et formatage
+### 3.3 Culture and Formatting
 
-- Les calculs sont indépendants de la langue et de la culture.
-- Le noyau stocke des identifiants stables, pas des libellés localisés.
-- Les symboles Unicode (`♭`, `♯`, `𝄫`, `𝄪`) et ASCII (`b`, `#`, `bb`, `##`) sont traités par des parseurs et formateurs dédiés.
-- La bibliothèque possède une terminologie d'affichage par défaut, française ou américaine.
-- Chaque opération d'affichage peut remplacer localement cette valeur sans modifier le défaut global.
-- Le défaut global est atomique et ne concerne que la présentation. Aucun calcul ni objet du domaine n'en dépend.
-- Une opération de formatage capture la valeur par défaut une seule fois à son entrée afin de rester cohérente si le défaut global change simultanément.
+- Calculations are independent from language and culture.
+- The core stores stable identifiers, not localized labels.
+- Unicode symbols (`♭`, `♯`, `𝄫`, `𝄪`) and ASCII symbols (`b`, `#`, `bb`, `##`) are handled by dedicated parsers and formatters.
+- The library has a default display terminology: French or American.
+- Each formatting operation can locally override that default without changing the global default.
+- The global default is atomic and presentation-only. No calculation or domain object depends on it.
+- A formatting operation captures the default value once at entry, so it remains coherent if the global default changes concurrently.
 
-Terminologie minimale :
+Minimum terminology:
 
-| Écriture interne | Française | Américaine |
+| Internal spelling | French | American |
 |---|---|---|
 | C D E F G A B | Do Ré Mi Fa Sol La Si | C D E F G A B |
 | Major chord | majeur | major |
 | Minor chord | mineur | minor |
 | Mixolydian | mode de sol | Mixolydian |
 
-`ToString()` reste invariant et destiné au diagnostic. Les sorties destinées à l'utilisateur passent par le formateur explicite.
+`ToString()` remains invariant and diagnostic-oriented. User-facing output goes through the explicit formatter.
 
-## 4. Vocabulaire du domaine
+## 4. Domain Vocabulary
 
-### 4.1 Lettre de note
+### 4.1 Note Letter
 
-`NoteLetter` représente une position diatonique parmi sept : `C` à `B`. Sa position naturelle en demi-tons dans l'octave est :
+`NoteLetter` represents one of seven diatonic positions: `C` through `B`. Natural semitone positions in the octave are:
 
-| Lettre | C | D | E | F | G | A | B |
+| Letter | C | D | E | F | G | A | B |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Position | 0 | 2 | 4 | 5 | 7 | 9 | 11 |
 
-### 4.2 Altération
+### 4.2 Accidental
 
-`Accidental` représente un déplacement chromatique signé appliqué à une lettre. Elle ne change jamais la lettre diatonique.
+`Accidental` represents a signed chromatic displacement applied to a letter. It never changes the diatonic letter.
 
-### 4.3 Classe de hauteur
+### 4.3 Pitch Class
 
-`PitchClass` représente une valeur chromatique normalisée dans `[0, 11]`. Elle ne contient ni lettre, ni altération, ni octave.
+`PitchClass` represents a normalized chromatic value in `[0, 11]`. It contains no letter, accidental, or octave.
 
-### 4.4 Hauteur écrite
+### 4.4 Spelled Pitch
 
-`SpelledPitch` associe une lettre et une altération, sans octave.
+`SpelledPitch` combines a letter and an accidental, without an octave.
 
-Deux hauteurs écrites sont égales uniquement si leur lettre et leur altération sont égales. L'équivalence sonore est une opération distincte :
+Two spelled pitches are equal only when both their letter and accidental are equal. Sounding equivalence is a separate operation:
 
 ```text
-C♯ != D♭                   égalité d'écriture
-C♯ enharmonicWith D♭      équivalence sonore en 12-TET
+C♯ != D♭                  spelling equality
+C♯ enharmonicWith D♭      sounding equivalence in 12-TET
 ```
 
 ### 4.5 Note
 
-`Note` associe une hauteur écrite et un numéro d'octave. Elle ne contient ni durée, ni vélocité, ni canal MIDI.
+`Note` combines a spelled pitch and an octave number. It contains no duration, velocity, or MIDI channel.
 
-L'index chromatique absolu est :
+The absolute chromatic index is:
 
 ```text
-12 × octave + positionNaturelle(lettre) + altération
+12 × octave + naturalPosition(letter) + accidental
 ```
 
-Il n'est pas normalisé modulo 12. Ainsi `B♯4` conserve son écriture mais possède le même index sonore que `C5`.
+It is not normalized modulo 12. Therefore `B♯4` preserves its spelling while having the same sounding index as `C5`.
 
-### 4.6 Intervalle
+### 4.6 Interval
 
-Un `Interval` est défini canoniquement par :
+An `Interval` is canonically defined by:
 
-- un numéro diatonique positif, commençant à 1 pour l'unisson ;
-- une distance chromatique signée, relative au mouvement diatonique ascendant ;
-- une direction appliquée lors d'une transposition.
+- a positive diatonic number, starting at 1 for a unison;
+- a signed chromatic distance, relative to ascending diatonic motion;
+- a direction applied during transposition.
 
-La plupart des intervalles usuels ont une distance chromatique positive ou nulle. Une valeur signée permet néanmoins de représenter sans cas spécial un unisson diminué.
+Most common intervals have a non-negative chromatic distance. A signed value still allows a diminished unison to be represented without a special case.
 
-La qualité est déduite du numéro et de la distance chromatique. Les classes parfaites sont `1, 4, 5`; les classes majeures sont `2, 3, 6, 7`, répétées à chaque octave.
+Quality is derived from the number and chromatic distance. Perfect classes are `1, 4, 5`; major classes are `2, 3, 6, 7`, repeated at each octave.
 
-Distances de référence d'un intervalle majeur ou parfait simple :
+Reference distances for simple major or perfect intervals:
 
-| Numéro | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| Number | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Demi-tons | 0 | 2 | 4 | 5 | 7 | 9 | 11 | 12 |
+| Semitones | 0 | 2 | 4 | 5 | 7 | 9 | 11 | 12 |
 
-Pour un intervalle composé, chaque groupe de sept degrés ajoute douze demi-tons.
+For a compound interval, each group of seven degrees adds twelve semitones.
 
-### 4.7 Degré de formule
+### 4.7 Formula Degree
 
-`FormulaDegree` associe un numéro de degré et une altération chromatique relative. Exemples :
+`FormulaDegree` combines a degree number and a relative chromatic alteration. Examples:
 
-- tierce majeure : `3` ;
-- tierce mineure : `♭3` ;
-- quinte augmentée : `♯5` ;
-- neuvième : `9`.
+- major third: `3`;
+- minor third: `♭3`;
+- augmented fifth: `♯5`;
+- ninth: `9`.
 
-### 4.8 Gamme et mode
+### 4.8 Scale and Mode
 
-Une `ScaleDefinition` est une séquence de degrés relatifs à une tonique, ordonnée par hauteur chromatique ascendante. Elle ne contient aucune note concrète. Une définition peut contenir plusieurs variantes chromatiques d'un même numéro de degré lorsque la formule musicale le justifie, par exemple `♭3` et `3` dans certaines gammes blues ou bebop.
+A `ScaleDefinition` is a sequence of degrees relative to a tonic, ordered by ascending chromatic height. It contains no concrete note. A definition may contain several chromatic variants of the same degree number when musically justified, for example `♭3` and `3` in some blues or bebop scales.
 
-Exemples :
-
-```text
-Majeure          1  2  3  4  5  6  7
-Mineure naturelle 1  2 ♭3  4  5 ♭6 ♭7
-Mineure harmonique 1 2 ♭3  4  5 ♭6  7
-```
-
-Une `Scale` est le résultat de l'application d'une définition à une tonique écrite. La construction conserve les lettres diatoniques attendues.
-
-Le catalogue standard principal couvre au minimum :
-
-- les sept modes de la gamme majeure : ionien, dorien, phrygien, lydien, mixolydien, éolien et locrien ;
-- les sept rotations de la gamme mineure naturelle, exposées comme vues relatives des mêmes collections diatoniques ;
-- les sept rotations de la gamme mineure harmonique ;
-- les sept rotations de la gamme mineure mélodique ascendante.
-
-Deux catalogues optionnels complètent ce noyau : les pentatoniques standard et un catalogue `exotic` volontairement curé. Le catalogue `exotic` contient des gammes symétriques et jazz, blues et bebop courantes, des familles majeure et mineure rares, des couleurs orientales occidentalisées et des gammes japonaises. Il exclut volontairement les catalogues encyclopédiques, les approximations indonésiennes et les raga hindoustani.
-
-Les noms de certains modes mineurs n'étant pas universels, chaque définition possède un identifiant stable et peut exposer plusieurs alias localisés. Pour les modes de la gamme majeure, la terminologie française par défaut est `mode de do`, `mode de ré`, `mode de mi`, `mode de fa`, `mode de sol`, `mode de la`, `mode de si`; la terminologie américaine utilise respectivement `Ionian`, `Dorian`, `Phrygian`, `Lydian`, `Mixolydian`, `Aeolian`, `Locrian`.
-
-### 4.9 Tonalité et armure
-
-Une `MusicalKey` associe une tonique écrite et un mode majeur ou mineur.
-
-Une `KeySignature` est représentée canoniquement par un nombre de quintes signé :
-
-- positif : nombre de dièses, dans l'ordre `F C G D A E B` ;
-- négatif : nombre de bémols, dans l'ordre `B E A D G C F` ;
-- zéro : aucune altération à l'armure.
-
-La version 1 prend en charge les armures conventionnelles de `-7` à `+7`.
-
-### 4.10 Accord, voicing et renversement
-
-Une `ChordDefinition` est une séquence de degrés relatifs. Exemples :
+Examples:
 
 ```text
-Majeur             1  3  5
-Mineur             1 ♭3  5
-Septième dominante 1  3  5 ♭7
-Septième diminuée  1 ♭3 ♭5 𝄫7
+Major            1  2  3  4  5  6  7
+Natural minor    1  2 ♭3  4  5 ♭6 ♭7
+Harmonic minor   1  2 ♭3  4  5 ♭6  7
 ```
 
-Un `Chord` associe une fondamentale écrite et une définition. Il expose simultanément :
+A `Scale` is the result of applying a definition to a written tonic. Construction preserves the expected diatonic letters.
 
-- une identité symbolique standard et indépendante de la langue ;
-- sa série ordonnée de hauteurs écrites en position fondamentale ;
-- des noms formatés, abrégés ou complets, obtenus par le service de présentation.
+A scale structure is the cyclic sequence of semitone distances between consecutive tones, including octave closure. `W` and `H` represent whole and half steps; wider gaps remain numeric. This structure describes the chromatic contour of a scale, not its spelling.
 
-Exemples de représentations d'un même accord :
+Scale relationships expose common notes between multiple scales or pitch collections. The result preserves the order and spelling of the first collection. Comparison can use pitch classes or exact spelling.
 
-| Style | Français | Américain |
+The main standard catalog covers at least:
+
+- the seven modes of the major scale: Ionian, Dorian, Phrygian, Lydian, Mixolydian, Aeolian, and Locrian;
+- the seven rotations of the natural minor scale, exposed as relative views of the same diatonic collections;
+- the seven rotations of the harmonic minor scale;
+- the seven rotations of the ascending melodic minor scale.
+
+Two optional catalogs complement this core: standard pentatonics and a curated `exotic` catalog. The `exotic` catalog contains common symmetric and jazz scales, blues and bebop scales, rare major and minor families, Westernized oriental colors, and Japanese scales. It deliberately excludes encyclopedic catalogs, Indonesian approximations, and Hindustani ragas.
+
+Because names for some minor modes are not universal, each definition has a stable identifier and may expose several localized aliases. For major-scale modes, default French terminology is `mode de do`, `mode de ré`, `mode de mi`, `mode de fa`, `mode de sol`, `mode de la`, `mode de si`; American terminology uses `Ionian`, `Dorian`, `Phrygian`, `Lydian`, `Mixolydian`, `Aeolian`, `Locrian`.
+
+### 4.9 Key and Key Signature
+
+A `MusicalKey` combines a written tonic and a major or minor mode.
+
+A `KeySignature` is canonically represented by a signed number of fifths:
+
+- positive: number of sharps, in order `F C G D A E B`;
+- negative: number of flats, in order `B E A D G C F`;
+- zero: no key-signature accidental.
+
+Version 1 supports conventional key signatures from `-7` through `+7`.
+
+### 4.10 Chord, Voicing, and Inversion
+
+A `ChordDefinition` is a sequence of relative degrees. Examples:
+
+```text
+Major              1  3  5
+Minor              1 ♭3  5
+Dominant seventh   1  3  5 ♭7
+Diminished seventh 1 ♭3 ♭5 𝄫7
+```
+
+A `Chord` combines a written root and a definition. It exposes:
+
+- a standard symbolic identity independent from language;
+- its ordered series of written pitches in root position;
+- formatted abbreviated or full names through the presentation service.
+
+Representations of the same chord:
+
+| Style | French | American |
 |---|---|---|
-| Abrégé | Do m7 | Cm7 |
-| Complet | Do mineur septième | C minor seventh |
+| Abbreviated | Do m7 | Cm7 |
+| Full | Do mineur septième | C minor seventh |
 | Notes | Do Mib Sol Sib | C Eb G Bb |
 
-Un `Voicing` est une séquence ordonnée de notes octaviées réalisant un accord. Le renversement est déduit du degré d'accord placé à la basse. Un changement de voicing ou de renversement ne modifie pas l'identité de l'accord.
+A `ChordRealization` is an ordered sequence of octave-qualified notes realizing a chord. Inversion is derived from the chord degree placed in the bass. Changing the realization or inversion does not change chord identity.
 
-Un accord transposé et une réalisation transformée conservent leur provenance :
+A transposed chord and a transformed realization preserve provenance:
 
-- `OriginalChord` désigne l'accord avant toute transformation ;
-- `SemitoneDeltaFromOriginal` conserve le déplacement signé exact, sans réduction modulo 12 ;
-- `InversionNumber` vaut `0` en position fondamentale, `1` au premier renversement, etc. ;
-- une nouvelle transposition cumule son déplacement avec le delta déjà mémorisé ;
-- un renversement conserve l'accord d'origine et le delta de transposition ;
-- demander un autre renversement remplace le numéro courant, il ne l'additionne pas.
+- `OriginalChord` designates the chord before any transformation;
+- `SemitoneDeltaFromOriginal` preserves the exact signed displacement, without modulo-12 reduction;
+- `InversionNumber` is `0` in root position, `1` in first inversion, and so on;
+- a new transposition accumulates its displacement with the already stored delta;
+- an inversion preserves the original chord and transposition delta;
+- requesting another inversion replaces the current inversion number; it does not add to it.
 
-La transposition d'un accord théorique ne requiert pas de choisir une octave. Elle retourne un objet dérivé contenant l'accord original, l'accord résultat et le delta. La réalisation octaviée ajoute ensuite les informations de voicing et de renversement.
+Transposing a theoretical chord does not require choosing an octave. It returns a derived object containing the original chord, the resulting chord, and the delta. The octave-qualified realization then adds voicing and inversion information.
 
-### 4.11 Degrés et fonctions harmoniques
+### 4.11 Degrees and Harmonic Functions
 
-`ScaleDegreeNumber` est compris entre `1` et `12`, afin de représenter les gammes de tailles différentes prises en charge par la librairie. Il peut être affiché en chiffre arabe. L'affichage en chiffres romains reste réservé aux fonctions harmoniques connues dans un contexte tonal heptatonique.
+`ScaleDegreeNumber` is between `1` and `12`, so the library can represent supported scales of different sizes. It can be displayed as an Arabic number. Roman-numeral display remains reserved for harmonic functions known in a heptatonic tonal context.
 
-Convention par défaut :
+Default convention:
 
-- accord majeur : chiffre romain majuscule, par exemple `I`, `IV`, `V` ;
-- accord mineur : chiffre romain minuscule, par exemple `ii`, `iii`, `vi` ;
-- accord diminué : chiffre romain minuscule suivi de `°`, par exemple `vii°` ;
-- accord semi-diminué : chiffre romain minuscule suivi de `ø` ;
-- accord augmenté : chiffre romain majuscule suivi de `+`.
+- major chord: uppercase Roman numeral, for example `I`, `IV`, `V`;
+- minor chord: lowercase Roman numeral, for example `ii`, `iii`, `vi`;
+- diminished chord: lowercase Roman numeral followed by `°`, for example `vii°`;
+- half-diminished chord: lowercase Roman numeral followed by `ø`;
+- augmented chord: uppercase Roman numeral followed by `+`.
 
-La fonction harmonique n'est jamais déduite sans tonalité explicite. Un même accord peut avoir plusieurs fonctions selon le contexte.
+A harmonic function is never inferred without an explicit key. The same chord may have several functions depending on context.
 
-### 4.12 Reconnaissance d'accords
+Diatonic triads of a scale are built by stacking alternate degrees from each scale degree. Major, minor, diminished, and augmented qualities are recognized when they match standard definitions; other formulas remain available with quality `Other`. For heptatonic scales, these results can be formatted as Roman numerals.
 
-La reconnaissance accepte une série de `Note` ou un accord libre. Elle ignore l'octave pour identifier les classes de notes, mais utilise la basse pour déterminer un renversement lorsque l'ordre ou les octaves sont disponibles.
+### 4.12 Chord Recognition
 
-Elle retourne une liste de candidats ordonnée, car une même collection sonore peut admettre plusieurs fondamentales ou orthographes. Chaque candidat contient :
+Recognition accepts a sequence of `Note` or a free chord. It ignores octave to identify pitch classes, but uses bass to determine inversion when ordering or octaves are available.
 
-- l'accord théorique reconnu ;
-- la fondamentale proposée ;
-- le renversement éventuel ;
-- les notes manquantes ou supplémentaires ;
-- un score brut et une confiance normalisée ;
-- ses noms abrégé et complet dans la terminologie demandée.
+It returns an ordered list of candidates, because the same sounding collection may allow several roots or spellings. Each candidate contains:
 
-Une correspondance exacte est classée avant une correspondance avec omission ou ajout. L'orthographe des notes contribue au classement mais l'équivalence enharmonique peut être activée par option.
+- the recognized theoretical chord;
+- the proposed root;
+- the optional inversion;
+- the recognized bass when determinable;
+- the recognized input pitches;
+- missing or added notes;
+- a raw score and normalized confidence.
 
-### 4.13 Recherche de gammes compatibles
+An exact match is ranked before a match with omissions or additions. Note spelling contributes to the ranking, but enharmonic equivalence can be enabled by option. Abbreviated or full names are produced later by the presentation service.
 
-La recherche accepte une série de `Note` ou un `Chord`. Elle évalue toutes les toniques et toutes les définitions du catalogue sélectionné.
+### 4.13 Compatible Scale Search
 
-Par défaut, le recognizer cherche dans le catalogue standard principal. Les options `IncludePentatonicCandidates` et `IncludeExoticCandidates` ajoutent respectivement les pentatoniques standard et le catalogue `exotic` au catalogue par défaut. Lorsqu'un `Catalog` explicite est fourni, il devient la source unique des définitions candidates.
+The search accepts a sequence of `Note` or a `Chord`. It evaluates every tonic and every definition in the selected catalog.
 
-Le classement prend en compte de manière explicite et configurable :
+By default, the recognizer searches in the main standard catalog. `IncludePentatonicCandidates` and `IncludeExoticCandidates` add standard pentatonics and the `exotic` catalog to that default catalog. When an explicit `Catalog` is supplied, it becomes the sole source of candidate definitions.
 
-- la présence des notes observées dans la gamme candidate ;
-- la couverture de la gamme par les notes distinctes observées ;
-- les notes extérieures à la gamme ;
-- la cohérence de l'orthographe diatonique ;
-- la fondamentale et la basse d'un accord lorsqu'elles sont connues ;
-- la présence éventuelle de la tonique dans les données d'entrée.
+Ranking explicitly and configurably accounts for:
 
-Chaque résultat expose un `Score` et une `RelativeProbability` dans `[0, 1]`. Les probabilités relatives des candidats retournés totalisent 1. Cette valeur est une normalisation heuristique dépendant du catalogue et des poids choisis ; elle ne constitue pas une probabilité statistique calibrée.
+- membership of observed notes in the candidate scale;
+- coverage of the scale by distinct observed notes;
+- notes outside the scale;
+- consistency of diatonic spelling;
+- root and bass of a chord when known;
+- possible tonic evidence in the input data.
 
-### 4.14 Gammes pentatoniques
+Each result exposes a `Score` and a `RelativeProbability` in `[0, 1]`. Relative probabilities of returned candidates sum to 1. This value is a heuristic normalization that depends on the catalog and weights; it is not a statistically calibrated probability.
 
-Les définitions standard sont :
+### 4.14 Pentatonic Scales
+
+Standard definitions are:
 
 ```text
-Pentatonique majeure  1  2  3  5  6
-Pentatonique mineure  1 ♭3  4  5 ♭7
+Major pentatonic  1  2  3  5  6
+Minor pentatonic  1 ♭3  4  5 ♭7
 ```
 
-La dérivation automatique d'une pentatonique n'est univoque que pour une gamme compatible avec l'une de ces formules. L'API propose donc :
+Automatic pentatonic derivation is unambiguous only for a scale compatible with one of these formulas. The API therefore provides:
 
-- une stratégie `StandardMajorOrMinor`, utilisée par défaut et qui échoue explicitement si aucune pentatonique standard n'est contenue dans la gamme source ;
-- une stratégie `SelectSourceDegrees` qui extrait cinq positions précisées par l'appelant ;
-- un résultat qui conserve la gamme source et la stratégie de dérivation.
+- a `StandardMajorOrMinor` strategy, used by default, which explicitly fails if no standard pentatonic is contained in the source scale;
+- a `SelectSourceDegrees` strategy that extracts five positions chosen by the caller;
+- a result that preserves the source scale and derivation strategy.
 
-L'API ne remplace jamais silencieusement une quinte diminuée ou une autre note absente pour fabriquer une pentatonique standard.
+The API never silently replaces a diminished fifth or another absent note to fabricate a standard pentatonic.
 
-### 4.15 Gammes exotiques
+### 4.15 Exotic Scales
 
-Le catalogue `ExoticScales` regroupe des définitions non centrales mais utiles dans des contextes jazz, blues et de couleur modale :
+`ExoticScales` groups non-core definitions useful in jazz, blues, and modal-color contexts:
 
-- `SymmetricAndJazz` : tons entiers, diminuées, augmentée ;
-- `BluesAndBebop` : blues mineure, blues majeure, bebop dominante, majeure et dorienne ;
-- `RareMajorMinor` : majeure harmonique, double harmonique majeure, hongroise mineure, dorien ukrainien, napolitaines majeure et mineure ;
-- `WesternizedOriental` : persane, arabe, phrygienne espagnole, orientale, égyptienne ;
-- `Japanese` : hirajoshi, insen, iwato, yo, kumoi.
+- `SymmetricAndJazz`: whole tone, diminished, augmented;
+- `BluesAndBebop`: minor blues, major blues, dominant, major, and Dorian bebop;
+- `RareMajorMinor`: harmonic major, double harmonic major, Hungarian minor, Ukrainian Dorian, Neapolitan major and minor;
+- `WesternizedOriental`: Persian, Arabian, Spanish Phrygian, Oriental, Egyptian;
+- `Japanese`: Hirajoshi, Insen, Iwato, Yo, Kumoi.
 
-Ces gammes sont disponibles pour la reconnaissance lorsqu'elles sont explicitement activées. Elles sont aussi exposées comme définitions de catalogue afin que les consommateurs puissent les proposer directement dans leurs interfaces et générer leurs accords de gamme lorsque cela est musicalement exploitable.
+These scales are available for recognition only when explicitly enabled. They are also exposed as catalog definitions so consumers can offer them directly in UIs and derive scale chords when musically useful.
 
-## 5. Règles de calcul
+## 5. Calculation Rules
 
-### 5.1 Classe chromatique
+### 5.1 Chromatic Class
 
 ```text
 pitchClass(spelledPitch) =
-    modulo12(positionNaturelle(letter) + accidental.semitones)
+    modulo12(naturalPosition(letter) + accidental.semitones)
 ```
 
-Le modulo mathématique retourne toujours une valeur comprise entre 0 et 11.
+The mathematical modulo always returns a value from 0 to 11.
 
-### 5.2 Transposition écrite
+### 5.2 Written Transposition
 
-Pour transposer une note par un intervalle :
+To transpose a note by an interval:
 
-1. déterminer la lettre cible par la distance diatonique ;
-2. déterminer l'index chromatique cible par la distance en demi-tons ;
-3. déterminer l'octave naturelle de la lettre cible ;
-4. calculer l'altération nécessaire pour atteindre l'index chromatique cible ;
-5. conserver cette écriture, même si une écriture enharmonique semble plus simple.
+1. determine the target letter from the diatonic distance;
+2. determine the target chromatic index from the semitone distance;
+3. determine the natural octave of the target letter;
+4. calculate the accidental required to reach the target chromatic index;
+5. preserve that spelling, even if an enharmonic spelling seems simpler.
 
-Exemples normatifs :
+Normative examples:
 
 ```text
-C4 + tierce majeure = E4
-C♯4 + tierce majeure = E♯4
-D♭4 + tierce majeure = F4
-B♯4 + seconde majeure = C𝄪5
+C4 + major third = E4
+C♯4 + major third = E♯4
+D♭4 + major third = F4
+B♯4 + major second = C𝄪5
 ```
 
-La simplification enharmonique est une opération explicite soumise à une stratégie ; elle ne fait pas partie de la transposition.
+Enharmonic simplification is an explicit operation controlled by a strategy; it is not part of transposition.
 
-### 5.3 Intervalle entre deux notes
+### 5.3 Interval Between Two Notes
 
-L'intervalle entre deux notes écrites dépend :
+The interval between two written notes depends on:
 
-- de la distance entre leurs lettres et octaves ;
-- de la distance entre leurs index chromatiques absolus.
+- the distance between their letters and octaves;
+- the distance between their absolute chromatic indexes.
 
-`C♯4 → D♭4` est donc une seconde diminuée, même si la distance sonore vaut zéro en 12-TET.
+`C♯4 → D♭4` is therefore a diminished second, even though the sounding distance is zero in 12-TET.
 
-### 5.4 Construction d'une gamme
+### 5.4 Scale Construction
 
-Chaque degré est obtenu en transposant la tonique selon son numéro diatonique et son altération chromatique relative. Une gamme heptatonique diatonique utilise exactement une fois chaque lettre avant la répétition de l'octave.
+Each degree is obtained by transposing the tonic according to its diatonic number and relative chromatic alteration. A diatonic heptatonic scale uses each letter exactly once before octave repetition.
 
-### 5.5 Construction d'un accord
+A scale structure is calculated from the chromatic offsets of its formula or from the pitch classes of an ordered collection. A valid structure contains at least two tones, has no duplicate pitch class, and closes exactly one octave.
 
-Chaque son théorique est obtenu depuis la fondamentale par le degré de formule. Les doublures, omissions et dispositions appartiennent au `Voicing`, pas au `Chord`.
+### 5.5 Chord Construction
 
-### 5.6 Transposition et renversement d'un accord
+Each theoretical tone is obtained from the root by the formula degree. Doublings, omissions, and dispositions belong to the octave-qualified realization, not to `Chord`.
 
-La transposition chromatique d'un accord applique le même delta signé à toutes ses notes et à sa fondamentale. Une stratégie d'orthographe explicite détermine l'écriture du résultat. Le delta mémorisé reste celui demandé par l'appelant : `+14` n'est pas réduit à `+2`.
+A diatonic triad is built from a scale by taking the current degree, the degree two positions later, and the degree four positions later, with cyclic wraparound in the scale.
 
-Le renversement déplace successivement les notes les plus graves d'une octave tout en préservant leur écriture. Pour un accord de `n` sons distincts, les renversements valides sont `0..n-1`.
+### 5.6 Chord Transposition and Inversion
 
-### 5.7 Fréquence en 12-TET
+Chromatic transposition of a chord applies the same signed delta to all notes and to the root. An explicit spelling strategy determines the result spelling. The stored delta remains the one requested by the caller: `+14` is not reduced to `+2`.
 
-Pour un index MIDI `m`, une référence `A4 = f` et `A4 = 69` :
+Inversion successively moves the lowest notes up an octave while preserving their spelling. For a chord with `n` distinct tones, valid inversions are `0..n-1`.
+
+### 5.7 Frequency in 12-TET
+
+For MIDI index `m`, reference `A4 = f`, and `A4 = 69`:
 
 ```text
 frequency(m) = f × 2 ^ ((m - 69) / 12)
 ```
 
-La durée d'une note n'intervient jamais dans cette formule.
+Note duration never participates in this formula.
 
-## 6. Cercle des quintes
+## 6. Circle of Fifths
 
-### 6.1 Modèle harmonique
+### 6.1 Harmonic Model
 
-- Le cercle contient exactement douze positions chromatiques.
-- Un déplacement horaire ajoute une quinte juste ascendante.
-- Un déplacement antihoraire ajoute une quarte juste ascendante, équivalente à une quinte descendante.
-- Chaque position expose une tonalité majeure et sa relative mineure, partageant la même armure.
-- Certaines positions exposent plusieurs graphies conventionnelles enharmoniques.
+- The circle contains exactly twelve chromatic positions.
+- A clockwise move adds an ascending perfect fifth.
+- A counterclockwise move adds an ascending perfect fourth, equivalent to a descending fifth.
+- Each position exposes a major key and its relative minor, sharing the same key signature.
+- Some positions expose several conventional enharmonic spellings.
 
-Armures proposées par position, avec `C majeur` à l'index 0 :
+Proposed signatures by position, with `C major` at index 0:
 
-| Index | Armures disponibles | Tonalités majeures |
+| Index | Available signatures | Major keys |
 |---:|---|---|
 | 0 | 0 | C |
 | 1 | +1 | G |
@@ -395,88 +408,91 @@ Armures proposées par position, avec `C majeur` à l'index 0 :
 | 10 | -2 | B♭ |
 | 11 | -1 | F |
 
-La graphie principale est sélectionnée par une stratégie explicite : nombre minimal d'altérations, puis préférence dièses ou bémols en cas d'égalité.
+The primary spelling is selected by an explicit strategy: fewest accidentals, then sharp or flat preference when tied.
 
-### 6.2 Modèle pour interface utilisateur
+### 6.2 UI Model
 
-Le domaine expose les positions et relations. Un module de géométrie indépendant expose :
+The domain exposes positions and relationships. An independent geometry module exposes:
 
-- l'angle de début, l'angle central et l'amplitude de chaque secteur ;
-- des coordonnées normalisées dans `[-1, 1]` ;
-- un point d'ancrage pour le libellé majeur ;
-- un point d'ancrage pour le libellé mineur ;
-- aucune couleur, police, commande ou classe propre à un framework UI.
+- start angle, center angle, and sweep of each sector;
+- normalized coordinates in `[-1, 1]`;
+- an anchor point for the major label;
+- an anchor point for the minor label;
+- no color, font, command, or framework-specific class.
 
-Une UI peut ainsi dessiner le cercle avec son propre système graphique sans réimplémenter les calculs de position.
+A UI can therefore draw the circle with its own graphics system without reimplementing position calculations.
 
 ## 7. Invariants
 
-### 7.1 Valeurs et égalité
+### 7.1 Values and Equality
 
-- `INV-P01` — Une `PitchClass` est toujours dans `[0, 11]`.
-- `INV-P02` — L'égalité de `SpelledPitch` compare lettre et altération.
-- `INV-P03` — L'équivalence enharmonique compare les classes de hauteur, jamais l'égalité d'objet.
-- `INV-P04` — `Note` ne contient aucune propriété rythmique ou MIDI.
-- `INV-P05` — Deux objets égaux ont toujours le même hash code.
+- `INV-P01` — A `PitchClass` is always in `[0, 11]`.
+- `INV-P02` — `SpelledPitch` equality compares letter and accidental.
+- `INV-P03` — Enharmonic equivalence compares pitch classes, never object equality.
+- `INV-P04` — `Note` contains no rhythmic or MIDI property.
+- `INV-P05` — Equal objects always have the same hash code.
 
-### 7.2 Intervalles et transposition
+### 7.2 Intervals and Transposition
 
-- `INV-I01` — Un numéro d'intervalle est supérieur ou égal à 1.
-- `INV-I02` — Une transposition respecte simultanément la distance diatonique et la distance chromatique.
-- `INV-I03` — Une transposition ne simplifie jamais implicitement l'orthographe.
-- `INV-I04` — Transposer par un intervalle puis par son opposé restitue exactement la note écrite initiale.
-- `INV-I05` — L'inversion de deux intervalles simples complémentaires totalise neuf degrés et douze demi-tons.
+- `INV-I01` — An interval number is greater than or equal to 1.
+- `INV-I02` — A transposition respects both diatonic distance and chromatic distance.
+- `INV-I03` — A transposition never implicitly simplifies spelling.
+- `INV-I04` — Transposing by an interval and then by its opposite restores the exact original written note.
+- `INV-I05` — Inversion of two complementary simple intervals totals nine degrees and twelve semitones.
 
-### 7.3 Gammes et tonalités
+### 7.3 Scales and Keys
 
-- `INV-S01` — Une définition de gamme possède des degrés uniques, ordonnés et commençant par `1` naturel.
-- `INV-S02` — Une gamme heptatonique diatonique utilise les sept lettres exactement une fois.
-- `INV-S03` — La répétition finale éventuelle de la tonique appartient à la présentation, pas à l'identité de la gamme.
-- `INV-K01` — Une armure conventionnelle contient entre zéro et sept altérations d'un seul type.
-- `INV-K02` — Une majeure et sa relative mineure ont la même armure.
+- `INV-S01` — A scale definition has unique ordered degrees and starts with natural `1`.
+- `INV-S02` — A diatonic heptatonic scale uses all seven letters exactly once.
+- `INV-S03` — Optional final tonic repetition belongs to presentation, not scale identity.
+- `INV-S04` — A valid scale structure closes exactly twelve semitones.
+- `INV-S05` — Common notes preserve the order and spelling of the first collection.
+- `INV-K01` — A conventional key signature contains between zero and seven accidentals of a single type.
+- `INV-K02` — A major key and its relative minor have the same key signature.
 
-### 7.4 Accords
+### 7.4 Chords
 
-- `INV-C01` — Une définition d'accord contient la fondamentale `1` naturelle.
-- `INV-C02` — Les degrés d'une définition sont uniques.
-- `INV-C03` — Chaque note d'un voicing est enharmoniquement compatible avec un degré de l'accord, sauf extension explicitement autorisée.
-- `INV-C04` — Modifier un voicing ou un renversement ne modifie pas l'identité de l'accord.
-- `INV-C05` — Un accord expose toujours une identité symbolique et une série de hauteurs écrites cohérentes avec sa définition.
-- `INV-C06` — Le delta d'une transposition est signé, exact et mesuré depuis l'accord d'origine.
-- `INV-C07` — Un accord renversé conserve l'accord d'origine et un numéro de renversement valide.
-- `INV-C08` — La transposition ne modifie pas le numéro de renversement et le renversement ne modifie pas le delta de transposition.
+- `INV-C01` — A chord definition contains natural root `1`.
+- `INV-C02` — Definition degrees are unique.
+- `INV-C03` — Each note in a voicing is enharmonically compatible with a chord degree unless an extension is explicitly allowed.
+- `INV-C04` — Changing a voicing or inversion does not change chord identity.
+- `INV-C05` — A chord always exposes a symbolic identity and written pitches coherent with its definition.
+- `INV-C06` — A transposition delta is signed, exact, and measured from the original chord.
+- `INV-C07` — An inverted chord preserves the original chord and a valid inversion number.
+- `INV-C08` — Transposition does not change the inversion number, and inversion does not change the transposition delta.
 
-### 7.5 Nommage et analyse
+### 7.5 Naming and Analysis
 
-- `INV-N01` — Le formatage français et américain d'un objet ne modifie jamais cet objet.
-- `INV-N02` — Un override local n'altère jamais le défaut global de présentation.
-- `INV-N03` — Les chiffres romains ne sont produits qu'avec une tonalité explicite.
-- `INV-N04` — Les accords diminués utilisent `°` par défaut et les accords semi-diminués `ø`.
-- `INV-R01` — Les candidats d'une reconnaissance sont triés par score décroissant avec une règle de départage déterministe.
-- `INV-R02` — Les probabilités relatives des gammes retournées totalisent 1 à la tolérance numérique près.
-- `INV-R03` — Le score brut et ses facteurs explicatifs restent accessibles.
-- `INV-R04` — Une recherche stricte n'accepte aucune note extérieure à la gamme candidate.
+- `INV-N01` — French and American formatting of an object never modifies that object.
+- `INV-N02` — A local override never changes the global display default.
+- `INV-N03` — Roman numerals are produced only with an explicit tonal context.
+- `INV-N04` — Diminished chords use `°` by default and half-diminished chords use `ø`.
+- `INV-N05` — A Roman numeral derived from a `ScaleChord` is produced only for a heptatonic scale.
+- `INV-R01` — Recognition candidates are sorted by descending score with a deterministic tie-breaker.
+- `INV-R02` — Relative probabilities of returned scales sum to 1 within numeric tolerance.
+- `INV-R03` — Raw score and explanatory score factors remain accessible.
+- `INV-R04` — Strict search accepts no note outside the candidate scale.
 
-### 7.6 Cercle des quintes
+### 7.6 Circle of Fifths
 
-- `INV-F01` — Le cercle possède exactement douze segments ordonnés.
-- `INV-F02` — Les index sont normalisés modulo 12.
-- `INV-F03` — Deux segments voisins sont séparés d'une quinte juste dans le sens horaire.
-- `INV-F04` — La majeure et la relative mineure d'une graphie partagent exactement la même armure.
-- `INV-F05` — Une tonalité conventionnelle de `-7` à `+7` appartient à un segment unique.
-- `INV-F06` — La géométrie produit douze secteurs de 30 degrés sans chevauchement ni lacune.
+- `INV-F01` — The circle has exactly twelve ordered segments.
+- `INV-F02` — Indexes are normalized modulo 12.
+- `INV-F03` — Neighboring segments are separated by a perfect fifth clockwise.
+- `INV-F04` — The major key and relative minor of a spelling share exactly the same key signature.
+- `INV-F05` — A conventional key from `-7` to `+7` belongs to one segment.
+- `INV-F06` — Geometry produces twelve 30-degree sectors with no overlap or gap.
 
-### 7.7 Qualité logicielle
+### 7.7 Software Quality
 
-- `INV-A01` — Tous les objets du domaine sont immuables et sûrs pour une lecture concurrente.
-- `INV-A02` — Aucun calcul ne dépend d'un état global mutable.
-- `INV-A03` — Une collection publique n'est jamais modifiable par le consommateur.
-- `INV-A04` — Les calculs métier sont déterministes à paramètres identiques ; le formatage est déterministe pour une configuration d'affichage capturée identique.
-- `INV-A05` — `Parse` lève une `FormatException` documentée ; `TryParse` n'en lève jamais pour une entrée utilisateur invalide.
-- `INV-A06` — Les calculs métier n'utilisent pas de chaînes comme représentation intermédiaire.
-- `INV-A07` — Le seul défaut global mutable autorisé concerne la terminologie d'affichage et son accès est atomique.
+- `INV-A01` — All domain objects are immutable and safe for concurrent reads.
+- `INV-A02` — No calculation depends on mutable global state.
+- `INV-A03` — A public collection is never mutable by the consumer.
+- `INV-A04` — Business calculations are deterministic for identical parameters; formatting is deterministic for an identical captured display configuration.
+- `INV-A05` — `Parse` throws a documented `FormatException`; `TryParse` never throws for invalid user input.
+- `INV-A06` — Business calculations do not use strings as intermediate representation.
+- `INV-A07` — The only mutable global default allowed is display terminology, and its access is atomic.
 
-## 8. Exemples d'acceptation
+## 8. Acceptance Examples
 
 ```text
 parse("C#4") = Note(SpelledPitch(C, Sharp), 4)
@@ -488,7 +504,10 @@ frequency(A4, A4=440Hz) = 440Hz
 transpose(C#4, major third) = E#4
 interval(C#4, Db4) = diminished second, 0 semitone
 majorScale(F#) = F# G# A# B C# D# E#
+scaleStruct(major) = WWHWWWH
+commonNotes(C major, G major) = C D E G A B
 majorChord(Db) = Db F Ab
+diatonicTriads(C major) = C, Dm, Em, F, G, Am, Bdim
 format(C minor seventh, French, abbreviated) = "Do m7"
 format(C minor seventh, American, full) = "C minor seventh"
 romanNumeral(B diminished, key=C major) = "vii°"
@@ -500,26 +519,28 @@ subdominantOf(Eb major) = Ab major
 relativeMinorOf(Eb major) = C minor
 ```
 
-## 9. Stratégie de tests
+## 9. Test Strategy
 
-Les tests sont organisés par règles, pas par méthodes :
+Tests are organized by rules, not by methods:
 
-- tests exhaustifs des douze classes chromatiques ;
-- tests de toutes les qualités d'intervalles simples et d'un ensemble d'intervalles composés ;
-- tests de propriétés pour la transposition aller-retour ;
-- tests des gammes standard dans toutes les tonalités conventionnelles ;
-- tests d'accords depuis plusieurs fondamentales avec altérations ;
-- tests de provenance après chaînes de transpositions et de renversements ;
-- tests de noms français/américains avec défaut global et overrides concurrents ;
-- tests des chiffres romains dans plusieurs tonalités ;
-- tests de reconnaissance exacte, ambiguë, avec omission et avec ajout ;
-- tests de classement des gammes et de normalisation des probabilités relatives ;
-- tests des modes des gammes majeure, mineure harmonique et mineure mélodique ;
-- tests de dérivation et d'échec explicite des pentatoniques ;
-- tests d'égalité, d'équivalence enharmonique et de stabilité des hash codes ;
-- tests des quinze armures `-7..+7` et de leur placement sur douze segments ;
-- tests géométriques indépendants du rendu ;
-- tests de parsing Unicode et ASCII ;
-- tests de limites pour éviter les entrées excessives.
+- exhaustive tests of the twelve chromatic classes;
+- tests of all simple interval qualities and a set of compound intervals;
+- property-style tests for round-trip transposition;
+- tests of standard scales in all conventional keys;
+- tests of scale structures and common notes by pitch class and exact spelling;
+- chord tests from several roots with accidentals;
+- tests of diatonic triads and their Roman-numeral formatting;
+- tests of provenance after chains of transpositions and inversions;
+- tests of French/American names with the global default and concurrent overrides;
+- tests of Roman numerals in several keys;
+- tests of exact, ambiguous, omitted, and added-tone recognition;
+- tests of scale ranking and relative-probability normalization;
+- tests of major, harmonic minor, and melodic minor modes;
+- tests of pentatonic derivation and explicit failure;
+- tests of equality, enharmonic equivalence, and hash-code stability;
+- tests of the fifteen key signatures `-7..+7` and their placement on twelve segments;
+- rendering-independent geometry tests;
+- Unicode and ASCII parsing tests;
+- limit tests to avoid excessive inputs.
 
-Les résultats historiques de Mingus ne constituent pas des oracles de test.
+Historical Mingus results are not test oracles.

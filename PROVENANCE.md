@@ -13,12 +13,13 @@ were consulted or copied.
 ## Authorized normative inputs
 
 The following two files are the only artifacts copied from HarmonyLibOD. They
-are retained verbatim in `docs/`.
+were imported as the clean-room seed documents, then maintained in French as
+`.FR.md` documents and translated to English under the historical filenames.
 
 | Document | Original path | SHA-256 |
 |---|---|---|
-| `DOMAIN_SPECIFICATION.md` | `E:\ExJ\Enaxos.Harmony\HarmonyLibOD\docs\DOMAIN_SPECIFICATION.md` | `1781C9681D2F7910827F4F9494E983286E7AA394FE4FBFAEC937993EBF014548` |
-| `PUBLIC_API_PROPOSAL.md` | `E:\ExJ\Enaxos.Harmony\HarmonyLibOD\docs\PUBLIC_API_PROPOSAL.md` | `4700442475EBBDFAD958E34D541DF1829F79EE97911EA6C0622AEDD7C9112A59` |
+| `DOMAIN_SPECIFICATION.FR.md` | `E:\ExJ\Enaxos.Harmony\HarmonyLibOD\docs\DOMAIN_SPECIFICATION.md` | `1781C9681D2F7910827F4F9494E983286E7AA394FE4FBFAEC937993EBF014548` |
+| `PUBLIC_API_PROPOSAL.FR.md` | `E:\ExJ\Enaxos.Harmony\HarmonyLibOD\docs\PUBLIC_API_PROPOSAL.md` | `4700442475EBBDFAD958E34D541DF1829F79EE97911EA6C0622AEDD7C9112A59` |
 
 If an independent reference differs from these project conventions, the two
 normative documents above take precedence.

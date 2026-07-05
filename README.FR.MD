@@ -8,8 +8,8 @@ théorie musicale tout en conservant l’orthographe des notes.
 Version actuelle : **1.2.0**.
 
 Le projet est une réécriture *clean-room*. Son comportement est défini par les
-[spécifications du domaine](docs/DOMAIN_SPECIFICATION.md) et la
-[proposition d’API publique](docs/PUBLIC_API_PROPOSAL.md). La démarche et les
+[spécifications du domaine](docs/DOMAIN_SPECIFICATION.FR.md) et la
+[proposition d’API publique](docs/PUBLIC_API_PROPOSAL.FR.md). La démarche et les
 références indépendantes utilisées sont consignées dans
 [PROVENANCE.md](PROVENANCE.md).
 
