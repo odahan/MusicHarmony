@@ -1,0 +1,73 @@
+name: Publish NuGet
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build, test, pack, publish
+    runs-on: windows-latest
+    environment: release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore Enaxos.MusicTheory.sln
+
+      - name: Build
+        run: dotnet build Enaxos.MusicTheory.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/Enaxos.MusicTheory.Tests/Enaxos.MusicTheory.Tests.csproj --configuration Release --no-build --verbosity minimal
+
+      - name: Verify tag matches package version
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content src/Enaxos.MusicTheory/Enaxos.MusicTheory.csproj
+          $packageVersion = $project.Project.PropertyGroup.Version
+          $tagVersion = $env:GITHUB_REF_NAME.TrimStart("v")
+          if ($tagVersion -ne $packageVersion) {
+            throw "Tag '$env:GITHUB_REF_NAME' does not match package version '$packageVersion'."
+          }
+
+      - name: Pack
+        run: dotnet pack src/Enaxos.MusicTheory/Enaxos.MusicTheory.csproj --configuration Release --no-build --output artifacts/packages
+
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: odahan
+
+      - name: Publish package
+        shell: pwsh
+        run: |
+          $packages = Get-ChildItem artifacts/packages -Filter *.nupkg
+          foreach ($package in $packages) {
+            dotnet nuget push $package.FullName --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+          }
+
+      - name: Publish symbols
+        shell: pwsh
+        run: |
+          $symbolPackages = Get-ChildItem artifacts/packages -Filter *.snupkg
+          foreach ($package in $symbolPackages) {
+            dotnet nuget push $package.FullName --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+          }
