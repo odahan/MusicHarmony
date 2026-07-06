@@ -16,6 +16,36 @@ public sealed class TuningAndMidiRulesTests
     }
 
     [Fact]
+    public void Tuning_finds_nearest_note_and_cents_deviation()
+    {
+        var tuning = new EqualTemperament12();
+
+        var match = tuning.GetNearestNote(445d);
+
+        Assert.Equal("A4", match.Note.ToString());
+        Assert.Equal(440d, match.Frequency, 12);
+        Assert.InRange(match.CentsDeviation, 19.56d, 19.57d);
+    }
+
+    [Fact]
+    public void Instrument_frequency_ranges_expose_documented_sounding_ranges()
+    {
+        var ranges = InstrumentFrequencyRanges.DefaultGroups.SelectMany(group => group.Ranges);
+
+        var violin = ranges.Single(range => range.InstrumentName == "Violin");
+        Assert.Equal("G3", violin.FundamentalLowNote?.ToString());
+        Assert.Equal("A7", violin.FundamentalHighNote?.ToString());
+        Assert.Equal(195.997717990875d, violin.FundamentalLowFrequency, 12);
+        Assert.Equal(3520d, violin.FundamentalHighFrequency, 12);
+
+        var piano = ranges.Single(range => range.InstrumentName == "88-key piano");
+        Assert.Equal("A0", piano.FundamentalLowNote?.ToString());
+        Assert.Equal("C8", piano.FundamentalHighNote?.ToString());
+        Assert.Equal(27.5d, piano.FundamentalLowFrequency, 12);
+        Assert.Equal(4186.009044809578d, piano.FundamentalHighFrequency, 12);
+    }
+
+    [Fact]
     public void Midi_adapter_uses_C4_as_60_and_round_trips_all_values()
     {
         Assert.Equal(60, MidiNote.ToNumber(Note.Parse("C4")));

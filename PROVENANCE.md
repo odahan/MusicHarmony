@@ -156,6 +156,29 @@ The explicit `C4 = 60` adapter offset, accepted MIDI range `0..127`, spelling
 preferences, and equal-temperament frequency formula are project conventions
 from the normative documents.
 
+### Instrument frequency ranges
+
+Consulted on 2026-07-06:
+
+- Dolmetsch Online, Dr. Brian Blood, **“Music Theory Online: Musical Instrument
+  Ranges & Names”**, <https://www.dolmetsch.com/musictheory29.htm>. Used for
+  sounding-versus-written range context and the orchestral instrument families
+  represented by the default frequency-range catalog.
+- Wikipedia, **“Range (music)”**, <https://en.wikipedia.org/wiki/Range_(music)>.
+  Used for the distinction between sounding range and written range, and for
+  the scientific-pitch/MIDI middle-C convention context.
+- Wikipedia, **“Drum tuning”**, <https://en.wikipedia.org/wiki/Drum_tuning>.
+  Used for snare tuning reference ranges and for the distinction between
+  definite-pitch drums such as timpani and broader drum-kit spectral ranges.
+- Wikipedia, **“Organ stop”**, <https://en.wikipedia.org/wiki/Organ_stop>.
+  Used for pipe-organ octave-stop context, including 16-foot, 32-foot, and
+  64-foot sounding relationships.
+
+The catalog intentionally stores stable, display-oriented fundamental ranges
+and indicative harmonic upper bounds. For unpitched or highly variable
+percussion such as kick drum and cymbals, the values are practical spectrum
+ranges rather than fixed note ranges.
+
 ## Implementation ledger
 
 | Lot | Module | Normative sections | Independent references recorded before implementation | Status |
@@ -169,6 +192,7 @@ from the normative documents.
 | 7 | Circle of fifths | Domain §6.1, §7.6; API §9.1 | Open Music Theory key-signature reference | Complete (2026-06-20) |
 | 8 | Geometry and presentation | Domain §§3.3, 6.2, 7.5–7.7; API §§9.2, 10 | Microsoft .NET and Open Music Theory references | Complete (2026-06-20) |
 | 9 | Tuning and MIDI | Domain §§3.1, 3.2, 5.7, 8; API §8 | ISO 16 and MIDI Association references | Complete (2026-06-20) |
+| 10 | Instrument frequency ranges | Domain §§3.1, 5.7, 8; API §8 | Dolmetsch instrument ranges, range terminology, drum tuning, and organ-stop references | Complete (2026-07-06) |
 
 Any later module must add its bibliography entry here before its production
 implementation is written.
