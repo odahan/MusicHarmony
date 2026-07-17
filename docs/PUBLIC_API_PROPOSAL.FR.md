@@ -3,7 +3,7 @@
 Statut : contrat courant aligné sur l'implémentation
 Assembly : `Enaxos.MusicTheory`
 Framework : `net8.0`
-Version documentée : `1.2.0`
+Version documentée : `1.2.5`
 
 Cette API privilégie les valeurs immuables, les calculs purs, les erreurs explicites et les noms du domaine. Les signatures ci-dessous constituent le contrat public maintenu pour la bibliothèque. La documentation d'API générée reste la source la plus détaillée pour les commentaires XML et les signatures exactes.
 
@@ -293,6 +293,10 @@ public static class StandardScales
 
 public static class ExoticScales
 {
+    public static ScaleDefinition OctatonicWholeHalf { get; }
+    public static ScaleDefinition OctatonicHalfWhole { get; }
+    public static ScaleDefinition DiminishedWholeHalf { get; }
+    public static ScaleDefinition DiminishedHalfWhole { get; }
     public static IReadOnlyList<ScaleDefinition> SymmetricAndJazz { get; }
     public static IReadOnlyList<ScaleDefinition> BluesAndBebop { get; }
     public static IReadOnlyList<ScaleDefinition> RareMajorMinor { get; }
@@ -326,6 +330,14 @@ public sealed class ModeCatalog
     public IReadOnlyList<ScaleDefinition> AllWithPentatonicAndExoticScales { get; }
 }
 ```
+
+### Définitions de gammes et catalogues de reconnaissance
+
+La bibliothèque expose **52 définitions publiques de gammes distinctes** : 21 modes principaux (7 majeurs, 7 de la mineure harmonique et 7 de la mineure mélodique ascendante), 2 pentatoniques standard, 25 définitions exotiques et 4 collections mère directement constructibles : `Major`, `NaturalMinor`, `HarmonicMinor` et `MelodicMinorAscending`.
+
+`ModeCatalog.Standard.AllWithPentatonicAndExoticScales` est le catalogue maximal de reconnaissance. Il contient **48 candidates distinctes** : 21 modes principaux, 2 pentatoniques et 25 définitions exotiques. Les quatre collections mère directes n’y figurent volontairement pas, car leurs modes 1 correspondants représentent déjà les mêmes collections pour la reconnaissance. Elles restent disponibles dans `StandardScales` pour la construction directe et les API métier.
+
+`ExoticScales.All` centralise les 25 définitions exotiques. `DiminishedWholeHalf` et `DiminishedHalfWhole` sont des alias de compatibilité de `OctatonicWholeHalf` et `OctatonicHalfWhole` ; ils n’ajoutent ni définition ni candidate de reconnaissance.
 
 Usage :
 

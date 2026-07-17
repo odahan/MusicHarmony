@@ -3,7 +3,7 @@
 Status: current contract aligned with the implementation
 Assembly: `Enaxos.MusicTheory`
 Framework: `net8.0`
-Documented version: `1.2.0`
+Documented version: `1.2.5`
 
 This API favors immutable values, pure calculations, explicit errors, and domain names. The signatures below form the maintained public contract for the library. The generated API documentation remains the most detailed source for XML comments and exact signatures.
 
@@ -293,6 +293,10 @@ public static class StandardScales
 
 public static class ExoticScales
 {
+    public static ScaleDefinition OctatonicWholeHalf { get; }
+    public static ScaleDefinition OctatonicHalfWhole { get; }
+    public static ScaleDefinition DiminishedWholeHalf { get; }
+    public static ScaleDefinition DiminishedHalfWhole { get; }
     public static IReadOnlyList<ScaleDefinition> SymmetricAndJazz { get; }
     public static IReadOnlyList<ScaleDefinition> BluesAndBebop { get; }
     public static IReadOnlyList<ScaleDefinition> RareMajorMinor { get; }
@@ -326,6 +330,14 @@ public sealed class ModeCatalog
     public IReadOnlyList<ScaleDefinition> AllWithPentatonicAndExoticScales { get; }
 }
 ```
+
+### Scale definitions and recognition catalogs
+
+The library exposes **52 distinct public scale definitions**: 21 principal modes (7 major, 7 harmonic-minor, and 7 ascending-melodic-minor), 2 standard pentatonics, 25 exotic definitions, and 4 directly constructible parent collections: `Major`, `NaturalMinor`, `HarmonicMinor`, and `MelodicMinorAscending`.
+
+`ModeCatalog.Standard.AllWithPentatonicAndExoticScales` is the maximal recognition catalog. It contains **48 distinct candidates**: 21 principal modes, 2 pentatonics, and 25 exotic definitions. The four direct parent collections deliberately do not appear in it because their corresponding first modes already represent the same collections for recognition. They remain available from `StandardScales` for direct construction and domain-specific APIs.
+
+`ExoticScales.All` centralizes the 25 exotic definitions. `DiminishedWholeHalf` and `DiminishedHalfWhole` are compatibility aliases for `OctatonicWholeHalf` and `OctatonicHalfWhole`; they do not add definitions or recognition candidates.
 
 Usage:
 

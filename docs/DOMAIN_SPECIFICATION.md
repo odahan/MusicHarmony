@@ -320,6 +320,14 @@ The two octatonic definitions preserve their historical diminished `whole-half` 
 
 These scales are available for recognition only when explicitly enabled. They are also exposed as catalog definitions so consumers can offer them directly in UIs and derive scale chords when musically useful.
 
+### 4.16 Scale-definition counts and recognition scope
+
+The public API exposes 52 distinct scale definitions: 21 principal modes, 2 pentatonics, 25 exotics, and four direct parent collections (`Major`, `NaturalMinor`, `HarmonicMinor`, and `MelodicMinorAscending`). The parent collections are parallel definitions of their corresponding first modes, not extra modes.
+
+`ModeCatalog.Standard.AllWithPentatonicAndExoticScales` is the maximal recognition catalog: it contains exactly 48 distinct candidates (21 principal modes, 2 pentatonics, and 25 exotics). It intentionally excludes the four direct parent definitions so recognition does not receive duplicate collections. Those four definitions remain publicly constructible through `StandardScales`; the exotic definitions are centralized by `ExoticScales.All`.
+
+`DiminishedWholeHalf` and `DiminishedHalfWhole` are compatibility aliases respectively for `OctatonicWholeHalf` and `OctatonicHalfWhole`. They are not additional scales and do not increase any catalog count.
+
 ## 5. Calculation Rules
 
 ### 5.1 Chromatic Class

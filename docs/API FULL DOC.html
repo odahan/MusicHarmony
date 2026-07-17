@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Complete public API reference for Enaxos.MusicTheory 1.1.0.">
-  <title>Enaxos.MusicTheory 1.1.0 — Full Public API</title>
+  <meta name="description" content="Complete public API reference for Enaxos.MusicTheory 1.2.5.">
+  <title>Enaxos.MusicTheory 1.2.5 — Full Public API</title>
   <style>
     :root { --bg:#0b1016; --panel:#111923; --panel-2:#172231; --text:#dce7f3; --muted:#91a4b8; --accent:#69b7ff; --accent-2:#86e1c1; --border:#29384a; --code:#0a0f15; --sidebar:22rem; }
     * { box-sizing:border-box; }
@@ -57,7 +57,7 @@
   <a class="skip-link" href="#content">Skip to content</a>
   <button class="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
   <aside class="sidebar" id="sidebar" aria-label="Documentation navigation">
-    <a class="brand" href="#enaxos-musictheory-1-1-0-full-public-api">Enaxos.MusicTheory 1.1.0</a>
+    <a class="brand" href="#enaxos-musictheory-1-2-5-full-public-api">Enaxos.MusicTheory 1.2.5</a>
     <div class="nav-title">Contents</div>
     <nav aria-label="Table of contents"><ul id="toc"><li class="level-2"><a href="#conventions">Conventions</a></li>
 <li class="level-2"><a href="#namespaces">Namespaces</a></li>
@@ -143,10 +143,14 @@
 <li class="level-3"><a href="#scaledegreenumber">ScaleDegreeNumber</a></li>
 <li class="level-2"><a href="#enaxos-musictheory-tuning">Enaxos.MusicTheory.Tuning</a></li>
 <li class="level-3"><a href="#equaltemperament12">EqualTemperament12</a></li>
+<li class="level-3"><a href="#frequencymatch">FrequencyMatch</a></li>
+<li class="level-3"><a href="#instrumentfrequencyrange">InstrumentFrequencyRange</a></li>
+<li class="level-3"><a href="#instrumentfrequencyrangegroup">InstrumentFrequencyRangeGroup</a></li>
+<li class="level-3"><a href="#instrumentfrequencyranges">InstrumentFrequencyRanges</a></li>
 <li class="level-3"><a href="#ituningsystem">ITuningSystem</a></li></ul></nav>
   </aside>
-  <main id="content"><article><h1 id="enaxos-musictheory-1-1-0-full-public-api">Enaxos.MusicTheory 1.1.0 — Full Public API</h1>
-<p>This document describes the complete public API exposed by <code>Enaxos.MusicTheory</code> version <strong>1.1.0</strong> (<code>net8.0</code>).</p>
+  <main id="content"><article><h1 id="enaxos-musictheory-1-2-5-full-public-api">Enaxos.MusicTheory 1.2.5 — Full Public API</h1>
+<p>This document describes the complete public API exposed by <code>Enaxos.MusicTheory</code> version <strong>1.2.5</strong> (<code>net8.0</code>).</p>
 <h2 id="conventions">Conventions<a class="heading-link" href="#conventions" aria-label="Link to Conventions">#</a></h2>
 <ul>
 <li>Musical spelling is significant unless a member explicitly states that comparison is enharmonic.</li>
@@ -1959,6 +1963,18 @@ Attempts to parse a complete invariant pitch spelling.</p>
 </code></pre>
 <h4>Properties</h4>
 <ul>
+<li><p><code>public static ScaleDefinition DiminishedHalfWhole { get; }</code>
+Gets the historical diminished half-whole compatibility alias for <code>OctatonicHalfWhole</code>.</p>
+</li>
+<li><p><code>public static ScaleDefinition DiminishedWholeHalf { get; }</code>
+Gets the historical diminished whole-half compatibility alias for <code>OctatonicWholeHalf</code>.</p>
+</li>
+<li><p><code>public static ScaleDefinition OctatonicHalfWhole { get; }</code>
+Gets the half-step/whole-step octatonic scale definition.</p>
+</li>
+<li><p><code>public static ScaleDefinition OctatonicWholeHalf { get; }</code>
+Gets the whole-step/half-step octatonic scale definition.</p>
+</li>
 <li><p><code>public static IReadOnlyList&lt;ScaleDefinition&gt; All { get; }</code>
 Gets every curated exotic scale definition.</p>
 </li>
@@ -2019,6 +2035,9 @@ Gets the standard major and minor pentatonic scales.</p>
 Gets the shared catalog of standard modes.</p>
 </li>
 </ul>
+<h4>Catalog semantics</h4>
+<p>The library exposes 52 distinct public scale definitions: 21 principal modes, 2 standard pentatonics, 25 exotic definitions, and four direct parent collections (<code>Major</code>, <code>NaturalMinor</code>, <code>HarmonicMinor</code>, and <code>MelodicMinorAscending</code>). The direct parents remain constructible through <code>StandardScales</code>, but are parallel to their corresponding first modes.</p>
+<p><code>ModeCatalog.Standard.AllWithPentatonicAndExoticScales</code> is the maximal recognition catalog and contains exactly 48 distinct candidates: 21 principal modes, 2 pentatonics, and 25 exotics. It excludes the four direct parent definitions to avoid duplicate collections during recognition. <code>ExoticScales.All</code> centralizes the 25 exotic definitions. The diminished names are compatibility aliases only and add neither definitions nor candidates.</p>
 <h3 id="pentatonicderivation"><code>PentatonicDerivation</code><a class="heading-link" href="#pentatonicderivation" aria-label="Link to PentatonicDerivation">#</a></h3>
 <p>Records both the result and the provenance of a pentatonic derivation.</p>
 <p><strong>Declaration</strong></p>
@@ -2675,7 +2694,40 @@ Gets the note from which all frequency ratios are measured.</p>
 <ul>
 <li><code>public double GetFrequency(Note note)</code>
 Gets a note&#39;s frequency using a ratio of 2^(semitone distance / 12).</li>
+<li><code>public FrequencyMatch GetNearestNote(double frequency, EnharmonicPreference preference = EnharmonicPreference.PreferSharps)</code>
+Gets the nearest note to a positive measured frequency, its tuned frequency, and the deviation in cents.</li>
 </ul>
+<h3 id="frequencymatch"><code>FrequencyMatch</code><a class="heading-link" href="#frequencymatch" aria-label="Link to FrequencyMatch">#</a></h3>
+<p>Represents the nearest equal-temperament note for a measured frequency.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed record FrequencyMatch(Note Note, double Frequency, double CentsDeviation)
+</code></pre>
+<h4>Properties</h4>
+<ul><li><code>public Note Note { get; }</code> Gets the nearest note in the selected spelling preference.</li>
+<li><code>public double Frequency { get; }</code> Gets the exact frequency assigned to <code>Note</code>.</li>
+<li><code>public double CentsDeviation { get; }</code> Gets the measured deviation, in cents.</li></ul>
+<h3 id="instrumentfrequencyrange"><code>InstrumentFrequencyRange</code><a class="heading-link" href="#instrumentfrequencyrange" aria-label="Link to InstrumentFrequencyRange">#</a></h3>
+<p>Describes an instrument's fundamental range and indicative upper harmonic energy.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed record InstrumentFrequencyRange
+</code></pre>
+<h4>Constructors</h4>
+<ul><li><code>public InstrumentFrequencyRange(string instrumentName, double fundamentalLowFrequency, double fundamentalHighFrequency, double harmonicHighFrequency)</code></li>
+<li><code>public InstrumentFrequencyRange(string instrumentName, Note fundamentalLowNote, Note fundamentalHighNote, double harmonicHighFrequency, ITuningSystem? tuningSystem = null)</code></li></ul>
+<h4>Properties</h4>
+<ul><li><code>public string InstrumentName { get; }</code></li><li><code>public Note? FundamentalLowNote { get; }</code></li><li><code>public Note? FundamentalHighNote { get; }</code></li><li><code>public double FundamentalLowFrequency { get; }</code></li><li><code>public double FundamentalHighFrequency { get; }</code></li><li><code>public double HarmonicHighFrequency { get; }</code></li></ul>
+<h3 id="instrumentfrequencyrangegroup"><code>InstrumentFrequencyRangeGroup</code><a class="heading-link" href="#instrumentfrequencyrangegroup" aria-label="Link to InstrumentFrequencyRangeGroup">#</a></h3>
+<p>Groups instrument ranges by musical family.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public sealed record InstrumentFrequencyRangeGroup(string GroupName, IReadOnlyList&lt;InstrumentFrequencyRange&gt; Ranges)
+</code></pre>
+<h3 id="instrumentfrequencyranges"><code>InstrumentFrequencyRanges</code><a class="heading-link" href="#instrumentfrequencyranges" aria-label="Link to InstrumentFrequencyRanges">#</a></h3>
+<p>Provides documented, display-oriented frequency ranges for common instruments.</p>
+<p><strong>Declaration</strong></p>
+<pre><code class="language-csharp">public static class InstrumentFrequencyRanges
+</code></pre>
+<h4>Properties</h4>
+<ul><li><code>public static IReadOnlyList&lt;InstrumentFrequencyRangeGroup&gt; DefaultGroups { get; }</code> Gets the default range groups for a broad 20 Hz to 20 kHz spectrum view.</li></ul>
 <h3 id="ituningsystem"><code>ITuningSystem</code><a class="heading-link" href="#ituningsystem" aria-label="Link to ITuningSystem">#</a></h3>
 <p>Defines a strategy that maps absolute musical notes to frequencies in hertz.</p>
 <p><strong>Declaration</strong></p>
@@ -2691,11 +2743,11 @@ Gets the frequency assigned to a note.<ul>
 </li>
 </ul>
 <hr>
-<p>Generated from the version 1.1.0 assembly and its compiler-validated XML documentation.</p>
+<p>Generated from the version 1.2.5 assembly and its compiler-validated XML documentation.</p>
 </article>
-    <footer>Enaxos.MusicTheory 1.1.0 — Full Public API reference</footer>
+    <footer>Enaxos.MusicTheory 1.2.5 — Full Public API reference</footer>
   </main>
-  <a class="back-top" href="#enaxos-musictheory-1-1-0-full-public-api" aria-label="Back to top">↑</a>
+  <a class="back-top" href="#enaxos-musictheory-1-2-5-full-public-api" aria-label="Back to top">↑</a>
   <script>
     const button=document.querySelector('.menu-button');
     const closeMenu=()=>{document.body.classList.remove('nav-open');button.setAttribute('aria-expanded','false');};

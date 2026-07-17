@@ -320,6 +320,14 @@ Les deux définitions octatoniques conservent leurs identifiants historiques de 
 
 Ces gammes sont disponibles pour la reconnaissance lorsqu'elles sont explicitement activées. Elles sont aussi exposées comme définitions de catalogue afin que les consommateurs puissent les proposer directement dans leurs interfaces et générer leurs accords de gamme lorsque cela est musicalement exploitable.
 
+### 4.16 Décompte des définitions de gammes et périmètre de reconnaissance
+
+L’API publique expose 52 définitions de gammes distinctes : 21 modes principaux, 2 pentatoniques, 25 exotiques et quatre collections mère directes (`Major`, `NaturalMinor`, `HarmonicMinor` et `MelodicMinorAscending`). Les collections mère sont des définitions parallèles à leurs modes 1 correspondants, et non des modes additionnels.
+
+`ModeCatalog.Standard.AllWithPentatonicAndExoticScales` est le catalogue maximal de reconnaissance : il contient exactement 48 candidates distinctes (21 modes principaux, 2 pentatoniques et 25 exotiques). Il exclut volontairement les quatre définitions mère directes afin que la reconnaissance ne reçoive pas de collections dupliquées. Ces quatre définitions restent publiquement constructibles via `StandardScales` ; les définitions exotiques sont centralisées par `ExoticScales.All`.
+
+`DiminishedWholeHalf` et `DiminishedHalfWhole` sont des alias de compatibilité, respectivement de `OctatonicWholeHalf` et `OctatonicHalfWhole`. Ce ne sont pas des gammes supplémentaires et ils n’augmentent le décompte d’aucun catalogue.
+
 ## 5. Règles de calcul
 
 ### 5.1 Classe chromatique

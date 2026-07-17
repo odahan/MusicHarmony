@@ -1,6 +1,6 @@
-# Enaxos.MusicTheory 1.1.0 — Full Public API
+# Enaxos.MusicTheory 1.2.5 — Full Public API
 
-This document describes the complete public API exposed by `Enaxos.MusicTheory` version **1.1.0** (`net8.0`).
+This document describes the complete public API exposed by `Enaxos.MusicTheory` version **1.2.5** (`net8.0`).
 
 ## Conventions
 
@@ -1780,6 +1780,18 @@ public static class ExoticScales
 
 #### Properties
 
+- `public static ScaleDefinition DiminishedHalfWhole { get; }`
+  Gets the historical diminished half-whole compatibility alias for `OctatonicHalfWhole`.
+
+- `public static ScaleDefinition DiminishedWholeHalf { get; }`
+  Gets the historical diminished whole-half compatibility alias for `OctatonicWholeHalf`.
+
+- `public static ScaleDefinition OctatonicHalfWhole { get; }`
+  Gets the half-step/whole-step octatonic scale definition.
+
+- `public static ScaleDefinition OctatonicWholeHalf { get; }`
+  Gets the whole-step/half-step octatonic scale definition.
+
 - `public static IReadOnlyList<ScaleDefinition> All { get; }`
   Gets every curated exotic scale definition.
 
@@ -1842,6 +1854,12 @@ public sealed class ModeCatalog
 
 - `public static ModeCatalog Standard { get; }`
   Gets the shared catalog of standard modes.
+
+#### Catalog semantics
+
+The library exposes 52 distinct public scale definitions: 21 principal modes, 2 standard pentatonics, 25 exotic definitions, and four direct parent-collection definitions (`Major`, `NaturalMinor`, `HarmonicMinor`, and `MelodicMinorAscending`). The direct parents remain constructible through `StandardScales`, but are parallel to their corresponding first modes.
+
+`ModeCatalog.Standard.AllWithPentatonicAndExoticScales` is the maximal recognition catalog and contains exactly 48 distinct candidates: 21 principal modes, 2 pentatonics, and 25 exotics. It deliberately excludes the four direct parent definitions to avoid duplicate collections during recognition. `ExoticScales.All` centralizes the 25 exotic definitions. `DiminishedWholeHalf` and `DiminishedHalfWhole` are compatibility aliases only; they do not add scale definitions or candidates.
 
 ### `PentatonicDerivation`
 
@@ -2486,6 +2504,82 @@ public sealed class EqualTemperament12
 - `public double GetFrequency(Note note)`
   Gets a note's frequency using a ratio of 2^(semitone distance / 12).
 
+- `public FrequencyMatch GetNearestNote(double frequency, EnharmonicPreference preference = EnharmonicPreference.PreferSharps)`
+  Gets the nearest note to a positive measured frequency, its tuned frequency, and the deviation in cents.
+
+### `FrequencyMatch`
+
+Represents the nearest equal-temperament note for a measured frequency.
+
+**Declaration**
+
+```csharp
+public sealed record FrequencyMatch(Note Note, double Frequency, double CentsDeviation)
+```
+
+#### Properties
+
+- `public Note Note { get; }`
+  Gets the nearest note in the selected spelling preference.
+
+- `public double Frequency { get; }`
+  Gets the exact frequency assigned to `Note` by the tuning system.
+
+- `public double CentsDeviation { get; }`
+  Gets the measured deviation from `Frequency`, in cents.
+
+### `InstrumentFrequencyRange`
+
+Describes an instrument's fundamental range and indicative upper harmonic energy.
+
+**Declaration**
+
+```csharp
+public sealed record InstrumentFrequencyRange
+```
+
+#### Constructors
+
+- `public InstrumentFrequencyRange(string instrumentName, double fundamentalLowFrequency, double fundamentalHighFrequency, double harmonicHighFrequency)`
+  Creates a frequency-only range.
+
+- `public InstrumentFrequencyRange(string instrumentName, Note fundamentalLowNote, Note fundamentalHighNote, double harmonicHighFrequency, ITuningSystem? tuningSystem = null)`
+  Creates a range whose fundamentals are defined by notes in the supplied tuning.
+
+#### Properties
+
+- `public string InstrumentName { get; }`
+- `public Note? FundamentalLowNote { get; }`
+- `public Note? FundamentalHighNote { get; }`
+- `public double FundamentalLowFrequency { get; }`
+- `public double FundamentalHighFrequency { get; }`
+- `public double HarmonicHighFrequency { get; }`
+
+### `InstrumentFrequencyRangeGroup`
+
+Groups instrument ranges by musical family.
+
+**Declaration**
+
+```csharp
+public sealed record InstrumentFrequencyRangeGroup(string GroupName, IReadOnlyList<InstrumentFrequencyRange> Ranges)
+```
+
+### `InstrumentFrequencyRanges`
+
+Provides documented, display-oriented frequency ranges for common instruments.
+
+**Declaration**
+
+```csharp
+public static class InstrumentFrequencyRanges
+```
+
+#### Properties
+
+- `public static IReadOnlyList<InstrumentFrequencyRangeGroup> DefaultGroups { get; }`
+  Gets the default range groups for a broad 20 Hz to 20 kHz spectrum view.
+
 ### `ITuningSystem`
 
 Defines a strategy that maps absolute musical notes to frequencies in hertz.
@@ -2505,4 +2599,4 @@ public interface ITuningSystem
 
 ---
 
-Generated from the version 1.1.0 assembly and its compiler-validated XML documentation.
+Generated from the version 1.2.5 assembly and its compiler-validated XML documentation.
