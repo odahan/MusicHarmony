@@ -167,9 +167,11 @@ Natural minor    1  2 ♭3  4  5 ♭6 ♭7
 Harmonic minor   1  2 ♭3  4  5 ♭6  7
 ```
 
-A `Scale` is the result of applying a definition to a written tonic. Construction preserves the expected diatonic letters.
+A `Scale` is the result of applying a definition to a written tonic. Construction preserves the expected diatonic letters. For a symmetric collection such as an octatonic scale, the value stored in `Scale.Tonic` is the construction root or starting pitch requested by the caller; it is not by itself evidence of a functional tonal center.
 
 A scale structure is the cyclic sequence of semitone distances between consecutive tones, including octave closure. `W` and `H` represent whole and half steps; wider gaps remain numeric. This structure describes the chromatic contour of a scale, not its spelling.
+
+Some formulas can contain multiple occurrences of the same degree number, for example `♭3` and `3` in blues, bebop, or octatonic scales. The historical lookup by degree number returns the first occurrence; an explicit API exposes every occurrence in formula order when callers need to distinguish the variants.
 
 Scale relationships expose common notes between multiple scales or pitch collections. The result preserves the order and spelling of the first collection. Comparison can use pitch classes or exact spelling.
 
@@ -250,6 +252,8 @@ A harmonic function is never inferred without an explicit key. The same chord ma
 
 Diatonic triads of a scale are built by stacking alternate degrees from each scale degree. Major, minor, diminished, and augmented qualities are recognized when they match standard definitions; other formulas remain available with quality `Other`. For heptatonic scales, these results can be formatted as Roman numerals.
 
+A separate API finds standard chords contained in a scale or collection by pitch-class inclusion. It accepts an explicit chord catalog or uses the published standard catalog, returns immutable chords in deterministic order, and infers no harmonic function. This API is especially useful for octatonic collections, which contain several major, minor, diminished, and seventh-chord sonorities without determining a tonal progression.
+
 ### 4.12 Chord Recognition
 
 Recognition accepts a sequence of `Note` or a free chord. It ignores octave to identify pitch classes, but uses bass to determine inversion when ordering or octaves are available.
@@ -281,6 +285,8 @@ Ranking explicitly and configurably accounts for:
 - root and bass of a chord when known;
 - possible tonic evidence in the input data.
 
+For octatonic collections, score factors explicitly name the construction root (`constructionRoot`, `bassConstructionRoot`, `chordConstructionRoot`) rather than tonal certainty. When note input has a bass, that pitch is used as strong evidence for the presumed construction root. Because there are only three distinct octatonic pitch-class contents under transposition, equivalent representations of the same content are deterministically deduplicated after scoring; the candidate whose construction root matches the bass is preferred when that information exists.
+
 Each result exposes a `Score` and a `RelativeProbability` in `[0, 1]`. Relative probabilities of returned candidates sum to 1. This value is a heuristic normalization that depends on the catalog and weights; it is not a statistically calibrated probability.
 
 ### 4.14 Pentatonic Scales
@@ -304,11 +310,13 @@ The API never silently replaces a diminished fifth or another absent note to fab
 
 `ExoticScales` groups non-core definitions useful in jazz, blues, and modal-color contexts:
 
-- `SymmetricAndJazz`: whole tone, diminished, augmented;
+- `SymmetricAndJazz`: whole tone, half-whole and whole-half octatonic, augmented;
 - `BluesAndBebop`: minor blues, major blues, dominant, major, and Dorian bebop;
 - `RareMajorMinor`: harmonic major, double harmonic major, Hungarian minor, Ukrainian Dorian, Neapolitan major and minor;
 - `WesternizedOriental`: Persian, Arabian, Spanish Phrygian, Oriental, Egyptian;
 - `Japanese`: Hirajoshi, Insen, Iwato, Yo, Kumoi.
+
+The two octatonic definitions preserve their historical diminished `whole-half` and `half-whole` identifiers, but are exposed through explicit `OctatonicWholeHalf` and `OctatonicHalfWhole` APIs with compatible diminished aliases. `C + H-W` and `C + W-H` remain two legitimate explicit requests, even when other construction-root + pattern pairs represent the same pitch-class content.
 
 These scales are available for recognition only when explicitly enabled. They are also exposed as catalog definitions so consumers can offer them directly in UIs and derive scale chords when musically useful.
 
@@ -447,6 +455,7 @@ A UI can therefore draw the circle with its own graphics system without reimplem
 - `INV-S03` — Optional final tonic repetition belongs to presentation, not scale identity.
 - `INV-S04` — A valid scale structure closes exactly twelve semitones.
 - `INV-S05` — Common notes preserve the order and spelling of the first collection.
+- `INV-S06` — In an octatonic scale, the stored root is a construction root, not an implicit tonal function.
 - `INV-K01` — A conventional key signature contains between zero and seven accidentals of a single type.
 - `INV-K02` — A major key and its relative minor have the same key signature.
 
@@ -472,6 +481,7 @@ A UI can therefore draw the circle with its own graphics system without reimplem
 - `INV-R02` — Relative probabilities of returned scales sum to 1 within numeric tolerance.
 - `INV-R03` — Raw score and explanatory score factors remain accessible.
 - `INV-R04` — Strict search accepts no note outside the candidate scale.
+- `INV-R05` — Equivalent octatonic representations are deduplicated by pitch-class content.
 
 ### 7.6 Circle of Fifths
 
@@ -537,6 +547,7 @@ Tests are organized by rules, not by methods:
 - tests of scale ranking and relative-probability normalization;
 - tests of major, harmonic minor, and melodic minor modes;
 - tests of pentatonic derivation and explicit failure;
+- tests of octatonic patterns, construction roots, deduplication, and contained chords;
 - tests of equality, enharmonic equivalence, and hash-code stability;
 - tests of the fifteen key signatures `-7..+7` and their placement on twelve segments;
 - rendering-independent geometry tests;

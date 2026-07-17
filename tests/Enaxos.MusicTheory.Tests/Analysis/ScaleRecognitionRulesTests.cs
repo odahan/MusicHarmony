@@ -127,6 +127,60 @@ public sealed class ScaleRecognitionRulesTests
     }
 
     [Fact]
+    public void Recognition_finds_complete_octatonic_collections_when_exotics_are_enabled()
+    {
+        var result = ScaleRecognizer.FindCandidates(
+            Notes("C4", "Db4", "Eb4", "E4", "Gb4", "G4", "A4", "Bb4"),
+            new ScaleRecognitionOptions
+            {
+                IncludeExoticCandidates = true,
+                MaximumResults = 32,
+            });
+
+        var candidate = Assert.Single(result);
+        Assert.Equal("C", candidate.Scale.Tonic.ToString());
+        Assert.Equal(ExoticScales.OctatonicHalfWhole, candidate.Scale.Definition);
+        Assert.Empty(candidate.MissingPitches);
+        Assert.Empty(candidate.OutsidePitches);
+        Assert.True(candidate.ScoreFactors["constructionRoot"] > 0);
+        Assert.True(candidate.ScoreFactors["bassConstructionRoot"] > 0);
+        Assert.Equal(0, candidate.ScoreFactors["tonic"]);
+        Assert.Equal(0, candidate.ScoreFactors["bassTonic"]);
+    }
+
+    [Fact]
+    public void Recognition_uses_the_lowest_octatonic_note_as_presumed_construction_root()
+    {
+        var result = ScaleRecognizer.FindCandidates(
+            Notes("E4", "Gb4", "G4", "A4", "Bb4", "C5", "Db5", "Eb5"),
+            new ScaleRecognitionOptions
+            {
+                IncludeExoticCandidates = true,
+                MaximumResults = 1,
+            });
+
+        var candidate = Assert.Single(result);
+        Assert.Equal("E", candidate.Scale.Tonic.ToString());
+        Assert.Equal(ExoticScales.OctatonicWholeHalf, candidate.Scale.Definition);
+        Assert.True(candidate.ScoreFactors["bassConstructionRoot"] > 0);
+    }
+
+    [Fact]
+    public void Recognition_deduplicates_equivalent_octatonic_representations()
+    {
+        var result = ScaleRecognizer.FindCandidates(
+            Notes("C4", "Db4", "Eb4", "E4", "Gb4", "G4", "A4", "Bb4"),
+            new ScaleRecognitionOptions
+            {
+                IncludeExoticCandidates = true,
+                MaximumResults = 32,
+            });
+
+        Assert.Single(result.Where(candidate =>
+            candidate.Scale.Pitches.Select(pitch => pitch.PitchClass.Value).Order().SequenceEqual([0, 1, 3, 4, 6, 7, 9, 10])));
+    }
+
+    [Fact]
     public void Chord_overload_uses_chord_root_as_tonic_evidence()
     {
         var chord = Chord.Create(SpelledPitch.Parse("C"), StandardChords.Major);

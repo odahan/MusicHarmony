@@ -50,8 +50,8 @@ public static class StandardChords
     /// <summary>Gets the minor thirteenth chord.</summary>
     public static ChordDefinition MinorThirteenth { get; } = Create("chord.minor13", (1, 0), (3, -1), (5, 0), (7, -1), (9, 0), (11, 0), (13, 0));
 
-    /// <summary>Gets the deterministic catalog searched by chord recognition.</summary>
-    internal static IReadOnlyList<ChordDefinition> All { get; } =
+    /// <summary>Gets the deterministic standard catalog searched by chord recognition and scale-containment queries.</summary>
+    public static IReadOnlyList<ChordDefinition> All { get; } =
     [
         Major,
         Minor,

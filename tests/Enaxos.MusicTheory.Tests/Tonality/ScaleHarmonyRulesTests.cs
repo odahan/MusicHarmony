@@ -1,4 +1,5 @@
 using Enaxos.MusicTheory.Formulas;
+using Enaxos.MusicTheory.Harmony;
 using Enaxos.MusicTheory.Presentation;
 using Enaxos.MusicTheory.Primitives;
 using Enaxos.MusicTheory.Scales;
@@ -80,6 +81,38 @@ public sealed class ScaleHarmonyRulesTests
         Assert.Equal(
             ["C Eb Gb", "Db E G", "Eb Gb A", "E G Bb", "Gb A C", "G Bb Db", "A C Eb", "Bb Db E"],
             chords.Select(chord => string.Join(" ", chord.Chord.Pitches)));
+    }
+
+    [Fact]
+    public void Contained_standard_chords_are_found_by_pitch_class_in_octatonic_collections()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), ExoticScales.OctatonicHalfWhole);
+
+        var chords = ScaleHarmony.GetContainedStandardChords(scale);
+
+        Assert.Contains(chords, chord => chord.Root.ToString() == "C" && chord.Definition == StandardChords.Major);
+        Assert.Contains(chords, chord => chord.Root.ToString() == "C" && chord.Definition == StandardChords.Diminished);
+        Assert.Contains(chords, chord => chord.Root.ToString() == "Eb" && chord.Definition == StandardChords.Minor);
+        Assert.Contains(chords, chord => chord.Root.ToString() == "C" && chord.Definition == StandardChords.DominantSeventh);
+        Assert.Contains(chords, chord => chord.Root.ToString() == "C" && chord.Definition == StandardChords.DiminishedSeventh);
+        Assert.DoesNotContain(chords, chord => chord.Root.ToString() == "C" && chord.Definition == StandardChords.MajorSeventh);
+    }
+
+    [Fact]
+    public void Contained_chords_accept_custom_catalogs_and_return_read_only_snapshots()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), ExoticScales.OctatonicHalfWhole);
+
+        var chords = ScaleHarmony.GetContainedChords(
+            scale,
+            [StandardChords.Major, StandardChords.Major, StandardChords.MajorSeventh]);
+
+        Assert.Equal(
+            ["C", "Eb", "Gb", "A"],
+            chords.Select(chord => chord.Root.ToString()));
+        Assert.All(chords, chord => Assert.Equal(StandardChords.Major, chord.Definition));
+        var mutableView = Assert.IsAssignableFrom<ICollection<Chord>>(chords);
+        Assert.Throws<NotSupportedException>(() => mutableView.Add(chords[0]));
     }
 
     [Fact]

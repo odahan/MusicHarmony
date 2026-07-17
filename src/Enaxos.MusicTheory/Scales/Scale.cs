@@ -6,6 +6,11 @@ using Enaxos.MusicTheory.Primitives;
 namespace Enaxos.MusicTheory.Scales;
 
 /// <summary>Represents an immutable realization of a scale definition on a spelled tonic.</summary>
+/// <remarks>
+/// For symmetric collections such as octatonic scales, <see cref="Tonic"/>
+/// records the construction root or starting pitch chosen by the caller. It
+/// does not by itself assert a functional tonal center.
+/// </remarks>
 public sealed class Scale : IEquatable<Scale>
 {
     /// <summary>The immutable realized spellings in formula order.</summary>
@@ -31,7 +36,13 @@ public sealed class Scale : IEquatable<Scale>
     public IReadOnlyList<SpelledPitch> Pitches => _pitches;
 
     /// <summary>Gets a realized pitch by its formula degree number.</summary>
-    /// <remarks>The argument is a musical degree number, not a zero-based collection index.</remarks>
+    /// <remarks>
+    /// The argument is a musical degree number, not a zero-based collection
+    /// index. When a formula contains multiple chromatic variants of the same
+    /// degree number, this method returns the first occurrence for backward
+    /// compatibility. Use <see cref="Degrees(int)"/> to inspect every
+    /// occurrence explicitly.
+    /// </remarks>
     public SpelledPitch Degree(int number)
     {
         if (number < 1)
@@ -50,6 +61,34 @@ public sealed class Scale : IEquatable<Scale>
         throw new ArgumentOutOfRangeException(
             nameof(number),
             "The requested degree is not present in this scale definition.");
+    }
+
+    /// <summary>Gets all realized pitches whose formula degree has the requested number.</summary>
+    /// <remarks>The returned collection is immutable and follows formula order.</remarks>
+    public IReadOnlyList<SpelledPitch> Degrees(int number)
+    {
+        if (number < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(number));
+        }
+
+        var matches = new List<SpelledPitch>();
+        for (var index = 0; index < Definition.Degrees.Count; index++)
+        {
+            if (Definition.Degrees[index].Number == number)
+            {
+                matches.Add(_pitches[index]);
+            }
+        }
+
+        if (matches.Count == 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(number),
+                "The requested degree is not present in this scale definition.");
+        }
+
+        return Array.AsReadOnly(matches.ToArray());
     }
 
     /// <summary>Realizes every degree of a definition above a tonic while preserving diatonic spelling.</summary>

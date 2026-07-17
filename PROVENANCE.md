@@ -82,7 +82,10 @@ Consulted on 2026-06-20:
   of the diatonic collection, their modal identities, transposition to any
   tonic, and the major pentatonic subset `1 2 3 5 6`. The standard minor
   pentatonic `1 ♭3 4 5 ♭7` is the corresponding rotation of that five-note
-  collection.
+  collection. Consulted again on 2026-07-17 for octatonic collections:
+  alternating half and whole steps, eight pitch classes, three unique
+  transposition classes, and the distinction between a collection and a
+  functional tonal center.
 
 Stable identifiers, formula validation, catalogs of harmonic- and
 melodic-minor rotations, preservation of written letters, and explicit
@@ -119,7 +122,9 @@ Consulted on 2026-06-20:
 - Open Music Theory, **“Collections and Scales”**, source revision
   `0f037934ffcc7305a2f45dacdce095335260ced3`,
   <https://openmusictheory.github.io/scales2.html>. Used for tonic-relative
-  collections considered by compatible-scale recognition.
+  collections considered by compatible-scale recognition. Consulted again on
+  2026-07-17 for octatonic collections containing many triadic and seventh-chord
+  harmonies without requiring functional-tonal interpretation.
 
 Transformation provenance, deterministic candidate scoring, missing/added
 tones, enharmonic ranking, softmax relative probabilities, and configurable
@@ -193,6 +198,7 @@ ranges rather than fixed note ranges.
 | 8 | Geometry and presentation | Domain §§3.3, 6.2, 7.5–7.7; API §§9.2, 10 | Microsoft .NET and Open Music Theory references | Complete (2026-06-20) |
 | 9 | Tuning and MIDI | Domain §§3.1, 3.2, 5.7, 8; API §8 | ISO 16 and MIDI Association references | Complete (2026-06-20) |
 | 10 | Instrument frequency ranges | Domain §§3.1, 5.7, 8; API §8 | Dolmetsch instrument ranges, range terminology, drum tuning, and organ-stop references | Complete (2026-07-06) |
+| 11 | Octatonic scale support | Domain §§4.8, 4.11, 4.13, 4.15, 7.3, 7.5; API §§5, 6–7, 10 | Open Music Theory collections reference | Complete (2026-07-17) |
 
 Any later module must add its bibliography entry here before its production
 implementation is written.

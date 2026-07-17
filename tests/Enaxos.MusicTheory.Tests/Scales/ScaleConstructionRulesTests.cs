@@ -79,6 +79,44 @@ public sealed class ScaleConstructionRulesTests
         Assert.Equal("Eb", scale.Degree(3).ToString());
     }
 
+    [Theory]
+    [InlineData("C", "scale.exotic.diminished.half-whole", "C Db Eb E Gb G A Bb")]
+    [InlineData("C", "scale.exotic.diminished.whole-half", "C D Eb F Gb Ab A B")]
+    [InlineData("D", "scale.exotic.diminished.half-whole", "D Eb F F# Ab A B C")]
+    [InlineData("D", "scale.exotic.diminished.whole-half", "D E F G Ab Bb B C#")]
+    public void Octatonic_scales_preserve_the_requested_construction_root(
+        string tonic,
+        string definitionId,
+        string expected)
+    {
+        var definition = ExoticScales.SymmetricAndJazz.Single(scale => scale.Id == definitionId);
+        var scale = Scale.Create(SpelledPitch.Parse(tonic), definition);
+
+        Assert.Equal(tonic, scale.Tonic.ToString());
+        Assert.Equal(expected.Split(' '), scale.Pitches.Select(pitch => pitch.ToString()));
+    }
+
+    [Fact]
+    public void Octatonic_aliases_preserve_historical_diminished_definitions()
+    {
+        Assert.Same(ExoticScales.DiminishedHalfWhole, ExoticScales.OctatonicHalfWhole);
+        Assert.Same(ExoticScales.DiminishedWholeHalf, ExoticScales.OctatonicWholeHalf);
+        Assert.Contains(ExoticScales.OctatonicHalfWhole, ExoticScales.SymmetricAndJazz);
+        Assert.Contains(ExoticScales.OctatonicWholeHalf, ExoticScales.SymmetricAndJazz);
+    }
+
+    [Fact]
+    public void Degree_occurrences_expose_duplicate_formula_degree_numbers()
+    {
+        var scale = Scale.Create(SpelledPitch.Parse("C"), ExoticScales.OctatonicHalfWhole);
+        var thirds = scale.Degrees(3);
+
+        Assert.Equal(["Eb", "E"], thirds.Select(pitch => pitch.ToString()));
+        Assert.Equal("Eb", scale.Degree(3).ToString());
+        var mutableView = Assert.IsAssignableFrom<ICollection<SpelledPitch>>(thirds);
+        Assert.Throws<NotSupportedException>(() => mutableView.Add(SpelledPitch.Parse("E")));
+    }
+
     [Fact]
     public void Scale_aggregate_has_structural_equality_and_stable_hash_code()
     {

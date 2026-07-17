@@ -167,9 +167,11 @@ Mineure naturelle 1  2 ♭3  4  5 ♭6 ♭7
 Mineure harmonique 1 2 ♭3  4  5 ♭6  7
 ```
 
-Une `Scale` est le résultat de l'application d'une définition à une tonique écrite. La construction conserve les lettres diatoniques attendues.
+Une `Scale` est le résultat de l'application d'une définition à une tonique écrite. La construction conserve les lettres diatoniques attendues. Pour une collection symétrique comme l'octatonique, la valeur stockée dans `Scale.Tonic` est la racine de construction ou note de départ demandée par l'utilisateur ; elle ne constitue pas à elle seule une preuve de centre tonal fonctionnel.
 
 Une structure de gamme est la suite cyclique des distances en demi-tons entre sons consécutifs, incluant le retour à l'octave. Les symboles `W` et `H` désignent respectivement deux et un demi-tons ; les intervalles plus larges sont conservés sous forme numérique. Cette structure décrit le contour chromatique d'une gamme, pas son orthographe.
+
+Certaines formules peuvent contenir plusieurs occurrences du même numéro de degré, par exemple `♭3` et `3` dans les gammes blues, bebop ou octatoniques. L'accès historique par numéro de degré retourne la première occurrence ; une API explicite expose toutes les occurrences en ordre de formule lorsque l'appelant doit distinguer les variantes.
 
 Les relations de gammes exposent les notes communes entre plusieurs gammes ou collections de hauteurs. Le résultat conserve l'ordre et l'orthographe de la première collection. La comparaison peut se faire par classe de hauteur ou par graphie exacte.
 
@@ -250,6 +252,8 @@ La fonction harmonique n'est jamais déduite sans tonalité explicite. Un même 
 
 Les triades diatoniques d'une gamme sont construites en empilant des degrés alternés depuis chaque degré de la gamme. Les qualités majeures, mineures, diminuées et augmentées sont reconnues lorsqu'elles correspondent aux définitions standard ; les autres formules restent disponibles avec une qualité `Other`. Pour les gammes heptatoniques, ces résultats peuvent être formatés en chiffres romains.
 
+Une API distincte recherche les accords standard contenus dans une gamme ou collection par inclusion de classes de hauteurs. Elle accepte un catalogue d'accords explicite ou utilise le catalogue standard publié, retourne des accords immuables dans un ordre déterministe, et n'infère aucune fonction harmonique. Cette API sert notamment aux collections octatoniques, qui contiennent plusieurs triades majeures, mineures, diminuées et accords de septième sans déterminer de progression tonale.
+
 ### 4.12 Reconnaissance d'accords
 
 La reconnaissance accepte une série de `Note` ou un accord libre. Elle ignore l'octave pour identifier les classes de notes, mais utilise la basse pour déterminer un renversement lorsque l'ordre ou les octaves sont disponibles.
@@ -281,6 +285,8 @@ Le classement prend en compte de manière explicite et configurable :
 - la fondamentale et la basse d'un accord lorsqu'elles sont connues ;
 - la présence éventuelle de la tonique dans les données d'entrée.
 
+Pour les collections octatoniques, les facteurs de score nomment explicitement la racine de construction (`constructionRoot`, `bassConstructionRoot`, `chordConstructionRoot`) plutôt qu'une certitude tonale. Lorsqu'une entrée de notes possède une basse, celle-ci est utilisée comme indice fort de racine de construction présumée. Comme il n'existe que trois contenus octatoniques distincts sous transposition, les représentations équivalentes d'un même contenu sont dédupliquées de manière déterministe après scoring ; le candidat dont la basse est la racine de construction est privilégié lorsque cette information existe.
+
 Chaque résultat expose un `Score` et une `RelativeProbability` dans `[0, 1]`. Les probabilités relatives des candidats retournés totalisent 1. Cette valeur est une normalisation heuristique dépendant du catalogue et des poids choisis ; elle ne constitue pas une probabilité statistique calibrée.
 
 ### 4.14 Gammes pentatoniques
@@ -304,11 +310,13 @@ L'API ne remplace jamais silencieusement une quinte diminuée ou une autre note 
 
 Le catalogue `ExoticScales` regroupe des définitions non centrales mais utiles dans des contextes jazz, blues et de couleur modale :
 
-- `SymmetricAndJazz` : tons entiers, diminuées, augmentée ;
+- `SymmetricAndJazz` : tons entiers, octatoniques demi-ton-ton et ton-demi-ton, augmentée ;
 - `BluesAndBebop` : blues mineure, blues majeure, bebop dominante, majeure et dorienne ;
 - `RareMajorMinor` : majeure harmonique, double harmonique majeure, hongroise mineure, dorien ukrainien, napolitaines majeure et mineure ;
 - `WesternizedOriental` : persane, arabe, phrygienne espagnole, orientale, égyptienne ;
 - `Japanese` : hirajoshi, insen, iwato, yo, kumoi.
+
+Les deux définitions octatoniques conservent leurs identifiants historiques de gammes diminuées `whole-half` et `half-whole`, mais sont exposées par une API explicite `OctatonicWholeHalf` et `OctatonicHalfWhole` avec des alias diminués compatibles. `C + H-W` et `C + W-H` restent deux demandes explicites légitimes, même lorsque d'autres couples racine de construction + motif représentent le même contenu de classes de hauteurs.
 
 Ces gammes sont disponibles pour la reconnaissance lorsqu'elles sont explicitement activées. Elles sont aussi exposées comme définitions de catalogue afin que les consommateurs puissent les proposer directement dans leurs interfaces et générer leurs accords de gamme lorsque cela est musicalement exploitable.
 
@@ -447,6 +455,7 @@ Une UI peut ainsi dessiner le cercle avec son propre système graphique sans ré
 - `INV-S03` — La répétition finale éventuelle de la tonique appartient à la présentation, pas à l'identité de la gamme.
 - `INV-S04` — Une structure de gamme valide ferme exactement douze demi-tons.
 - `INV-S05` — Les notes communes conservent l'ordre et l'orthographe de la première collection.
+- `INV-S06` — Dans une octatonique, la racine stockée est une racine de construction, pas une fonction tonale implicite.
 - `INV-K01` — Une armure conventionnelle contient entre zéro et sept altérations d'un seul type.
 - `INV-K02` — Une majeure et sa relative mineure ont la même armure.
 
@@ -472,6 +481,7 @@ Une UI peut ainsi dessiner le cercle avec son propre système graphique sans ré
 - `INV-R02` — Les probabilités relatives des gammes retournées totalisent 1 à la tolérance numérique près.
 - `INV-R03` — Le score brut et ses facteurs explicatifs restent accessibles.
 - `INV-R04` — Une recherche stricte n'accepte aucune note extérieure à la gamme candidate.
+- `INV-R05` — Les représentations octatoniques équivalentes sont dédupliquées par contenu de classes de hauteurs.
 
 ### 7.6 Cercle des quintes
 
@@ -537,6 +547,7 @@ Les tests sont organisés par règles, pas par méthodes :
 - tests de classement des gammes et de normalisation des probabilités relatives ;
 - tests des modes des gammes majeure, mineure harmonique et mineure mélodique ;
 - tests de dérivation et d'échec explicite des pentatoniques ;
+- tests des motifs octatoniques, de la racine de construction, de la déduplication et des accords contenus ;
 - tests d'égalité, d'équivalence enharmonique et de stabilité des hash codes ;
 - tests des quinze armures `-7..+7` et de leur placement sur douze segments ;
 - tests géométriques indépendants du rendu ;

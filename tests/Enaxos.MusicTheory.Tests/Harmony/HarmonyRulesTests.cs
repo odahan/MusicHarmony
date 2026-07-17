@@ -19,12 +19,23 @@ public sealed class HarmonyRulesTests
     [Fact]
     public void Standard_definitions_start_with_unique_root_degree()
     {
-        foreach (var property in typeof(StandardChords).GetProperties())
+        foreach (var property in typeof(StandardChords).GetProperties()
+            .Where(property => property.PropertyType == typeof(ChordDefinition)))
         {
             var definition = Assert.IsType<ChordDefinition>(property.GetValue(null));
             Assert.Equal(1, definition.Degrees[0].Number);
             Assert.Equal(definition.Degrees.Count, definition.Degrees.Select(degree => degree.Number).Distinct().Count());
         }
+    }
+
+    [Fact]
+    public void Standard_chord_catalog_is_read_only_and_contains_public_definitions()
+    {
+        Assert.Contains(StandardChords.Major, StandardChords.All);
+        Assert.Contains(StandardChords.DiminishedSeventh, StandardChords.All);
+        var mutableView = Assert.IsAssignableFrom<ICollection<ChordDefinition>>(StandardChords.All);
+
+        Assert.Throws<NotSupportedException>(() => mutableView.Add(StandardChords.Minor));
     }
 
     [Theory]

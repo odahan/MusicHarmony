@@ -66,10 +66,13 @@ public sealed class PresentationRulesTests
     public void Exotic_scale_names_are_formatted()
     {
         var american = new MusicFormatOptions { TerminologyOverride = MusicTerminology.American };
+        var french = new MusicFormatOptions { TerminologyOverride = MusicTerminology.French };
 
         Assert.Equal("major blues", MusicFormatter.Format(
             ExoticScales.BluesAndBebop.Single(definition => definition.Id == "scale.exotic.blues.major"),
             american));
+        Assert.Equal("octatonic half-whole", MusicFormatter.Format(ExoticScales.OctatonicHalfWhole, american));
+        Assert.Equal("octatonique ton-demi-ton", MusicFormatter.Format(ExoticScales.OctatonicWholeHalf, french));
         Assert.Equal("Hirajoshi", MusicFormatter.Format(
             ExoticScales.Japanese.Single(definition => definition.Id == "scale.exotic.japanese.hirajoshi"),
             american));

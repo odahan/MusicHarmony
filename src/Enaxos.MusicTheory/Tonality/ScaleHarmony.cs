@@ -50,6 +50,69 @@ public static class ScaleHarmony
         return Array.AsReadOnly(result);
     }
 
+    /// <summary>
+    /// Returns standard chords whose pitch classes are fully contained in the scale.
+    /// </summary>
+    /// <remarks>
+    /// This method is collection-based and does not infer harmonic function or
+    /// Roman numerals. Roots are tried in scale order, and chord definitions are
+    /// tried in <see cref="StandardChords.All"/> order.
+    /// </remarks>
+    public static IReadOnlyList<Chord> GetContainedStandardChords(Scale scale) =>
+        GetContainedChords(scale, StandardChords.All);
+
+    /// <summary>
+    /// Returns chords from the supplied catalog whose pitch classes are fully contained in the scale.
+    /// </summary>
+    /// <remarks>
+    /// This method compares pitch classes rather than stacked scale degrees.
+    /// It is intended for collections such as octatonic scales where many
+    /// standard triads and seventh chords are available without implying tonal
+    /// function. Results are immutable and deterministic.
+    /// </remarks>
+    public static IReadOnlyList<Chord> GetContainedChords(Scale scale, IEnumerable<ChordDefinition> catalog)
+    {
+        ArgumentNullException.ThrowIfNull(scale);
+        ArgumentNullException.ThrowIfNull(catalog);
+
+        var definitions = catalog.ToArray();
+        if (definitions.Length == 0)
+        {
+            throw new ArgumentException("The chord catalog cannot be empty.", nameof(catalog));
+        }
+
+        if (definitions.Any(definition => definition is null))
+        {
+            throw new ArgumentException("The chord catalog cannot contain null definitions.", nameof(catalog));
+        }
+
+        var scalePitchClasses = scale.Pitches
+            .Select(pitch => pitch.PitchClass.Value)
+            .ToHashSet();
+        var result = new List<Chord>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var root in scale.Pitches)
+        {
+            foreach (var definition in definitions)
+            {
+                var chord = Chord.Create(root, definition);
+                if (!chord.Pitches.All(pitch => scalePitchClasses.Contains(pitch.PitchClass.Value)))
+                {
+                    continue;
+                }
+
+                var key = string.Concat(root.PitchClass.Value.ToString(System.Globalization.CultureInfo.InvariantCulture), "|", definition.Id);
+                if (seen.Add(key))
+                {
+                    result.Add(chord);
+                }
+            }
+        }
+
+        return Array.AsReadOnly(result.ToArray());
+    }
+
     /// <summary>Creates a standard triad definition when possible, otherwise a stable scale-derived formula.</summary>
     private static ChordDefinition CreateDefinition(int scaleDegree, IReadOnlyList<SpelledPitch> tones)
     {

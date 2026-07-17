@@ -6,11 +6,39 @@ namespace Enaxos.MusicTheory.Scales;
 /// <summary>Provides curated non-core scale definitions that are useful in jazz, blues, and modal color work.</summary>
 public static class ExoticScales
 {
+    /// <summary>
+    /// Gets the half-step/whole-step octatonic scale definition.
+    /// </summary>
+    /// <remarks>
+    /// The stored scale tonic is the construction root or starting note for
+    /// this symmetric collection; it does not by itself imply a tonal center.
+    /// This property preserves the historical diminished half-whole definition.
+    /// </remarks>
+    public static ScaleDefinition OctatonicHalfWhole { get; } =
+        Definition("scale.exotic.diminished.half-whole", (1, 0), (2, -1), (3, -1), (3, 0), (5, -1), (5, 0), (6, 0), (7, -1));
+
+    /// <summary>
+    /// Gets the whole-step/half-step octatonic scale definition.
+    /// </summary>
+    /// <remarks>
+    /// The stored scale tonic is the construction root or starting note for
+    /// this symmetric collection; it does not by itself imply a tonal center.
+    /// This property preserves the historical diminished whole-half definition.
+    /// </remarks>
+    public static ScaleDefinition OctatonicWholeHalf { get; } =
+        Definition("scale.exotic.diminished.whole-half", (1, 0), (2, 0), (3, -1), (4, 0), (5, -1), (6, -1), (6, 0), (7, 0));
+
+    /// <summary>Gets the historical diminished whole-half alias for <see cref="OctatonicWholeHalf"/>.</summary>
+    public static ScaleDefinition DiminishedWholeHalf => OctatonicWholeHalf;
+
+    /// <summary>Gets the historical diminished half-whole alias for <see cref="OctatonicHalfWhole"/>.</summary>
+    public static ScaleDefinition DiminishedHalfWhole => OctatonicHalfWhole;
+
     private static readonly ReadOnlyCollection<ScaleDefinition> SymmetricAndJazzDefinitions = Array.AsReadOnly(
     [
         Definition("scale.exotic.whole-tone", (1, 0), (2, 0), (3, 0), (4, 1), (5, 1), (7, -1)),
-        Definition("scale.exotic.diminished.whole-half", (1, 0), (2, 0), (3, -1), (4, 0), (5, -1), (6, -1), (6, 0), (7, 0)),
-        Definition("scale.exotic.diminished.half-whole", (1, 0), (2, -1), (3, -1), (3, 0), (5, -1), (5, 0), (6, 0), (7, -1)),
+        OctatonicWholeHalf,
+        OctatonicHalfWhole,
         Definition("scale.exotic.augmented", (1, 0), (2, 1), (3, 0), (5, 0), (6, -1), (7, 0)),
     ]);
 
